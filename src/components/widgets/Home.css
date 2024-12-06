@@ -1,0 +1,32 @@
+/* src/widgets/Home.css */
+
+* {
+    box-sizing: border-box; /* Учитывать отступы и границы в ширине и высоте */
+  }
+  
+  .container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Две колонки одинаковой ширины */
+    gap: 16px; /* Промежутки между виджетами */
+  }
+  
+  .widget {
+    background-color: #f0f0f0; /* Цвет фона виджетов */
+    border: 1px solid #ccc; /* Граница виджетов */
+    border-radius: 8px; /* Скругление углов */
+    overflow: hidden; /* Скрыть переполнение */
+    transition: all 0.3s ease; /* Плавный переход для изменения размеров */
+  }
+  
+  .widget.expanded {
+    grid-column: span 2; /* Занять всю ширину (две колонки) */
+    width: 100%; /* Установите ширину на 100% для растягивания */
+  }
+  
+  
+  
+  
+  .widget:hover {
+    transform: scale(1.05); /* Увеличение при наведении */
+  }
+  

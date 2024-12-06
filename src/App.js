@@ -5,6 +5,7 @@ import Sidebar from './components/Sidebar';
 import Home from './components/Home';
 import SmartHome from './components/SmartHome';
 import Orders from './components/Orders';
+import Map from './components/Map';
 import Notifications from './components/Notifications';
 import Info from './components/Info';
 
@@ -18,6 +19,7 @@ const App = () => {
             <Route path="/" element={<Home />} />
             <Route path="/smart-home" element={<SmartHome />} />
             <Route path="/orders" element={<Orders />} />
+            <Route path="/map" element={<Map />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/info" element={<Info />} />
           </Routes>

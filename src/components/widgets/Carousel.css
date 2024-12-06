@@ -1,0 +1,41 @@
+/* styles.css */
+.room-carousel {
+  width: 100%;
+  margin: auto;
+}
+
+.room-slide {
+  height: 400px; /* Установите нужную высоту */
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  position: relative;
+}
+
+.room-content {
+  text-align: center;
+  background: rgba(0, 0, 0, 0.5); /* Полупрозрачный фон для читаемости */
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.device-icons {
+  margin-top: 10px;
+}
+.carousel-container {
+  max-width: 1200px; /* Максимальная ширина контейнера */
+  margin: 0 auto; /* Центрирование контейнера */
+  overflow: hidden; /* Скрыть переполнение */
+}
+
+
+.device-icon {
+  margin: 0 5px;
+  padding: 5px 10px;
+  background: #fff;
+  color: #000;
+  border-radius: 5px;
+}
