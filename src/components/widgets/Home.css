@@ -15,7 +15,7 @@
     border: 1px solid #ccc; /* Граница виджетов */
     border-radius: 8px; /* Скругление углов */
     overflow: hidden; /* Скрыть переполнение */
-    transition: all 0.3s ease; /* Плавный переход для изменения размеров */
+    transition: all 0.4s ease; /* Плавный переход для изменения размеров */
   }
   
   .widget.expanded {
