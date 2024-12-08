@@ -64,7 +64,7 @@
 }
 
 .block {
-  width: 91px;
+  width: 100px;
   height: 37px;
   background: #EBE4D3;
   border-radius: 20px;
@@ -164,4 +164,39 @@
 
 .nav-button:hover {
   filter: brightness(1.2); /* Увеличиваем яркость при наведении */
+}
+.room-select {
+  width: 100px; /* Ширина выпадающего списка */
+  height: 37px; /* Высота выпадающего списка */
+  background: #EBE4D3; /* Цвет фона */
+  border-radius: 20px; /* Закругление углов */
+  display: flex; /* Используем flexbox для центрирования */
+  align-items: center; /* Вертикальное центрирование */
+  justify-content: center; /* Горизонтальное центрирование */
+  font-size: 15px; /* Размер шрифта */
+  color: #333; /* Цвет текста */
+  border: none; /* Убираем рамку */
+  cursor: pointer; /* Курсор при наведении */
+  margin: 5px 0; /* Отступ между блоками */
+  transition: background-color 0.3s; /* Плавный переход для изменения цвета фона */
+  text-align: center; /* Центрирование текста */
+}
+
+.room-select:hover {
+  border-color: #4A90E2; /* Цвет рамки при наведении */
+}
+
+.room-select:focus {
+  outline: none; /* Убираем обводку при фокусе */
+  border-color: #4A90E2; /* Цвет рамки при фокусе */
+}
+
+/* Стиль для стрелки, если вы хотите добавить кастомную стрелку */
+.room-select::after {
+  content: '▼'; /* Стрелка вниз */
+  position: absolute; /* Позиционируем стрелку */
+  right: 15px; /* Отступ от правого края */
+  top: 50%; /* Выравниваем по вертикали */
+  transform: translateY(-50%); /* Центрируем стрелку */
+  pointer-events: none; /* Игнорируем события на стрелке */
 }

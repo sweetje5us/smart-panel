@@ -8,13 +8,12 @@ import Switch from '@mui/material/Switch';
 // Объект с изображениями для комнат
 const roomImages = {
   "Гостиная": img5,
-  "Спальня": require('../../images/bedroom.jpg'), // Замените на путь к изображению для спальни
-  "Кухня": require('../../images/kitchen.jpg'), // Замените на путь к изображению для кухни
+  "Спальня": require('../../images/bedroom.jpg'),
+  "Кухня": require('../../images/kitchen.jpg'),
   "Ванная": require('../../images/bathroom.jpg'),
   "Балкон": require('../../images/balcony.jpg'),
   "Прихожая": require('../../images/hallway.jpg'),
-  "Гардероб": require('../../images/wardrobe.jpg') // Замените на путь к изображению для гардероба
-  // Добавьте другие комнаты и их изображения
+  "Гардероб": require('../../images/wardrobe.jpg')
 };
 
 const address = `http://${ip.ip}:${ip.port}`;
@@ -24,8 +23,8 @@ const CarouselWithDevices = () => {
   const [rooms, setRooms] = useState([]);
   const [devices, setDevices] = useState({});
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [fadeClass, setFadeClass] = useState('fade-in'); // Начальное состояние для анимации
-  const [isAnimating, setIsAnimating] = useState(false); // Для отслеживания анимации
+  const [fadeClass, setFadeClass] = useState('fade-in');
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const fetchRooms = async () => {
     try {
@@ -94,33 +93,78 @@ const CarouselWithDevices = () => {
   }, []);
 
   const handleNext = () => {
-    if (isAnimating) return; // Если анимация идет, не переключаем
-    setFadeClass('fade-out'); // Устанавливаем класс для выхода
-    setIsAnimating(true); // Начинаем анимацию
+    if (isAnimating) return;
+    setFadeClass('fade-out');
+    setIsAnimating(true);
 
     setTimeout(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % rooms.length);
-      setFadeClass('fade-in'); // Устанавливаем класс для входа
-      setIsAnimating(false); // Завершаем анимацию
-    }, 500); // Длительность анимации
+      setFadeClass('fade-in');
+      setIsAnimating(false);
+    }, 500);
   };
 
   const handlePrev = () => {
-    if (isAnimating) return; // Если анимация идет, не переключаем
-    setFadeClass('fade-out'); // Устанавливаем класс для выхода
-    setIsAnimating(true); // Начинаем анимацию
+    if (isAnimating) return;
+    setFadeClass('fade-out');
+    setIsAnimating(true);
 
     setTimeout(() => {
       setCurrentIndex((prevIndex) => (prevIndex - 1 + rooms.length) % rooms.length);
-      setFadeClass('fade-in'); // Устанавливаем класс для входа
-      setIsAnimating(false); // Завершаем анимацию
-    }, 500); // Длительность анимации
+      setFadeClass('fade-in');
+      setIsAnimating(false);
+    }, 500);
   };
 
-  const toggleDeviceState = (deviceId) => {
+  const handleRoomChange = (event) => {
+    const selectedRoomIndex = parseInt(event.target.value, 10);
+    setCurrentIndex(selectedRoomIndex);
+  };
+
+  const toggleDeviceState = async (deviceId) => {
     const device = devices[deviceId];
     if (device) {
-      console.log(`Устройство ${device.name} переключено.`);
+      const currentState = device.capabilities.find(cap => cap.type === "devices.capabilities.on_off").state.value;
+      const newState = !currentState; // Инвертируем текущее состояние
+
+      // Обновляем состояние устройства на сервере
+      await handleChangeSw5(deviceId, newState);
+
+      // Обновляем локальное состояние устройства
+      setDevices(prevDevices => ({
+        ...prevDevices,
+        [deviceId]: {
+          ...device,
+          capabilities: device.capabilities.map(cap => 
+            cap.type === "devices.capabilities.on_off"
+              ? { ...cap, state: { ...cap.state, value: newState } }
+              : cap
+          )
+        }
+      }));
+
+      console.log(`Устройство ${device.name} переключено на ${newState}.`);
+    }
+  };
+
+  const handleChangeSw5 = async (id, value) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append('Accept', 'application/json');
+    myHeaders.append("Authorization", `Bearer ${access_token}`);
+
+    const raw = JSON.stringify({
+      "devices": [{ "id": id, "actions": [{ "type": "devices.capabilities.on_off", "state": { "instance": "on", "value": value } }] }] }
+    );
+
+    try {
+      await fetch(`${address}/https://api.iot.yandex.net/v1.0/devices/actions`, {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+      });
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -130,15 +174,13 @@ const CarouselWithDevices = () => {
 
   const currentRoom = rooms[currentIndex];
 
-  // Функция для получения данных о температуре и влажности
   const getTemperatureAndHumidity = () => {
     const currentRoomName = currentRoom.name;
     let temperature, humidity;
 
-    // Проверяем, есть ли данные о температуре и влажности в текущей комнате
     const temperatureDevice = currentRoom.devices.find(deviceId => {
       const device = devices[deviceId];
-      return device && device.type === "devices.types.sensor.climate"; // Измените тип в зависимости от вашего API
+      return device && device.type === "devices.types.sensor.climate";
     });
 
     if (temperatureDevice && devices[temperatureDevice]) {
@@ -148,24 +190,21 @@ const CarouselWithDevices = () => {
       
       temperature = temperatureProp ? Math.round(temperatureProp.state.value) + '°C' : 'Неизвестно';
       humidity = humidityProp ? humidityProp.state.value + '%' : 'Неизвестно';
-    } else {
-      // Если текущая комната - кухня, подтягиваем данные из гостиной
-      if (currentRoomName === "Кухня") {
-        const livingRoom = rooms.find(room => room.name === "Гостиная");
-        if (livingRoom) {
-          const livingTemperatureDevice = livingRoom.devices.find(deviceId => {
-            const device = devices[deviceId];
-            return device && device.type === "devices.types.sensor.climate";
-          });
+    } else if (currentRoomName === "Кухня") {
+      const livingRoom = rooms.find(room => room.name === "Гостиная");
+      if (livingRoom) {
+        const livingTemperatureDevice = livingRoom.devices.find(deviceId => {
+          const device = devices[deviceId];
+          return device && device.type === "devices.types.sensor.climate";
+        });
 
-          if (livingTemperatureDevice && devices[livingTemperatureDevice]) {
-            const properties = devices[livingTemperatureDevice].properties || [];
-            const temperatureProp = properties.find(prop => prop.parameters?.instance === "temperature");
-            const humidityProp = properties.find(prop => prop.parameters?.instance === "humidity");
-            
-            temperature = temperatureProp ? Math.round(temperatureProp.state.value) + '°C' : 'Неизвестно';
-            humidity = humidityProp ? humidityProp.state.value + '%' : 'Неизвестно';
-          }
+        if (livingTemperatureDevice && devices[livingTemperatureDevice]) {
+          const properties = devices[livingTemperatureDevice].properties || [];
+          const temperatureProp = properties.find(prop => prop.parameters?.instance === "temperature");
+          const humidityProp = properties.find(prop => prop.parameters?.instance === "humidity");
+          
+          temperature = temperatureProp ? Math.round(temperatureProp.state.value) + '°C' : 'Неизвестно';
+          humidity = humidityProp ? humidityProp.state.value + '%' : 'Неизвестно';
         }
       }
     }
@@ -183,8 +222,13 @@ const CarouselWithDevices = () => {
       <div className="carousel">
         <div className={`carousel-image ${fadeClass}`} style={{ backgroundImage: `url(${roomImages[currentRoom.name] || img5})` }}>
           <div className="top-left-blocks">
-            <h2 className="block">{currentRoom.name}</h2>
-            {/* Условие для скрытия блоков температуры и влажности в гардеробе */}
+            <select value={currentIndex} onChange={handleRoomChange} className="room-select">
+              {rooms.map((room, index) => (
+                <option key={room.name} value={index}>
+                  {room.name}
+                </option>
+              ))}
+            </select>
             {currentRoom.name !== "Гардероб" && (
               <>
                 <p className="block">
@@ -225,11 +269,11 @@ const CarouselWithDevices = () => {
         <h3>Устройства в комнате:</h3>
         <div className="devices-grid">
           {currentRoom.devices.map((deviceId) => (
-            <div className="device-card" key={deviceId} onClick={() => toggleDeviceState(deviceId)}>
+            <div className="device-card" key={deviceId}>
               {devices[deviceId] ? (
                 <>
                   <p>{devices[deviceId].name}</p>
-                  {renderDeviceInfo(devices[deviceId])}
+                  {renderDeviceInfo(devices[deviceId], toggleDeviceState)} {/* Передаем toggleDeviceState как аргумент */}
                 </>
               ) : (
                 <p>Загрузка устройства...</p>
@@ -243,11 +287,11 @@ const CarouselWithDevices = () => {
 };
 
 // Функция для рендеринга информации об устройстве
-const renderDeviceInfo = (device) => {
+const renderDeviceInfo = (device, toggleDeviceState) => {
   const properties = device.properties || [];
   const capabilities = device.capabilities || [];
   let info = [];
-  const displayedKeys = new Set(); // Множество для отслеживания уже выведенных ключей
+  const displayedKeys = new Set();
 
   const handleProperty = (key, value, label) => {
     if (!displayedKeys.has(key)) {
@@ -256,11 +300,11 @@ const renderDeviceInfo = (device) => {
     }
   };
 
-  const handleSwitch = (key, value, label) => {
+  const handleSwitch = (key, value, label, deviceId) => {
     if (!displayedKeys.has(key)) {
       info.push(
         <div key={key}>
-          {label}: <Switch checked={value} />
+          {label}: <Switch checked={value} onChange={() => toggleDeviceState(deviceId)} /> {/* Обработчик изменения состояния */}
         </div>
       );
       displayedKeys.add(key);
@@ -269,7 +313,6 @@ const renderDeviceInfo = (device) => {
 
   // Обработка свойств устройства
   if (device.type === "devices.types.sensor") {
-    // Выводим данные только из properties для сенсоров
     properties.forEach((property) => {
       const instance = property.parameters?.instance;
       const stateValue = property.state?.value;
@@ -285,55 +328,16 @@ const renderDeviceInfo = (device) => {
       }
     });
   } else {
-    // Обработка возможностей устройства для других типов
     capabilities.forEach((capability) => {
       const capabilityType = capability.type;
       const stateValue = capability.state?.value;
 
       if (capabilityType === "devices.capabilities.on_off") {
-        handleSwitch("on_off", stateValue, "Статус");
+        handleSwitch("on_off", stateValue, "Статус", device.id); // Передаем deviceId
       } else if (capabilityType === "devices.capabilities.range") {
         handleProperty("heating_temp", stateValue, "Температура нагрева");
       }
     });
-  }
-
-  // Настройки отображения данных по типу устройства
-  const deviceTypeHandlers = {
-    "devices.types.sensor.water_leak": () => {
-      const waterLeakBattery = properties.find(p => p.parameters?.instance === "battery_level");
-      const waterLeakStatus = properties.find(p => p.parameters?.instance === "water_leak");
-      handleProperty("water_leak_battery", waterLeakBattery?.state?.value || 'Неизвестно', "Заряд");
-      handleProperty("water_leak_status", waterLeakStatus?.state?.value ? 'Есть' : 'Нет', "Статус протечки");
-    },
-    "devices.types.sensor.motion": () => {
-      const motionBattery = properties.find(p => p.parameters?.instance === "battery_level");
-      handleProperty("motion_battery", motionBattery?.state?.value || 'Неизвестно', "Заряд");
-    },
-    "devices.types.sensor.climate": () => {
-      const climateTemperature = properties.find(p => p.parameters?.instance === "temperature");
-      const climateHumidity = properties.find(p => p.parameters?.instance === "humidity");
-      const climateBattery = properties.find(p => p.parameters?.instance === "battery_level");
-      handleProperty("climate_temp", Math.round(climateTemperature?.state?.value || 0) + '°C', "Температура");
-      handleProperty("climate_humidity", climateHumidity?.state?.value || 'Неизвестно', "Влажность");
-      handleProperty("climate_battery", climateBattery?.state?.value || 'Неизвестно', "Заряд");
-    },
-    "devices.types.vacuum_cleaner": () => {
-      const vacuumStatus = capabilities.find(c => c.type === "devices.capabilities.on_off");
-      const vacuumBattery = properties.find(p => p.parameters?.instance === "battery_level");
-      handleSwitch("vacuum_status", vacuumStatus?.state?.value, "Статус");
-      handleProperty("vacuum_battery", vacuumBattery?.state?.value || 'Неизвестно', "Заряд");
-    },
-    default: () => {
-      info.push(<p key="unknown">Тип устройства неизвестен</p>);
-    }
-  };
-
-  // Вызываем обработчик для текущего типа устройства
-  if (deviceTypeHandlers[device.type]) {
-    deviceTypeHandlers[device.type]();
-  } else {
-    deviceTypeHandlers.default();
   }
 
   return info;
