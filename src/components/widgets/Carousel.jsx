@@ -1,89 +1,81 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Carousel.css'; // Импорт стилей
 import img5 from '../../images/living_room.jpg';
-
-const rooms = [
-  {
-    id: 1,
-    name: 'Прихожая',
-    devices: [
-      { id: 1, name: 'Свет', state: false },
-      { id: 2, name: 'Звонок', state: false },
-      { id: 3, name: 'Умный замок', state: false },
-      { id: 4, name: 'Датчик температуры', state: { temperature: 22, humidity: 50 } },
-      { id: 5, name: 'Теплый пол', state: true, temperature: 25 },
-    ],
-    image: 'path/to/wardrobe.jpg',
-  },
-  {
-    id: 2,
-    name: 'Гардероб',
-    devices: [
-      { id: 1, name: 'Свет', state: false },
-      { id: 2, name: 'Датчик движения', state: false },
-    ],
-    image: 'path/to/wardrobe.jpg',
-  },
-  {
-    id: 3,
-    name: 'Ванная',
-    devices: [
-      { id: 1, name: 'Свет', state: false },
-      { id: 2, name: 'Водонагреватель', state: false },
-      { id: 3, name: 'Датчик температуры', state: { temperature: 24, humidity: 40 } },
-      { id: 4, name: 'Теплый пол', state: false, temperature: 22 },
-    ],
-    image: 'path/to/bathroom.jpg',
-  },
-  {
-    id: 4,
-    name: 'Кухня',
-    devices: [
-      { id: 1, name: 'Холодильник', state: false },
-      { id: 2, name: 'Плита', state: false },
-      { id: 3, name: 'Свет', state: false },
-      { id: 4, name: 'Датчик температуры', state: { temperature: 20, humidity: 45 } },
-      { id: 5, name: 'Теплый пол', state: false, temperature: 24 },
-    ],
-    image: 'path/to/kitchen.jpg',
-  },
-  {
-    id: 5,
-    name: 'Гостиная',
-    devices: [
-      { id: 1, name: 'Телевизор', state: false },
-      { id: 2, name: 'Свет', state: false },
-      { id: 3, name: 'Аудиосистема', state: false },
-      { id: 4, name: 'Датчик температуры', state: { temperature: 21, humidity: 55 } },
-      { id: 5, name: 'Теплый пол', state: false, temperature: 23 },
-    ],
-    image: img5,
-  },
-  {
-    id: 6,
-    name: 'Спальня',
-    devices: [
-      { id: 1, name: 'Свет', state: false },
-      { id: 2, name: 'Кондиционер', state: false },
-      { id: 3, name: 'Датчик температуры', state: { temperature: 23, humidity: 50 } },
-      { id: 4, name: 'Теплый пол', state: false, temperature: 22 },
-    ],
-    image: 'path/to/bedroom.jpg',
-  },
-  {
-    id: 7,
-    name: 'Балкон',
-    devices: [
-      { id: 1, name: 'Свет', state: false },
-      { id: 2, name: 'Датчик температуры', state: { temperature: 19, humidity: 60 } },
-      { id: 3, name: 'Теплый пол', state: false, temperature: 20 },
-    ],
-    image: 'path/to/balcony.jpg',
-  },
-];
+import ip from '../ip.json';
+import token from '../token.json';
+const address = `http://${ip.ip}:${ip.port}`;
+const access_token = token.token_yandex;
 
 const CarouselWithDevices = () => {
+  const [rooms, setRooms] = useState([]);
+  const [devices, setDevices] = useState({});
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const fetchRooms = async () => {
+    try {
+      const response = await fetch(`${address}/https://api.iot.yandex.net/v1.0/user/info`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (data.status === 'ok') {
+        setRooms(data.rooms);
+        await fetchDevicesData(data.rooms);
+      } else {
+        console.error('Ошибка при получении данных:', data);
+      }
+    } catch (error) {
+      console.error('Ошибка сети:', error);
+    }
+  };
+
+  const fetchDevicesData = async (rooms) => {
+    const deviceIds = [];
+
+    rooms.forEach(room => {
+      room.devices.forEach(deviceId => {
+        if (!deviceIds.includes(deviceId)) {
+          deviceIds.push(deviceId);
+        }
+      });
+    });
+
+    const devicePromises = deviceIds.map(id =>
+      fetch(`${address}/https://api.iot.yandex.net/v1.0/devices/${id}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+    );
+
+    try {
+      const deviceResponses = await Promise.all(devicePromises);
+      const deviceDataArray = await Promise.all(deviceResponses.map(res => res.json()));
+
+      const devicesArray = deviceDataArray.reduce((acc, device) => {
+        if (device.status === 'ok') {
+          acc[device.id] = {
+            ...device,
+            type: device.type,
+          };
+        }
+        return acc;
+      }, {});
+
+      setDevices(devicesArray);
+    } catch (error) {
+      console.error('Ошибка при получении данных об устройствах:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRooms();
+  }, []);
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % rooms.length);
@@ -94,59 +86,52 @@ const CarouselWithDevices = () => {
   };
 
   const toggleDeviceState = (deviceId) => {
-    const currentRoom = rooms[currentIndex];
-    const device = currentRoom.devices.find(dev => dev.id === deviceId);
+    const device = devices[deviceId];
     if (device) {
-      // Переключение состояния устройства
-      if (device.name === 'Датчик температуры') {
-        console.log(`Температура: ${device.state.temperature}°C, Влажность: ${device.state.humidity}%`);
-      } else {
-        device.state = !device.state; // Переключение состояния для других устройств
-      }
+      console.log(`Устройство ${device.name} переключено.`);
     }
   };
 
+  if (!rooms.length) {
+    return <div>Загрузка...</div>;
+  }
+
   const currentRoom = rooms[currentIndex];
-  const temperatureSensor = currentRoom.devices.find(dev => dev.name === 'Датчик температуры');
 
   return (
     <div className="carousel-container">
       <div className="carousel">
-        <div className="carousel-image" style={{ backgroundImage: `url(${currentRoom.image})` }}>
+        <div className="carousel-image" style={{ backgroundImage: `url(${currentRoom.image || img5})` }}>
           <div className="top-left-block">
             <h2 className="block">{currentRoom.name}</h2>
           </div>
 
           <div className="carousel-controls">
-            <button onClick={handlePrev} aria-label="Предыдущая комната">Назад</button>
-            <button onClick={handleNext} aria-label="Следующая комната">Вперед</button>
-          </div>
-
-          <div className="top-right-blocks">
-            {temperatureSensor && (
-              <>
-                <div className="block">{temperatureSensor.state.temperature}°C</div>
-                <div className="block">{temperatureSensor.state.humidity}%</div>
-              </>
-            )}
+            <button className="nav-button" onClick={handlePrev} aria-label="Предыдущая комната">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 5L9 12L15 19" stroke="#1C274C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            <button className="nav-button" onClick={handleNext} aria-label="Следующая комната">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 5L15 12L9 19" stroke="#1C274C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
           </div>
         </div>
       </div>
       <div className="devices-list">
         <h3>Устройства в комнате:</h3>
         <div className="devices-grid">
-          {currentRoom.devices.map((device) => (
-            <div className="device-card" key={device.id} onClick={() => toggleDeviceState(device.id)}>
-              <p>{device.name}</p>
-              {device.name === 'Датчик температуры' ? (
-                <p>{device.state.temperature}°C, {device.state.humidity}%</p>
-              ) : device.name === 'Теплый пол' ? (
+          {currentRoom.devices.map((deviceId) => (
+            <div className="device-card" key={deviceId} onClick={() => toggleDeviceState(deviceId)}>
+              {devices[deviceId] ? (
                 <>
-                  <p>Состояние: {device.state ? 'Включен' : 'Выключен'}</p>
-                  {device.state && <p>{device.temperature}°C</p>}
+                  <p>{devices[deviceId].name}</p>
+                  {renderDeviceInfo(devices[deviceId])}
                 </>
               ) : (
-                <p>Состояние: {device.state ? 'Включено' : 'Выключено'}</p>
+                <p>Загрузка устройства...</p>
               )}
             </div>
           ))}
@@ -155,5 +140,99 @@ const CarouselWithDevices = () => {
     </div>
   );
 };
+
+// Функция для рендеринга информации об устройстве
+const renderDeviceInfo = (device) => {
+    const properties = device.properties || [];
+    const capabilities = device.capabilities || [];
+    let info = [];
+    const displayedKeys = new Set(); // Множество для отслеживания уже выведенных ключей
+  
+    const handleProperty = (key, value, label) => {
+      if (!displayedKeys.has(key)) {
+        info.push(<p key={key}>{label}: {value}</p>);
+        displayedKeys.add(key);
+      }
+    };
+  
+    // Обработка свойств устройства
+    if (device.type === "devices.types.sensor") {
+      // Выводим данные только из properties для сенсоров
+      properties.forEach((property) => {
+        const instance = property.parameters?.instance;
+        const stateValue = property.state?.value;
+  
+        if (instance === "temperature") {
+          handleProperty("temperature", Math.round(stateValue) + '°C', "Температура");
+        } else if (instance === "humidity") {
+          handleProperty("humidity", stateValue + '%', "Влажность");
+        } else if (instance === "battery_level") {
+          handleProperty("battery_level", stateValue + '%', "Заряд");
+        } else if (instance === "water_leak") {
+          handleProperty("water_leak", stateValue ? 'Есть' : 'Нет', "Статус протечки");
+        }
+      });
+    } else {
+      // Обработка возможностей устройства для других типов
+      capabilities.forEach((capability) => {
+        const capabilityType = capability.type;
+        const stateValue = capability.state?.value;
+  
+        if (capabilityType === "devices.capabilities.on_off") {
+          handleProperty("on_off", stateValue ? 'ON' : 'OFF', "Статус");
+        } else if (capabilityType === "devices.capabilities.range") {
+          handleProperty("heating_temp", stateValue, "Температура нагрева");
+        }
+      });
+    }
+  
+    // Настройки отображения данных по типу устройства
+    const deviceTypeHandlers = {
+      "devices.types.sensor.water_leak": () => {
+        const waterLeakBattery = properties.find(p => p.parameters?.instance === "battery_level");
+        const waterLeakStatus = properties.find(p => p.parameters?.instance === "water_leak");
+        handleProperty("water_leak_battery", waterLeakBattery?.state?.value || 'Неизвестно', "Заряд");
+        handleProperty("water_leak_status", waterLeakStatus?.state?.value ? 'Есть' : 'Нет', "Статус протечки");
+      },
+      "devices.types.sensor.motion": () => {
+        const motionBattery = properties.find(p => p.parameters?.instance === "battery_level");
+        handleProperty("motion_battery", motionBattery?.state?.value || 'Неизвестно', "Заряд");
+      },
+      "devices.types.sensor.climate": () => {
+        const climateTemperature = properties.find(p => p.parameters?.instance === "temperature");
+        const climateHumidity = properties.find(p => p.parameters?.instance === "humidity");
+        const climateBattery = properties.find(p => p.parameters?.instance === "battery_level");
+        handleProperty("climate_temp", Math.round(climateTemperature?.state?.value || 0) + '°C', "Температура");
+        handleProperty("climate_humidity", climateHumidity?.state?.value || 'Неизвестно', "Влажность");
+        handleProperty("climate_battery", climateBattery?.state?.value || 'Неизвестно', "Заряд");
+      },
+      "devices.types.vacuum_cleaner": () => {
+        const vacuumStatus = capabilities.find(c => c.type === "devices.capabilities.on_off");
+        const vacuumBattery = properties.find(p => p.parameters?.instance === "battery_level");
+        handleProperty("vacuum_status", vacuumStatus?.state?.value ? 'ON' : 'OFF', "Статус");
+        handleProperty("vacuum_battery", vacuumBattery?.state?.value || 'Неизвестно', "Заряд");
+      },
+      default: () => {
+        info.push(<p key="unknown">Тип устройства неизвестен</p>);
+      }
+    };
+  
+    // Вызываем обработчик для текущего типа устройства
+    if (deviceTypeHandlers[device.type]) {
+      deviceTypeHandlers[device.type]();
+    } else {
+      deviceTypeHandlers.default();
+    }
+  
+    return info;
+  };
+  
+  
+  
+  
+  
+  
+  
+  
 
 export default CarouselWithDevices;

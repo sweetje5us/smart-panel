@@ -34,15 +34,17 @@
   margin: 0 5px;
   border: none;
   border-radius: 5px;
-  background-color: #007bff;
+  background-color: #c4c5c7;
   color: white;
   cursor: pointer;
   transition: background-color 0.3s;
 }
-
 .carousel-controls button:hover {
-  background-color: #0056b3;
+
+  background: #EBE4D3; 
+  
 }
+
 .top-left-block {
   position: absolute;
   left: 10px; 
@@ -60,7 +62,7 @@
 
 .room-name {
   margin: 0; 
-  font-size: 14px; 
+  font-size: 20px; 
   color: #333; 
   text-align: center; 
 }
@@ -83,7 +85,7 @@
   display: flex;
   align-items: center; /* Центрирование текста по вертикали */
   justify-content: center; /* Центрирование текста по горизонтали */
-  font-size: 14px; /* Размер шрифта */
+  font-size: 15px; /* Размер шрифта */
   color: #333; /* Цвет текста */
 }
 
@@ -121,9 +123,33 @@
 }
 
 .device-card {
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #fff; /* Фоновый цвет для карточек устройств */
-  text-align: center;
+  
+  background: #E6E7E9;
+  border-radius: 30px;
+  padding: 20px; /* Добавьте отступы для содержимого */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 10px; /* Отступ между карточками */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Добавьте тень для лучшего визуального эффекта */
+  transition: transform 0.2s; /* Плавный эффект при наведении */
+}
+
+.device-card:hover {
+  transform: scale(1.05); /* Увеличение карточки при наведении */
+}
+
+.device-card p {
+  margin: 0; /* Убираем отступы у параграфов */
+}
+
+.nav-button {
+  background: transparent; /* Прозрачный фон */
+  border: none; /* Убираем рамку */
+  cursor: pointer; /* Указатель при наведении */
+  transition: filter 0.2s; /* Плавный переход для эффекта наведения */
+}
+
+.nav-button:hover {
+  filter: brightness(1.2); /* Увеличиваем яркость при наведении */
 }
