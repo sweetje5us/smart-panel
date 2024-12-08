@@ -55,21 +55,30 @@
   background: #EBE4D3; 
   
 }
-
-.top-left-block {
+.top-left-blocks {
+  margin-top: 10px;
   position: absolute;
-  left: 10px; 
-  top: 10px; 
-  background: #EBE4D3; 
-  border-radius: 20px; 
-  width: 91px; 
-  height: 37px; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  
+  left: 10px; /* Отступ от левого края */
+  display: flex;
+  flex-direction: column; /* Вертикальное выравнивание блоков */
 }
+
+.block {
+  width: 91px;
+  height: 37px;
+  background: #EBE4D3;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  color: #333;
+  
+  /* Устанавливаем отступ между блоками */
+  margin: 5px 0; /* Установите значение по вашему усмотрению */
+}
+
+
 
 .room-name {
   margin: 0; 
@@ -82,23 +91,13 @@
 .top-right-blocks {
   position: absolute;
   right: 10px; /* Отступ от правого края */
-  top: 10px; /* Отступ от верхнего края */
   display: flex;
   flex-direction: column; /* Вертикальное выравнивание блоков */
-  gap: 5px; /* Отступ между блоками */
+  
 }
 
-.block {
-  width: 91px;
-  height: 37px;
-  background: #EBE4D3;
-  border-radius: 20px;
-  display: flex;
-  align-items: center; /* Центрирование текста по вертикали */
-  justify-content: center; /* Центрирование текста по горизонтали */
-  font-size: 15px; /* Размер шрифта */
-  color: #333; /* Цвет текста */
-}
+
+
 
 
 
@@ -132,7 +131,9 @@
   gap: 10px;
   padding: 10px; /* Отступы для сетки устройств */
 }
-
+.space {
+  margin-left: 5px; /* Задайте нужный отступ */
+}
 .device-card {
   
   background: #E6E7E9;
