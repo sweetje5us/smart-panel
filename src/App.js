@@ -1,5 +1,5 @@
 // src/App.js
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Home from './components/Home';
@@ -10,10 +10,12 @@ import Notifications from './components/Notifications';
 import Info from './components/Info';
 
 const App = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(true); // Состояние для управления боковой панелью
+
   return (
     <Router>
       <div style={{ display: 'flex' }}>
-        <Sidebar />
+        <Sidebar open={sidebarOpen} /> {/* Передаем проп open */}
         <div style={{ padding: '20px', flex: 1 }}>
           <Routes>
             <Route path="/" element={<Home />} />

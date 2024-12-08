@@ -1,6 +1,7 @@
 .carousel-container {
   width: 823px; /* Ширина карусели */
   margin: 0 auto; /* Центрирование контейнера */
+  
 }
 
 .carousel {
@@ -11,11 +12,21 @@
 }
 
 .carousel-image {
-  height: 100%; /* Высота изображения равна высоте карусели */
-  background-size: cover; /* Масштабирование изображения с сохранением пропорций */
-  background-repeat: no-repeat; /* Запрет на повторение изображения */
-  background-position: center; /* Центрирование изображения */
-  position: relative; /* Позиционирование для вложенных элементов */
+  height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+  transition: opacity 0.5s ease-in-out; /* Плавный переход для изменения непрозрачности */
+  opacity: 1; /* Начальная непрозрачность */
+}
+
+.carousel-image.fade-out {
+  opacity: 0; /* Непрозрачность при уходе */
+}
+
+.carousel-image.fade-in {
+  opacity: 1; /* Непрозрачность при появлении */
 }
 
 .carousel-controls {

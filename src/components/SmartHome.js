@@ -10,7 +10,7 @@ const SmartHome = () => {
             <h2>Умный дом</h2>
             <div className="grid-container">
                 <div className="grid-item">
-                    <YandexHome />
+                   
                 </div>
                 <div className="grid-item">
                     <CarouselWithDevices />
