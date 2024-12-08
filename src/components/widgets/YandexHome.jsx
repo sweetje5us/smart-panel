@@ -1,11 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import SendIcon from '@mui/icons-material/Send';
 import { CloseRounded } from '@mui/icons-material';
+import Switch from '@mui/material/Switch'; // Импортируем Switch из MUI
 import ip from '../ip.json';
 import token from '../token.json';
 
 const address = `${ip.ip}:${ip.port}`;
 const access_token = token.token_yandex;
+
+// Функция для отправки состояния переключателя
+function handleChangeSw5(id, value) {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append('Accept', 'application/json');
+  myHeaders.append("Authorization", `Bearer ${access_token}`);
+
+  const raw = JSON.stringify({
+    "devices": [{ "id": id, "actions": [{ "type": "devices.capabilities.on_off", "state": { "instance": "on", "value": value } }] }]
+  });
+
+  fetch(`http://${address}/https://api.iot.yandex.net/v1.0/devices/actions`, {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+  }).catch((error) => console.error(error));
+}
 
 // Пользовательский хук для получения статуса устройства
 const useDeviceStatus = (id, src) => {
@@ -77,11 +96,14 @@ const Toggle = ({ className, value }) => {
     fetchData();
   }, [className, value]);
 
-  const handleClick = () => {
+  const handleClick = (event) => {
+    const newValue = event.target.checked; // Получаем новое состояние переключателя
     const updatedArray = [...myArray];
-    updatedArray[className] = !myArray[className];
+    updatedArray[className] = newValue;
     setMyArray(updatedArray);
-    // handleChangeSw5(value, updatedArray[className]); // Uncomment and implement this function as needed
+    
+    // Вызываем функцию для отправки состояния
+    handleChangeSw5(value, newValue);
   };
 
   const handleSliderChange = (event) => {
@@ -100,7 +122,11 @@ const Toggle = ({ className, value }) => {
   return (
     <div>
       <label>
-        <input type="checkbox" onChange={handleClick} checked={myArray[className]} />
+        <Switch 
+          checked={myArray[className]} 
+          onChange={handleClick} 
+          color="primary" // Вы можете изменить цвет переключателя
+        />
         {className > 10 && myArray[className] && (
           <span>{currentTemperature}°</span>
         )}
@@ -140,7 +166,7 @@ const DashboardCard07 = () => {
   const handleClick = () => {
     const deviceIds = rooms.map(room => room.lightId);
     deviceIds.forEach(id => {
-      // handleChangeSw5(id, false); // Uncomment and implement this function as needed
+     handleChangeSw5(id, false); // Uncomment and implement this function as needed
     });
   };
 

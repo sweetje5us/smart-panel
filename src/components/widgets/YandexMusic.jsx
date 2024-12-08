@@ -6,11 +6,11 @@ const MusicPlayer = () => {
    
 
     return (
-        <div style={{ width: '100%', height: '30%' }}>
+        <div style={{ width: '100%', height: '100%' }}>
             <iframe 
                 frameBorder="0" 
                 allow="clipboard-write" 
-                style={{ border: 'none', width: '100%', height: '100%' }} 
+                style={{ border: 'none', width: '100%', height: '600px' }} 
                 src="https://music.yandex.ru/iframe/playlist/yamusic-daily/115342344" 
                 title="Music Player"
             >
