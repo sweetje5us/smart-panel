@@ -33,10 +33,11 @@ const Sidebar = ({ open }) => {
         {menuItems.map(({ text, icon, path, action }) => (
           <ListItem key={text} disablePadding sx={{ display: 'block' }}>
             <ListItemButton
-              component={action ? 'button' : Link} // Используем 'button' если есть action
+              component={action ? 'button' : Link}
               to={path}
-              onClick={action} // Вызываем action, если он есть
+              onClick={action || (() => {})}
               sx={{ 
+                width: '100%', // Устанавливаем ширину на 100%
                 minHeight: 48, 
                 px: 2.5,
                 backgroundColor: location.pathname === path ? 'rgba(0, 0, 0, 0.08)' : 'transparent',
@@ -55,12 +56,12 @@ const Sidebar = ({ open }) => {
 
       {/* Компонент YandexMusic отображается поверх страницы */}
       <div style={{
-        position: 'fixed', // Или 'absolute', в зависимости от ваших требований
+        position: 'fixed',
         bottom: 0,
         left: 0,
         right: 0,
-        zIndex: 1000, // Убедитесь, что z-index выше других элементов
-        display: showMusic ? 'block' : 'none', // Условное отображение
+        zIndex: 1000,
+        display: showMusic ? 'block' : 'none',
       }}>
         <YandexMusic />
       </div>

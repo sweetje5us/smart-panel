@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import SendIcon from '@mui/icons-material/Send';
 import { CloseRounded } from '@mui/icons-material';
-import Switch from '@mui/material/Switch'; // Импортируем Switch из MUI
+import Switch from '@mui/material/Switch';
+import Button from '@mui/material/Button'; // Импортируем Button из MUI
 import ip from '../ip.json';
 import token from '../token.json';
 
 const address = `${ip.ip}:${ip.port}`;
 const access_token = token.token_yandex;
 
-// Функция для отправки состояния переключателя
 function handleChangeSw5(id, value) {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
@@ -26,7 +26,23 @@ function handleChangeSw5(id, value) {
   }).catch((error) => console.error(error));
 }
 
-// Пользовательский хук для получения статуса устройства
+function handleChangeTemp(id, value) {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append('Accept', 'application/json');
+  myHeaders.append("Authorization", `Bearer ${access_token}`);
+
+  const raw = JSON.stringify({
+    "devices": [{ "id": id, "actions": [{ "type": "devices.capabilities.range", "state": { "instance": "temperature", "value": value } }] }] }
+  );
+
+  fetch(`http://${address}/https://api.iot.yandex.net/v1.0/devices/actions`, {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+  }).catch((error) => console.error(error));
+}
+
 const useDeviceStatus = (id, src) => {
   const [userData, setUserData] = useState(null);
 
@@ -54,69 +70,56 @@ const useDeviceStatus = (id, src) => {
   return userData;
 };
 
-// Компонент для отображения статуса устройства
 const StatusDisplay = ({ id, src }) => {
   const userData = useDeviceStatus(id, src);
+  const roundedValue = userData !== null ? Math.round(userData) : null;
 
-  return <span>{userData > 0 ? `+${Math.round(userData)}` : userData}</span>;
+  return <span>{roundedValue !== null ? (roundedValue > 0 ? `+${roundedValue}` : roundedValue) : '-'}</span>;
 };
 
-// Компонент для переключателей
 const Toggle = ({ className, value }) => {
   const [myArray, setMyArray] = useState(Array(30).fill(false));
-  const [sliderValue, setSliderValue] = useState(0);
   const [currentTemperature, setCurrentTemperature] = useState(0);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`http://${address}/https://api.iot.yandex.net/v1.0/devices/${value}`, {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-          },
-        });
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`http://${address}/https://api.iot.yandex.net/v1.0/devices/${value}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      });
 
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-
-        const result = await response.json();
-        setMyArray(prev => {
-          const newArray = [...prev];
-          newArray[className] = result.capabilities[0]?.state?.value ?? false;
-          return newArray;
-        });
-        setCurrentTemperature(result.capabilities[1]?.state?.value ?? 0);
-      } catch (error) {
-        console.error('Error fetching data:', error);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
-    };
 
+      const result = await response.json();
+      setMyArray(prev => {
+        const newArray = [...prev];
+        newArray[className] = result.capabilities[0]?.state?.value ?? false;
+        return newArray;
+      });
+      setCurrentTemperature(result.capabilities[1]?.state?.value ?? 0);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
+    const interval = setInterval(() => {
+      fetchData();
+    }, 30000);
+    return () => clearInterval(interval);
   }, [className, value]);
 
   const handleClick = (event) => {
-    const newValue = event.target.checked; // Получаем новое состояние переключателя
+    const newValue = event.target.checked;
     const updatedArray = [...myArray];
     updatedArray[className] = newValue;
     setMyArray(updatedArray);
-    
-    // Вызываем функцию для отправки состояния
     handleChangeSw5(value, newValue);
-  };
-
-  const handleSliderChange = (event) => {
-    setSliderValue(event.target.value);
-  };
-
-  const handleClickT = () => {
-    if (sliderValue === 0) {
-      // handleChangeSw5(value, false); // Uncomment and implement this function as needed
-    } else {
-      // handleChangeSw5(value, true); // Uncomment and implement this function as needed
-      // handleChangeTemp(value, sliderValue); // Uncomment and implement this function as needed
-    }
   };
 
   return (
@@ -125,33 +128,16 @@ const Toggle = ({ className, value }) => {
         <Switch 
           checked={myArray[className]} 
           onChange={handleClick} 
-          color="primary" // Вы можете изменить цвет переключателя
+          color="primary" 
         />
         {className > 10 && myArray[className] && (
           <span>{currentTemperature}°</span>
         )}
       </label>
-      {className > 10 && (
-        <div className="popup">
-          <span>Температура</span>
-          <CloseRounded onClick={() => {}} />
-          <input
-            type="range"
-            min={0}
-            max={35}
-            value={sliderValue}
-            onChange={handleSliderChange}
-          />
-          <button onClick={handleClickT}>
-            Установить <SendIcon />
-          </button>
-        </div>
-      )}
     </div>
   );
 };
 
-// Основной компонент панели управления
 const DashboardCard07 = () => {
   const rooms = [
     { id: '1', name: 'Прихожая', lightId: '75cb6fc4-3fd9-4c60-a2ef-ba32cf97961f', temperatureId: 'ab2cdb7c-0af5-4dd2-9e8a-0999f45dbf26', radiatorId: '-', floorId: '64f7c874-fada-446c-8cc3-83848e6d54ff' },
@@ -166,7 +152,7 @@ const DashboardCard07 = () => {
   const handleClick = () => {
     const deviceIds = rooms.map(room => room.lightId);
     deviceIds.forEach(id => {
-     handleChangeSw5(id, false); // Uncomment and implement this function as needed
+      handleChangeSw5(id, false);
     });
   };
 
@@ -174,10 +160,9 @@ const DashboardCard07 = () => {
     <div className="dashboard-card">
       <header className="header">
         <h2>Панель Умного дома</h2>
-        <button onClick={handleClick}>Выключить все</button>
       </header>
       <div className="content">
-        <table>
+        <table style={{ width: '100%', textAlign: 'center' }}>
           <thead>
             <tr>
               <th>Комната</th>
@@ -213,6 +198,22 @@ const DashboardCard07 = () => {
                 </td>
               </tr>
             ))}
+            <tr>
+              <td colSpan={1}></td>
+              <td>
+                <Button 
+                  variant="contained" 
+                  color="secondary" 
+                  onClick={handleClick} 
+                  style={{ marginBottom: '16px' }} // Добавляем отступ для кнопки
+                >
+                  ВЫКЛ ВСЁ
+                </Button>
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
           </tbody>
         </table>
       </div>

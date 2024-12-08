@@ -1,41 +1,129 @@
-/* styles.css */
-.room-carousel {
-  width: 100%;
-  margin: auto;
-}
-
-.room-slide {
-  height: 400px; /* Установите нужную высоту */
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  position: relative;
-}
-
-.room-content {
-  text-align: center;
-  background: rgba(0, 0, 0, 0.5); /* Полупрозрачный фон для читаемости */
-  padding: 20px;
-  border-radius: 10px;
-}
-
-.device-icons {
-  margin-top: 10px;
-}
 .carousel-container {
-  max-width: 1200px; /* Максимальная ширина контейнера */
+  width: 823px; /* Ширина карусели */
   margin: 0 auto; /* Центрирование контейнера */
+}
+
+.carousel {
+  height: 421px; /* Высота карусели */
+  border-radius: 30px; /* Скругление углов */
   overflow: hidden; /* Скрыть переполнение */
+  position: relative; /* Позиционирование для внутренних элементов */
+}
+
+.carousel-image {
+  height: 100%; /* Высота изображения равна высоте карусели */
+  background-size: cover; /* Масштабирование изображения с сохранением пропорций */
+  background-repeat: no-repeat; /* Запрет на повторение изображения */
+  background-position: center; /* Центрирование изображения */
+  position: relative; /* Позиционирование для вложенных элементов */
+}
+
+.carousel-controls {
+  display: flex; /* Flexbox для выравнивания кнопок */
+  justify-content: center; /* Центрирование кнопок */
+  position: absolute; /* Абсолютное позиционирование */
+  bottom: 20px; /* Отступ снизу */
+  left: 50%; /* Центрирование по горизонтали */
+  transform: translateX(-50%); /* Центрирование кнопок */
+  z-index: 10; /* Убедитесь, что кнопки выше изображения */
 }
 
 
-.device-icon {
+.carousel-controls button {
+  padding: 10px 20px;
   margin: 0 5px;
-  padding: 5px 10px;
-  background: #fff;
-  color: #000;
+  border: none;
   border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.carousel-controls button:hover {
+  background-color: #0056b3;
+}
+.top-left-block {
+  position: absolute;
+  left: 10px; 
+  top: 10px; 
+  background: #EBE4D3; 
+  border-radius: 20px; 
+  width: 91px; 
+  height: 37px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  
+}
+
+.room-name {
+  margin: 0; 
+  font-size: 14px; 
+  color: #333; 
+  text-align: center; 
+}
+
+
+.top-right-blocks {
+  position: absolute;
+  right: 10px; /* Отступ от правого края */
+  top: 10px; /* Отступ от верхнего края */
+  display: flex;
+  flex-direction: column; /* Вертикальное выравнивание блоков */
+  gap: 5px; /* Отступ между блоками */
+}
+
+.block {
+  width: 91px;
+  height: 37px;
+  background: #EBE4D3;
+  border-radius: 20px;
+  display: flex;
+  align-items: center; /* Центрирование текста по вертикали */
+  justify-content: center; /* Центрирование текста по горизонтали */
+  font-size: 14px; /* Размер шрифта */
+  color: #333; /* Цвет текста */
+}
+
+
+
+.room-name {
+  text-align: center; /* Центрирование названия комнаты */
+  margin: 0; /* Убираем отступы */
+  position: absolute; /* Абсолютное позиционирование */
+  bottom: 70px; /* Отступ снизу от кнопок */
+  left: 50%; /* Центрирование по горизонтали */
+  transform: translateX(-50%); /* Центрирование текста */
+  z-index: 10; /* Убедитесь, что текст выше изображения */
+  color: white; /* Цвет текста для лучшей читаемости */
+  font-size: 24px; /* Размер шрифта */
+}
+
+.devices-list {
+  margin-top: 20px; /* Отступ сверху для списка устройств */
+  padding: 10px; /* Отступы для контейнера списка устройств */
+  border: 1px solid #ccc; /* Рамка для списка устройств */
+  border-radius: 5px; /* Скругление углов для списка устройств */
+  background-color: #f9f9f9; /* Фоновый цвет для списка устройств */
+}
+
+.devices-list h3 {
+  text-align: center; /* Центрирование заголовка списка устройств */
+}
+
+.devices-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  padding: 10px; /* Отступы для сетки устройств */
+}
+
+.device-card {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff; /* Фоновый цвет для карточек устройств */
+  text-align: center;
 }
