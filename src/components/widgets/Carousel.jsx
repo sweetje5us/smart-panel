@@ -4,6 +4,8 @@ import img5 from '../../images/living_room.jpg'; // Изображение дл�
 import ip from '../ip.json';
 import token from '../token.json';
 import Switch from '@mui/material/Switch';
+import { alpha, styled } from '@mui/material/styles';
+import { grey } from '@mui/material/colors';
 
 // Объект с изображениями для комнат
 const roomImages = {
@@ -15,7 +17,53 @@ const roomImages = {
   "Прихожая": require('../../images/hallway.jpg'),
   "Гардероб": require('../../images/wardrobe.jpg')
 };
-
+const AntSwitch = styled(Switch)(({ theme }) => ({
+    width: 28,
+    height: 16,
+    padding: 0,
+    
+    display: 'flex',
+    '&:active': {
+      '& .MuiSwitch-thumb': {
+        width: 15,
+      },
+      '& .MuiSwitch-switchBase.Mui-checked': {
+        transform: 'translateX(9px)',
+      },
+    },
+    '& .MuiSwitch-switchBase': {
+      padding: 2,
+      '&.Mui-checked': {
+        transform: 'translateX(12px)',
+        color: '#000000',
+        '& + .MuiSwitch-track': {
+          opacity: 1,
+          backgroundColor: '#FFFFFF',
+          ...theme.applyStyles('dark', {
+            backgroundColor: '#000000',
+          }),
+        },
+      },
+    },
+    '& .MuiSwitch-thumb': {
+      boxShadow: '0 2px 4px 0 rgb(0 35 11 / 20%)',
+      width: 12,
+      height: 12,
+      borderRadius: 6,
+      transition: theme.transitions.create(['width'], {
+        duration: 200,
+      }),
+    },
+    '& .MuiSwitch-track': {
+      borderRadius: 16 / 2,
+      opacity: 1,
+      backgroundColor: '#A8ACB7',
+      boxSizing: 'border-box',
+      ...theme.applyStyles('dark', {
+        backgroundColor: 'rgba(255,255,255,.35)',
+      }),
+    },
+  }));
 const address = `http://${ip.ip}:${ip.port}`;
 const access_token = token.token_yandex;
 
@@ -266,81 +314,133 @@ const CarouselWithDevices = () => {
         </div>
       </div>
       <div className="devices-list">
-        <h3>Устройства в комнате:</h3>
-        <div className="devices-grid">
-          {currentRoom.devices.map((deviceId) => (
-            <div className="device-card" key={deviceId}>
-              {devices[deviceId] ? (
-                <>
-                  <p>{devices[deviceId].name}</p>
-                  {renderDeviceInfo(devices[deviceId], toggleDeviceState)} {/* Передаем toggleDeviceState как аргумент */}
-                </>
-              ) : (
-                <p>Загрузка устройства...</p>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
+    <h3>Устройства в комнате:</h3>
+    <div className="devices-grid">
+    {currentRoom.devices.map((deviceId) => {
+        const device = devices[deviceId];
+        // Проверяем, существует ли устройство и не является ли оно переключателем
+        if (device && device.type !== "devices.types.switch") {
+            return (
+                <div className="device-card" key={deviceId}>
+                    {renderDeviceInfo(device, toggleDeviceState)} {/* Передаем toggleDeviceState как аргумент */}
+                </div>
+            );
+        }
+        return null; // Если устройство не существует или это переключатель, ничего не рендерим
+    })}
+</div>
+
+</div>
     </div>
   );
 };
 
 // Функция для рендеринга информации об устройстве
+// Функция для рендеринга информации об устройстве
+// Функция для рендеринга информации об устройстве
+// Функция для рендеринга информации об устройстве
+// Функция для рендеринга информации об устройстве
+// Функция для рендеринга информации об устройстве
+// Функция для рендеринга информации об устройстве
+// Функция для рендеринга информации об устройстве
+// Функция для рендеринга информации об устройстве
+// Функция для рендеринга информации об устройстве
 const renderDeviceInfo = (device, toggleDeviceState) => {
-  const properties = device.properties || [];
-  const capabilities = device.capabilities || [];
-  let info = [];
-  const displayedKeys = new Set();
-
-  const handleProperty = (key, value, label) => {
-    if (!displayedKeys.has(key)) {
-      info.push(<p key={key}>{label}: {value}</p>);
-      displayedKeys.add(key);
+    // Проверяем, является ли устройство типа "devices.types.switch"
+    if (device.type === "devices.types.switch") {
+        return null; // Не отображаем это устройство
     }
-  };
 
-  const handleSwitch = (key, value, label, deviceId) => {
-    if (!displayedKeys.has(key)) {
-      info.push(
-        <div key={key}>
-          {label}: <Switch checked={value} onChange={() => toggleDeviceState(deviceId)} /> {/* Обработчик изменения состояния */}
-        </div>
-      );
-      displayedKeys.add(key);
+    const properties = device.properties || [];
+    const capabilities = device.capabilities || [];
+    const info = [];
+    const displayedKeys = new Set();
+
+    // Проверка вызовов функции
+    console.log(`Rendering device info for: ${device.name}`);
+
+    // Определяем типы устройств, для которых будет отображаться AntSwitch
+    const switchableDeviceTypes = [
+        "devices.types.media_device.tv",
+        "devices.types.light",
+        "devices.types.light.ceiling",
+        "devices.types.vacuum_cleaner",
+        "devices.types.socket",
+        "devices.types.dishwasher",
+        "devices.types.thermostat"
+    ];
+
+    // Отображение названия устройства
+    const deviceNameKey = `device-name-${device.id}`;
+    if (!displayedKeys.has(deviceNameKey)) {
+        info.push(
+            <div key={deviceNameKey} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <strong>{device.name}</strong> {/* Название устройства жирным шрифтом */}
+                {switchableDeviceTypes.includes(device.type) && (
+                    <AntSwitch 
+                        checked={capabilities.find(cap => cap.type === "devices.capabilities.on_off")?.state?.value} 
+                        onChange={() => toggleDeviceState(device.id)} 
+                    />
+                )}
+            </div>
+        );
+        displayedKeys.add(deviceNameKey); // Добавляем ключ в Set
     }
-  };
 
-  // Обработка свойств устройства
-  if (device.type === "devices.types.sensor") {
-    properties.forEach((property) => {
-      const instance = property.parameters?.instance;
-      const stateValue = property.state?.value;
+    const handleProperty = (key, value, label) => {
+        if (!displayedKeys.has(key)) {
+            info.push(<p key={key}>{label}: {value}</p>);
+            displayedKeys.add(key);
+        }
+    };
 
-      if (instance === "temperature") {
-        handleProperty("temperature", Math.round(stateValue) + '°C', "Температура");
-      } else if (instance === "humidity") {
-        handleProperty("humidity", stateValue + '%', "Влажность");
-      } else if (instance === "battery_level") {
-        handleProperty("battery_level", stateValue + '%', "Заряд");
-      } else if (instance === "water_leak") {
-        handleProperty("water_leak", stateValue ? 'Есть' : 'Нет', "Статус протечки");
-      }
-    });
-  } else {
+    // Обработка свойств устройства
+    if (device.type === "devices.types.sensor.climate") {
+        properties.forEach((property) => {
+            const instance = property.parameters?.instance;
+            const stateValue = property.state?.value;
+
+            if (instance === "temperature") {
+                handleProperty("temperature", Math.round(stateValue) + '°C', "Температура");
+            } else if (instance === "humidity") {
+                handleProperty("humidity", stateValue + '%', "Влажность");
+            }
+        });
+    }
+
+    // Для датчиков протечки, движения и пылесоса
+    if (["devices.types.sensor.water_leak", "devices.types.sensor.motion", "devices.types.vacuum"].includes(device.type)) {
+        const batteryLevelProperty = properties.find(prop => prop.parameters?.instance === "battery_level");
+        if (batteryLevelProperty) {
+            handleProperty("battery_level", batteryLevelProperty.state?.value + '%', "Заряд");
+        }
+    }
+
+    // Обработка других свойств
     capabilities.forEach((capability) => {
-      const capabilityType = capability.type;
-      const stateValue = capability.state?.value;
+        const capabilityType = capability.type;
+        const stateValue = capability.state?.value;
 
-      if (capabilityType === "devices.capabilities.on_off") {
-        handleSwitch("on_off", stateValue, "Статус", device.id); // Передаем deviceId
-      } else if (capabilityType === "devices.capabilities.range") {
-        handleProperty("heating_temp", stateValue, "Температура нагрева");
-      }
+        if (capabilityType === "devices.capabilities.range") {
+            handleProperty("heating_temp", stateValue, "Температура нагрева");
+        }
     });
-  }
 
-  return info;
+    // Отображение заряда для датчиков климата
+    if (device.type === "devices.types.sensor.climate") {
+        const batteryLevelProperty = properties.find(prop => prop.parameters?.instance === "battery_level");
+        if (batteryLevelProperty) {
+            handleProperty("battery_level", batteryLevelProperty.state?.value + '%', "Заряд");
+        }
+    }
+
+    return <div>{info}</div>; // Оборачиваем в div для корректного рендеринга
 };
+
+
+
+
+  
+  
 
 export default CarouselWithDevices;
