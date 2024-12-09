@@ -408,6 +408,35 @@ const renderDeviceInfo = (device, toggleDeviceState) => {
         });
     }
 
+    // Обработка термостата
+    if (device.type === "devices.types.thermostat") {
+        const heatingTempCapability = capabilities.find(cap => cap.type === "devices.capabilities.range");
+        const currentTemperature = heatingTempCapability?.state?.value;
+        const isSwitchOn = capabilities.find(cap => cap.type === "devices.capabilities.on_off")?.state?.value;
+
+        // Добавляем слайдер для термостата только если AntSwitch включен
+        if (currentTemperature !== undefined && isSwitchOn) {
+            info.push(
+                <div key={`thermostat-slider-${device.id}`}>
+                    <label>Температура нагрева:</label>
+                    <input 
+                        type="range" 
+                        min="0" 
+                        max="30" 
+                        value={currentTemperature} 
+                        step="10" // Устанавливаем шаг для слайдера
+                        onChange={(e) => {
+                            const newTemperature = e.target.value;
+                            console.log(`Setting new temperature for ${device.name}: ${newTemperature}°C`);
+                            // Здесь должна быть функция для обновления состояния устройства
+                        }} 
+                    />
+                    <span>{currentTemperature}°C</span>
+                </div>
+            );
+        }
+    }
+
     // Для датчиков протечки, движения и пылесоса
     if (["devices.types.sensor.water_leak", "devices.types.sensor.motion", "devices.types.vacuum"].includes(device.type)) {
         const batteryLevelProperty = properties.find(prop => prop.parameters?.instance === "battery_level");
@@ -421,9 +450,7 @@ const renderDeviceInfo = (device, toggleDeviceState) => {
         const capabilityType = capability.type;
         const stateValue = capability.state?.value;
 
-        if (capabilityType === "devices.capabilities.range") {
-            handleProperty("heating_temp", stateValue, "Температура нагрева");
-        }
+       
     });
 
     // Отображение заряда для датчиков климата
