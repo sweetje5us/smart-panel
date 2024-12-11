@@ -1,0 +1,38 @@
+/* OrdersTracking.css */
+
+.orders-container {
+    
+    
+  
+  }
+  
+  .orders-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Промежуток между карточками */
+  }
+  
+  .order-card {
+    background: #e7e7e7;
+    border-radius: 10px; /* Срезанные углы */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Тень */
+    padding: 15px;
+    flex: 1 1 calc(33% - 20px); /* 3 карточки в ряд, с учетом отступов */
+    min-width: 250px; /* Минимальная ширина карточки */
+    transition: transform 0.2s;
+  }
+  
+  .order-card:hover {
+    transform: translateY(-5px); /* Эффект поднятия при наведении */
+  }
+  
+  .order-card h2 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+  
+  .order-card p {
+    margin: 5px 0;
+    color: #555; /* Цвет текста */
+  }
+  

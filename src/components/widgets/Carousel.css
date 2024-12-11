@@ -1,8 +1,11 @@
 .carousel-container {
-  width: 823px; /* Ширина карусели */
-  margin: 0 auto; /* Центрирование контейнера */
-  
+  width: 100%; /* Ширина карусели на 100% */
+  max-width: 1023px; /* Максимальная ширина карусели */
+ 
+  box-sizing: border-box; /* Учитывать отступы и границы в общей ширине */
+  padding: 0 15px; /* Добавление внутреннего отступа для удобства */
 }
+
 
 .carousel {
   height: 421px; /* Высота карусели */
@@ -39,7 +42,6 @@
   z-index: 10; /* Убедитесь, что кнопки выше изображения */
 }
 
-
 .carousel-controls button {
   padding: 10px 20px;
   margin: 0 5px;
@@ -50,11 +52,11 @@
   cursor: pointer;
   transition: background-color 0.3s;
 }
-.carousel-controls button:hover {
 
+.carousel-controls button:hover {
   background: #EBE4D3; 
-  
 }
+
 .top-left-blocks {
   margin-top: 10px;
   position: absolute;
@@ -78,8 +80,6 @@
   margin: 5px 0; /* Установите значение по вашему усмотрению */
 }
 
-
-
 .room-name {
   margin: 0; 
   font-size: 20px; 
@@ -87,19 +87,12 @@
   text-align: center; 
 }
 
-
 .top-right-blocks {
   position: absolute;
   right: 10px; /* Отступ от правого края */
   display: flex;
   flex-direction: column; /* Вертикальное выравнивание блоков */
-  
 }
-
-
-
-
-
 
 .room-name {
   text-align: center; /* Центрирование названия комнаты */
@@ -116,9 +109,7 @@
 .devices-list {
   margin-top: 20px; /* Отступ сверху для списка устройств */
   padding: 10px; /* Отступы для контейнера списка устройств */
-  border: 1px solid #ccc; /* Рамка для списка устройств */
   border-radius: 5px; /* Скругление углов для списка устройств */
-  background-color: #f9f9f9; /* Фоновый цвет для списка устройств */
 }
 
 .devices-list h3 {
@@ -131,20 +122,40 @@
   gap: 10px;
   padding: 10px; /* Отступы для сетки устройств */
 }
+
 .space {
   margin-left: 5px; /* Задайте нужный отступ */
 }
+
 .device-card {
-  
-  background: #D0D0D0;
+  font-family: 'Verdana';
+  font-size: 15px;
+  background: #e7e7e7;
+  width: 160px; /* Ширина карточки */
+  min-height: 100px;
+  /* Увеличенная высота карточки для размещения всех элементов */
   border-radius: 30px;
-  padding: 20px; /* Добавьте отступы для содержимого */
+  padding: 20px; /* Отступы для содержимого */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  margin: 10px; /* Отступ между карточками */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Добавьте тень для лучшего визуального эффекта */
+  align-items: center; /* Центрируем содержимое по горизонтали */
+  margin: 5px; /* Отступ между карточками */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s; /* Плавный эффект при наведении */
+  position: relative; /* Для абсолютного позиционирования внутренних элементов */
+}
+
+.device-image {
+  max-width: 100%; /* Ограничиваем ширину изображения */
+  height: auto; /* Автоматическая высота для сохранения пропорций */
+  margin-bottom: 10px; /* Отступ снизу для отделения от текста */
+}
+
+.on_off_block {
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  width: 100%; /* Занимает всю ширину карточки */
 }
 
 .device-card:hover {
@@ -165,9 +176,11 @@
 .nav-button:hover {
   filter: brightness(1.2); /* Увеличиваем яркость при наведении */
 }
+
 .room-select {
   width: 100px; /* Ширина выпадающего списка */
   height: 37px; /* Высота выпадающего списка */
+  font-weight: bold;
   background: #EBE4D3; /* Цвет фона */
   border-radius: 20px; /* Закругление углов */
   display: flex; /* Используем flexbox для центрирования */
