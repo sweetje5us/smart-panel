@@ -294,7 +294,7 @@ const CarouselWithDevices = () => {
   return (
     <>
     
-    <h1>Умный дом</h1>
+    <h2>Yandex Home</h2>
     <div className="carousel-container">
       <div className="carousel">
         <div className={`carousel-image ${fadeClass}`} style={{ backgroundImage: `url(${roomImages[currentRoom.name] || img5})` }}>

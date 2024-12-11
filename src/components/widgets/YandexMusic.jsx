@@ -6,7 +6,13 @@ const MusicPlayer = () => {
    
 
     return (
-        <div style={{ width: '100%', height: '100%' }}>
+        <div style={{ width: '100%', 
+            height: '100%', 
+            zIndex: 9999, // Установите высокое значение
+            
+            top: 0, // Установите позицию сверху
+            left: 0, // Установите позицию слева
+            backgroundColor: 'rgba(255, 255, 255, 0.8)'  }}>
             <iframe 
                 frameBorder="0" 
                 allow="clipboard-write" 

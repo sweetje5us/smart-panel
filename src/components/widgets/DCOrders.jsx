@@ -65,7 +65,7 @@ const OrdersTracking = ({ onOrdersUpdate }) => {
   if (orders.length === 0) {
     return (
       <div className="orders-container">
-        <h1>Заказы в DeliveryClub</h1>
+        <h2>Заказы в DeliveryClub</h2>
         <div className="orders-list">
           Заказов в DeliveryClub нет
         </div>
@@ -75,7 +75,7 @@ const OrdersTracking = ({ onOrdersUpdate }) => {
 
   return (
     <div className="orders-container">
-      <h1>Заказы в DeliveryClub</h1>
+      <h2>Заказы в DeliveryClub</h2>
       <div className="orders-list">
         {orders.map(order => (
           <OrderItem key={order.order.orderNr} order={order} /> // Используем order.order.orderNr как ключ

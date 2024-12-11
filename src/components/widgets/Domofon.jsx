@@ -105,7 +105,7 @@ const DoorphoneWidget = () => {
 
   return (
     <>
-    <h1>Домофон</h1>
+    <h2>Домофон</h2>
     <div className="doorphone-container">
       <button className="button1" onClick={handleOpenModal}>Домофон</button>
       {isModalOpen && (

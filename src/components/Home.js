@@ -14,7 +14,7 @@ const Home = () => {
 
   return (
     <div>
-      <h2>Добро пожаловать в дашборд умного дома!</h2>
+      <h1>Главная страница</h1>
       
       <Domofon />
       {/* Добавляем OrdersTracking и передаем onOrdersUpdate */}
