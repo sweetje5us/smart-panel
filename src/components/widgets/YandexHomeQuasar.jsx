@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ip from '../ip.json';
 import './Carousel.css';
 import Switch from '@mui/material/Switch';
+import Slider from '@mui/material/Slider';
 import { styled } from '@mui/material/styles';
 
 // Импортируем изображения
@@ -74,6 +75,7 @@ const Carousel = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [socket, setSocket] = useState(null);
+    const [sliderValues, setSliderValues] = useState({}); // Состояние для хранения значений слайдеров
 
     useEffect(() => {
       const newSocket = new WebSocket(address);
@@ -97,8 +99,6 @@ const Carousel = () => {
               }
           }
       };
-  
-    
   
       newSocket.onclose = () => {
           console.log('WebSocket disconnected');
@@ -128,6 +128,7 @@ const Carousel = () => {
         const message = {
             device_id: deviceId,
             action_type: "devices.capabilities.on_off",
+            instance: "on",
             value: newState
         };
 
@@ -139,43 +140,86 @@ const Carousel = () => {
         }
     };
 
+    const handleSliderChangeCommitted = (deviceId, value) => {
+        const message = {
+            device_id: deviceId,
+            action_type: "devices.capabilities.range",
+            instance: "temperature",
+            value: value
+        };
+
+        // Отправляем сообщение через WebSocket
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify(message));
+        } else {
+            console.error('WebSocket is not open. Message not sent:', message);
+        }
+    };
+
+    const handleSliderChange = (deviceId, value) => {
+        setSliderValues(prevValues => ({ ...prevValues, [deviceId]: value })); // Обновляем значение слайдера для конкретного устройства
+    };
+
     const renderDeviceInfo = (device) => {
-      const { icon_url, name, properties = [], capabilities = [] } = device;
-  
-      const onOffCapability = capabilities.find(cap => cap.type === "devices.capabilities.on_off");
-      const isChecked = onOffCapability ? onOffCapability.state?.value : false; // Используем оператор опциональной цепочки
-  
-      return (
-          <div key={device.id} className="device-card">
-              <img src={icon_url} alt={name} className="device-image" />
-              <p>{name}</p>
-              <div className="device-details">
-                  {properties.map((property, index) => {
-                      if (property?.parameters?.instance === "battery_level" && property.state) {
-                          return <p key={index}>Заряд: {property.state.value}%</p>;
-                      }
-                      if (property?.parameters?.instance === "humidity" && property.state) {
-                          return <p key={index}>Влажность: {property.state.value}%</p>;
-                      }
-                      if (property?.parameters?.instance === "temperature" && property.state) {
-                          return <p key={index}>Температура: {property.state.value}°C</p>;
-                      }
-                      return null;
-                  })}
-                  {onOffCapability && (
-                      <div>
-                          <p>Состояние: {isChecked ? "Включено" : "Выключено"}</p>
-                          <AntSwitch
-                              checked={isChecked}
-                              onChange={() => handleSwitchChange(device.id, isChecked)}
-                          />
-                      </div>
-                  )}
-              </div>
-          </div>
-      );
-  };
-  
+        const { icon_url, name, properties = [], capabilities = [] } = device;
+
+        const onOffCapability = capabilities.find(cap => cap.type === "devices.capabilities.on_off");
+        const isChecked = onOffCapability ? onOffCapability.state?.value : false; // Используем оператор опциональной цепочки
+
+        // Проверяем, является ли устройство термостатом
+        const isThermostat = device.type === "devices.types.thermostat";
+        const temperatureCapability = capabilities.find(cap => cap.type === "devices.capabilities.range");
+        const currentTemperature = temperatureCapability ? temperatureCapability.state?.value : 0; // Получаем текущее значение температуры
+        
+        // Получаем текущее значение слайдера для этого устройства
+        const sliderValue = sliderValues[device.id] !== undefined ? sliderValues[device.id] : currentTemperature;
+
+        return (
+            <div key={device.id} className="device-card">
+                <img src={icon_url} alt={name} className="device-image" />
+                <p>{name}</p>
+                <div className="device-details">
+                    {properties.map((property, index) => {
+                        if (property?.parameters?.instance === "battery_level" && property.state) {
+                            return <p key={index}>Заряд: {property.state.value}%</p>;
+                        }
+                        if (property?.parameters?.instance === "humidity" && property.state) {
+                            return <p key={index}>Влажность: {property.state.value}%</p>;
+                        }
+                        if (property?.parameters?.instance === "temperature" && property.state) {
+                            return <p key={index}>Температура: {property.state.value}°C</p>;
+                        }
+                        return null;
+                    })}
+                    {onOffCapability && (
+                        <div>
+                            <p>Состояние: {isChecked ? "Включено" : "Выключено"}</p>
+                            <AntSwitch
+                                checked={isChecked}
+                                onChange={() => handleSwitchChange(device.id, isChecked)}
+                            />
+                        </div>
+                    )}
+                    {/* Если устройство термостат */}
+                    {isThermostat && isChecked && (
+                        <div>
+                            <p>Температура: {sliderValue}°C</p>
+                            <Slider
+                                value={sliderValue}
+                                onChange={(e, newValue) => handleSliderChange(device.id, newValue)}
+                                onChangeCommitted={() => handleSliderChangeCommitted(device.id, sliderValue)}
+                                step={1}
+                                marks={[0, 10, 20, 30]}
+                                min={0}
+                                max={30}
+                                valueLabelDisplay="auto"
+                            />
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    };
 
     if (loading) {
         return <div>Загрузка...</div>;
