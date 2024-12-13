@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse, faHouseLaptop, faCartShopping, faLocationArrow, faBell, faNewspaper, faPlay, faArrowLeft, faArrowRight, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faHouseLaptop, faCartShopping, faLocationArrow, faBell, faNewspaper, faPlay, faArrowLeft, faArrowRight, faTimes, faTasks } from '@fortawesome/free-solid-svg-icons';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -29,6 +29,7 @@ const Sidebar = () => {
 
   const menuItems = [
     { text: 'Главная', icon: faHouse, path: '/' },
+    { text: 'Задачи', icon: faTasks, path: '/tasks' },
     { text: 'Умный дом', icon: faHouseLaptop, path: '/smart-home' },
     { text: 'Заказы', icon: faCartShopping, path: '/orders' },
     { text: 'Карта', icon: faLocationArrow, path: '/map' },

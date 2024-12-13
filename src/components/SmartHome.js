@@ -1,7 +1,7 @@
 // src/components/SmartHome.js
 import React from 'react';
-import YandexHome from './widgets/YandexHome.jsx';
-import CarouselWithDevices from './widgets/Carousel.jsx';
+import CarouselWithDevices from './widgets/YandexHomeQuasar.jsx';
+import CarouselWithDevices2 from './widgets/Carousel.jsx';
 import './widgets/SmartHome.css'; // Импортируем CSS файл
 
 const SmartHome = () => {

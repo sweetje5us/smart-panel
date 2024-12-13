@@ -1,0 +1,118 @@
+.kanban-board {
+    display: flex;
+    flex-direction: row; /* Расположение элементов в строку */
+    align-items: flex-start; /* Выравнивание элементов по верхнему краю */
+    padding: 8px;
+    max-width: 940px; /* Ширина доски */
+    height: auto; /* Автоматическая высота для адаптивности */
+
+}
+
+.columns {
+    display: grid;
+    justify-content: space-between;
+    width: 100%;
+    flex-wrap: wrap; /* Позволяет колонкам переноситься на новую строку */
+    width: 673px;
+    grid-template-columns: repeat(4, 1fr); /* Установим 4 столбца в строке */
+  gap: 10px;
+    
+}
+
+
+.column h2 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0;
+    width: 108px;
+    height: 27px;
+  
+    color: #667085; /* Цвет текста */
+    font-size: 16px; /* Размер шрифта */
+    margin: 0; /* Убираем отступы */
+   
+    
+}
+
+
+/* Board */
+
+
+/* Inside auto layout */
+.task-container {
+    flex: none; /* Отключение гибкости для контейнера задач */
+    order: 1; /* Порядок отображения */
+    flex-grow: 0; /* Не позволяет элементу расти */
+    margin: 5px; /* Отступы между задачами */
+    min-width: 200px; /* Минимальная ширина для задач */
+}
+
+/* Task styles */
+.task2 {
+    background-color: #fff; /* Фоновый цвет задачи */
+    border: 1px solid #DDDDDD; /* Граница задачи */
+    border-radius: 5px; /* Скругление углов */
+    padding: 10px; /* Отступы внутри задачи */
+    cursor: grab; /* Указатель при наведении */
+    transition: transform 0.2s; /* Плавный переход для анимации */
+    color: #1D2939;
+    
+}
+.task {
+    padding: 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: visible; /* Убедимся, что текст не скрывается */
+    white-space: normal; /* Позволяем тексту переноситься */
+    word-wrap: break-word; /* Переносим длинные слова */
+    height: auto; /* Высота будет изменяться в зависимости от содержимого */
+  }
+
+.task:hover {
+    transform: scale(1.02); /* Увеличение при наведении */
+}
+
+.task:active {
+    cursor: grabbing; /* Указатель при перетаскивании */
+}
+
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%); /* Центрирование модального окна */
+    background-color: #f9f9f9;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 300px;
+    height: auto; /* Автоматическая высота для адаптивности */
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column; /* Вертикальное выравнивание элементов */
+}
+
+.modal input,
+.modal textarea {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+    .column {
+        width: 48%; /* Увеличение ширины колонок на меньших экранах */
+    }
+}
+
+@media (max-width: 480px) {
+    .column {
+        width: 100%; /* Полная ширина для мобильных устройств */
+    }
+}

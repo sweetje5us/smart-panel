@@ -8,6 +8,7 @@ import Orders from './components/Orders';
 import Map from './components/Map';
 import Notifications from './components/Notifications';
 import Info from './components/Info';
+import Tasks from './components/Tasks'
 
 const App = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true); // Состояние для управления боковой панелью
@@ -24,6 +25,7 @@ const App = () => {
             <Route path="/map" element={<Map />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/info" element={<Info />} />
+            <Route path="/tasks" element={<Tasks />} />
           </Routes>
         </div>
       </div>
