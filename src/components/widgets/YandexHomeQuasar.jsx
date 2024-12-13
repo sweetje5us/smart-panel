@@ -124,21 +124,31 @@ const Carousel = () => {
     };
 
     const handleSwitchChange = (deviceId, currentState) => {
-        const newState = !currentState; // Изменяем состояние
-        const message = {
-            device_id: deviceId,
-            action_type: "devices.capabilities.on_off",
-            instance: "on",
-            value: newState
-        };
-
-        // Отправляем сообщение через WebSocket
-        if (socket && socket.readyState === WebSocket.OPEN) {
-            socket.send(JSON.stringify(message));
-        } else {
-            console.error('WebSocket is not open. Message not sent:', message);
-        }
-    };
+      const newState = !currentState; // Изменяем состояние
+  
+      // Обновляем состояние сразу для мгновенной реакции
+      setDevices(prevDevices => 
+          prevDevices.map(device => 
+              device.id === deviceId ? { ...device, capabilities: device.capabilities.map(cap => 
+                  cap.type === "devices.capabilities.on_off" ? { ...cap, state: { value: newState } } : cap
+              ) } : device
+          )
+      );
+  
+      const message = {
+          device_id: deviceId,
+          action_type: "devices.capabilities.on_off",
+          instance: "on",
+          value: newState
+      };
+  
+      // Отправляем сообщение через WebSocket
+      if (socket && socket.readyState === WebSocket.OPEN) {
+          socket.send(JSON.stringify(message));
+      } else {
+          console.error('WebSocket is not open. Message not sent:', message);
+      }
+  };
 
     const handleSliderChangeCommitted = (deviceId, value) => {
         const message = {
@@ -192,14 +202,14 @@ const Carousel = () => {
                         return null;
                     })}
                     {onOffCapability && (
-                        <div>
-                            <p>Состояние: {isChecked ? "Включено" : "Выключено"}</p>
-                            <AntSwitch
-                                checked={isChecked}
-                                onChange={() => handleSwitchChange(device.id, isChecked)}
-                            />
-                        </div>
-                    )}
+    <div>
+        <p>Состояние: {isChecked ? "Включено" : "Выключено"}</p>
+        <AntSwitch
+            checked={isChecked}
+            onChange={() => handleSwitchChange(device.id, isChecked)}
+        />
+    </div>
+)}
                     {/* Если устройство термостат */}
                     {isThermostat && isChecked && (
                         <div>

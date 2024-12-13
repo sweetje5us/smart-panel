@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Domofon from './widgets/Domofon.jsx';
 import OrdersTracking from './widgets/DCOrders.jsx'; // Импортируем OrdersTracking
-import CarouselWithDevices from './widgets/Carousel.jsx';
+import CarouselWithDevices from './widgets/YandexHomeQuasar.jsx';
 import './widgets/Home.css'; // Импортируйте стили
 
 const Home = () => {
