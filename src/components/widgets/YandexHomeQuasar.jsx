@@ -118,6 +118,17 @@ const Carousel = () => {
           }
       }
     }, [householdData, selectedRoomId]);
+    const handleNextRoom = () => {
+        const currentIndex = rooms.findIndex(room => room.id === selectedRoomId);
+        const nextIndex = (currentIndex + 1) % rooms.length; // Циклический переход
+        setSelectedRoomId(rooms[nextIndex].id);
+      };
+  
+      const handlePrevRoom = () => {
+        const currentIndex = rooms.findIndex(room => room.id === selectedRoomId);
+        const prevIndex = (currentIndex - 1 + rooms.length) % rooms.length; // Циклический переход
+        setSelectedRoomId(rooms[prevIndex].id);
+      };
 
     const handleRoomChange = (roomId) => {
         setSelectedRoomId(roomId);
@@ -245,6 +256,7 @@ const Carousel = () => {
             <div className="carousel">
                 <div className="carousel-image" style={{ backgroundImage: `url(${roomImages[currentRoom.name] || img5})` }}>
                     <div className="top-left-blocks">
+                       
                         <select className="room-select" value={selectedRoomId} onChange={(e) => handleRoomChange(e.target.value)}>
                             {rooms.map((room) => (
                                 <option key={room.id} value={room.id}>
@@ -252,7 +264,21 @@ const Carousel = () => {
                                 </option>
                             ))}
                         </select>
+                      
+                        
                     </div>
+                    <div className="carousel-controls">
+            <button className="nav-button" onClick={handlePrevRoom} aria-label="Предыдущая комната">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 5L9 12L15 19" stroke="#1C274C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            <button className="nav-button" onClick={handleNextRoom} aria-label="Следующая комната">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 5L15 12L9 19" stroke="#1C274C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          </div>
                 </div>
             </div>
 
