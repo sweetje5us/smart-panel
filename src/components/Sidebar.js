@@ -131,10 +131,29 @@ const Sidebar = () => {
               >
                 {icon && <FontAwesomeIcon icon={icon} style={{ marginRight: '8px' }} />}
                 {text === 'Время' ? (
-                  <div style={{ textAlign: isExpanded ? 'left' : 'center', width: '10%', fontSize: '14px' }}>
-                    <b>{currentTime}</b>
-                  </div>
-                ) : text === 'Погода' ? (
+  <div style={{
+    display: 'flex',
+    justifyContent: isExpanded ? 'left' : 'center',
+    width: '100%',
+    fontSize: '14px'
+  }}>
+    <b>{currentTime}</b>
+  </div>
+
+
+// {text === 'Время' ? (
+//   <div style={{ display: 'flex', justifyContent: 'center', width: '100%', fontSize: '14px' }}>
+//     <b>{currentTime}</b>
+//   </div>
+// ) : text === 'Погода' ? (
+
+
+
+) : text === 'Погода' ? (
+  // остальной код для отображения погоды
+
+  // остальной код для отображения погоды
+
                   <div style={{ textAlign: isExpanded ? 'left' : 'center', width: '100%' }}>
                     {isExpanded ? (
                       <>

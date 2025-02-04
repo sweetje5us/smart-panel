@@ -22,10 +22,11 @@ const KanbanBoard = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [taskName, setTaskName] = useState('');
+    const [taskPriority, settaskPriority] = useState('');
+    const [kanbanId, setkanbanId] = useState('');
     const [assignee, setAssignee] = useState('');
     const [description, setDescription] = useState('');
     const [editingTask, setEditingTask] = useState(null);
-    const kanbanId = 'unique_kanban_id';
 
     const fetchTasks = async () => {
         try {
@@ -52,6 +53,17 @@ const KanbanBoard = () => {
     };
 
     const handleAddTask = async () => {
+        console.log("kanbanId:", kanbanId); // Проверка значения kanbanId
+        console.log("taskPriority:", taskPriority); // Проверка значения taskPriority
+        console.log("taskName:", taskName); // Проверка значения taskName
+        console.log("assignee:", assignee); // Проверка значения assignee
+        console.log("description:", description); // Проверка значения description
+    
+        if (!taskPriority || !kanbanId) {
+            alert("Пожалуйста, выберите приоритет и канбан ID.");
+            return;
+        }
+    
         const newTask = {
             task_id: uuidv4(),
             kanban_id: kanbanId,
@@ -59,9 +71,10 @@ const KanbanBoard = () => {
             assignee: assignee,
             description: description,
             status: 'Backlog',
+            priority: taskPriority,
             backgroundColor: getRandomColor()
         };
-
+    
         await fetch(`${address}/api/tasks`, {
             method: 'POST',
             headers: {
@@ -69,7 +82,7 @@ const KanbanBoard = () => {
             },
             body: JSON.stringify(newTask)
         });
-
+    
         setTasks(prevTasks => ({
             ...prevTasks,
             Backlog: [...prevTasks.Backlog, newTask]
@@ -82,6 +95,8 @@ const KanbanBoard = () => {
             ...editingTask,
             name: taskName,
             assignee: assignee,
+            priority: taskPriority,
+            kanban_id: kanbanId,
             description: description
         };
 
@@ -115,6 +130,8 @@ const KanbanBoard = () => {
         setTaskName('');
         setAssignee('');
         setDescription('');
+        settaskPriority('');
+        setkanbanId('');
         setModalOpen(false);
         setEditModalOpen(false);
     };
@@ -214,9 +231,12 @@ const KanbanBoard = () => {
         setEditingTask(task);
         setTaskName(task.name);
         setAssignee(task.assignee);
+        settaskPriority(task.priority); // Используем task.priority
+        setkanbanId(task.kanban_id); // Используем task.kanban_id
         setDescription(task.description);
         setEditModalOpen(true);
     };
+    
 
     useEffect(() => {
         fetchTasks();
@@ -248,13 +268,17 @@ const KanbanBoard = () => {
             <option value="edit">Редактировать</option>
             <option value="delete">Удалить</option>
         </select>
+        
     </div>
 </div>
-                           <div className="task-body">
-                               <div className="task-user"><b>Исполнитель:</b> {task.assignee}</div>
-                               <div className="task-desc"><b>Описание:</b></div>
-                               <div className="task-desc"> {task.description}</div>
-                           </div>
+<div className="task-body">
+    <div className="task-user"><b>Приоритет:</b> {task.priority}</div> {/* Изменено на task.priority */}
+    <div className="task-user"><b>Доска:</b> {task.kanban_id}</div> {/* Изменено на task.kanban_id */}
+    <div className="task-user"><b>Исполнитель:</b> {task.assignee}</div>
+    <div className="task-desc"><b>Описание:</b></div>
+    <div className="task-desc"> {task.description}</div>
+</div>
+
                        </div>
                         ))}
                     </div>
@@ -276,6 +300,28 @@ const KanbanBoard = () => {
                         onChange={e => setAssignee(e.target.value)}
                         placeholder="Исполнитель"
                     />
+                     <select
+                        type="select"
+                        value={taskPriority}
+                        onChange={e => settaskPriority(e.target.value)}
+                        placeholder="Приоритет"
+                        
+                    >
+                        <option value="" disabled>-</option>
+                      <option value="low">Low</option>
+                      <option value="middle">Middle</option>  
+                    </select>
+                    <select
+                        type="select"
+                        value={kanbanId}
+                        onChange={e => setkanbanId(e.target.value)}
+                        placeholder="kanban Id"
+                    >
+                         <option value="" disabled>-</option>
+                      <option value="Panel">Panel</option>
+                      <option value="Work">Work</option>  
+                    </select>
+                  
                     <textarea
                         value={description}
                         onChange={e => setDescription(e.target.value)}
@@ -300,6 +346,24 @@ const KanbanBoard = () => {
                         onChange={e => setAssignee(e.target.value)}
                         placeholder="Исполнитель"
                     />
+                      <select
+                        type="select"
+                        value={taskPriority}
+                        onChange={e => settaskPriority(e.target.value)}
+                        placeholder="Приоритет"
+                    >
+                      <option value="low">Low</option>
+                      <option value="middle">Middle</option>  
+                    </select>
+                    <select
+                        type="select"
+                        value={kanbanId}
+                        onChange={e => setkanbanId(e.target.value)}
+                        placeholder="kanban Id"
+                    >
+                      <option value="Panel">Panel</option>
+                      <option value="Work">Work</option>  
+                    </select>
                     <textarea
                         value={description}
                         onChange={e => setDescription(e.target.value)}
