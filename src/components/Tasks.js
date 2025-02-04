@@ -240,19 +240,20 @@ const KanbanBoard = () => {
                             <h2 className="column-header">{status}</h2>
                             {tasks[status].map(task => (
                            <div key={task.task_id} className="task" style={{ backgroundColor: task.backgroundColor }} draggable onDragStart={e => handleDragStart(e, task.task_id)}>
-                           <div className="task-header">
-                               <div className="task-name" onClick={() => handleEditTask(task)}><b>{task.name}</b></div>
-                               <div className="task-actions">
-                                   <select onChange={(e) => handleActionSelect(e, task.task_id)}>
-                                       <option value="">Действия</option>
-                                       <option value="edit">Редактировать</option>
-                                       <option value="delete">Удалить</option>
-                                   </select>
-                               </div>
-                           </div>
+                          <div className="task-header">
+    <div className="task-name" onClick={() => handleEditTask(task)}><b>{task.name}</b></div>
+    <div className="task-actions">
+        <select className="task-select" onChange={(e) => handleActionSelect(e, task.task_id)} defaultValue="">
+            <option value="" disabled>...</option> {/* Заменили на placeholder */}
+            <option value="edit">Редактировать</option>
+            <option value="delete">Удалить</option>
+        </select>
+    </div>
+</div>
                            <div className="task-body">
                                <div className="task-user"><b>Исполнитель:</b> {task.assignee}</div>
-                               <div className="task-desc">Описание: {task.description}</div>
+                               <div className="task-desc"><b>Описание:</b></div>
+                               <div className="task-desc"> {task.description}</div>
                            </div>
                        </div>
                         ))}

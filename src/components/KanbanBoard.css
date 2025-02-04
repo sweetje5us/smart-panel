@@ -51,8 +51,7 @@ border-radius: 20px;
 
 /* {Description} */
 
-width: 363px;
-height: 19px;
+
 
 font-family: 'Source Sans Pro';
 font-style: normal;
@@ -78,7 +77,18 @@ flex-grow: 0;
 
 }
 .task-actions {
-    margin-left: auto; /* Отодвигаем выпадающий список вправо */
+     /* Отодвигаем выпадающий список вправо */
+     /* Позволяет позиционировать элемент */
+    width: 20%;
+    top: 10px; /* Отступ от верхней части контейнера */
+    right: 10px; /* Отступ от правой части контейнера */
+}
+.task-select {
+    /* Отодвигаем выпадающий список вправо */
+    /* Позволяет позиционировать элемент */
+   width: 40px;
+   top: 10px; /* Отступ от верхней части контейнера */
+   right: 10px; /* Отступ от правой части контейнера */
 }
 
 .task-body {
@@ -98,8 +108,7 @@ align-items: flex-start;
 padding: 0px;
 gap: 4px;
 margin: 5px 0; /* Отступы между элементами */
-width: 75px;
-height: 14px;
+
 
 
 /* Inside auto layout */
@@ -115,20 +124,20 @@ flex-grow: 0;
 }
 .task-header {
     display: flex;
-    justify-content: space-between; /* Размещаем элементы по краям */
+    flex-direction: column; /* Размещаем элементы по краям */
     align-items: flex-start; /* Выравнивание по верхнему краю */
     padding: 10px; /* Отступы */
+    position: relative; /* Добавлено для позиционирования */
 }
 .task-desc{
     /* {Description} */
 
-width: 363px;
-height: 15px;
+
 
 font-family: 'Source Sans Pro';
 font-style: normal;
 font-weight: 400;
-font-size: 12px;
+font-size: 16px;
 line-height: 15px;
 /* identical to box height */
 
@@ -192,8 +201,7 @@ flex-direction: column;
 align-items: flex-start;
 padding: 0px 6px;
 
-width: 375px;
-height: 94px;
+
 
 /* gi-neutrals/neutral-000
 
@@ -230,9 +238,9 @@ display: flex;
 flex-direction: column;
 align-items: flex-start;
 padding: 20px;
-gap: 30px;
+gap: 10px;
 margin-top: 10px; /* Отступы между задачами */
-width: 330px;
+width: 250px;
 height: auto;
 
 background: #FFFFFF;
