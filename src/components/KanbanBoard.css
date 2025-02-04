@@ -67,7 +67,7 @@ color: #000000;
 
 /* Inside auto layout */
 flex: none;
-order: 3;
+
 align-self: stretch;
 flex-grow: 0;
 
@@ -214,7 +214,7 @@ border-radius: 4px;
 
 /* Inside auto layout */
 flex: none;
-order: 2;
+order: 0;
 flex-grow: 0;
 
 }

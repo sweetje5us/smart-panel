@@ -210,7 +210,6 @@ const Sidebar = () => {
       <div style={{
         marginLeft: isExpanded ? '240px' : '60px',
         transition: 'margin-left 0.3s',
-        padding: '20px',
       }}>
         {/* Содержимое разделов */}
       </div>

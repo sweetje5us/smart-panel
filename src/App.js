@@ -8,16 +8,17 @@ import Orders from './components/Orders';
 import Map from './components/Map';
 import Notifications from './components/Notifications';
 import Info from './components/Info';
-import Tasks from './components/Tasks'
+import Tasks from './components/Tasks';
 
 const App = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true); // Состояние для управления боковой панелью
 
   return (
     <Router>
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: 'flex', height: '100vh' }}>
         <Sidebar open={sidebarOpen} /> {/* Передаем проп open */}
-        <div style={{ padding: '20px', flex: 1 }}>
+        <div style={{ flex: 1, overflowY: 'auto' }}>
+          {/* Убрали marginLeft и добавили overflowY для вертикальной прокрутки */}
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/smart-home" element={<SmartHome />} />
