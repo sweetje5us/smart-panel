@@ -1,137 +1,160 @@
-import React, { useState } from 'react';
-import ip from '../ip.json';
-import token from '../token.json';
-import './DoorphoneWidget.css'; // Импортируем CSS файл для стилизации
+import React, { useEffect, useRef, useState } from 'react';
+import Modal from 'react-modal';
 
-const DoorphoneWidget = () => {
+// Установите элемент приложения для доступности
+Modal.setAppElement('#root'); // Предполагается, что корневой элемент имеет id="root"
+
+const VideoStream = () => {
+  const videoRef = useRef(null);
+  const wsRef = useRef(null);
+  const [error, setError] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const mediaSourceRef = useRef(null);
+  const sourceBufferRef = useRef(null);
+  const isAppending = useRef(false);
+  const dataQueue = useRef([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [tokenStream, setTokenStream] = useState('');
-  const [key, setKey] = useState(0);
-  const [loading, setLoading] = useState(false); // Состояние загрузки
-  const [error, setError] = useState(null); // Состояние ошибки
-  const token_rt = token.token_rostelecom; // Укажите ваш токен
-  const access_token = token.token_yandex;
+  const [videoSource, setVideoSource] = useState(null);
 
-  const fetchVideo = () => {
-    setLoading(true);
-    setError(null); // Сбрасываем предыдущее состояние ошибки
+  const userAgent = navigator.userAgent;
+  const isIpad = /iPad/.test(userAgent);
 
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", `Bearer ${token_rt}`);
-    myHeaders.append("Cookie", "TS01418b58=0194c94451f6d4dcdb1aaee7050bc54214a245b60e29f36c6e44ce726793a4f1a6ae715bb28ef514bb5a8980d84309f9ad49cf5afd");
-
-    const requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow"
-    };
-
-    fetch(`http://${ip.ip}:${ip.port}/https://vc.key.rt.ru/api/v1/cameras?limit=100&offset=0`, requestOptions)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(result => {
-        const streamUrl = 'https://live-vdk4.camera.rt.ru/stream/004acf75-a06b-4731-8949-ef801caa3412/live.mp4?mp4-fragment-length=0.5&mp4-use-speed=0&mp4-afiller=1&token=' + result.data.items[1].streamer_token;
-        console.log('New stream URL:', streamUrl);
-        setTokenStream(streamUrl);
-        setKey(prevKey => prevKey + 1); // Обновляем ключ для перерисовки компонента
-      })
-      .catch(error => {
-        console.error('Error fetching video:', error);
-        setError('Ошибка при получении видео. Пожалуйста, попробуйте позже.');
-      })
-      .finally(() => setLoading(false)); // Сбрасываем состояние загрузки
-  };
-
-  const handleFetch = () => {
-    const myHeaders = new Headers();
-    myHeaders.append("Accept", "*/*");
-    myHeaders.append("Authorization", `Bearer ${access_token}`);
-    myHeaders.append("Content-Length", "0");
-
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      redirect: "follow"
-    };
-
-    fetch(`http://${ip.ip}:${ip.port}/https://api.iot.yandex.net/v1.0/scenarios/1f5db684-471a-48e3-93c5-062a05594e08/actions`, requestOptions)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.text();
-      })
-      .then(result => console.log(result))
-      .catch(error => console.error('Error in handleFetch:', error));
-  };
-
-  const handleOpenDoor = (e) => {
-    e.preventDefault();
-    handleFetch();
-
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", token_rt);
-
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      redirect: "follow"
-    };
-
-    fetch("https://household.key.rt.ru/api/v2/app/devices/25575/open", requestOptions)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.text();
-      })
-      .then(result => console.log('Дверь открыта'))
-      .catch(error => console.error('Error opening door:', error));
-  };
-
-  const handleOpenModal = () => {
-    fetchVideo();
+  const openModal = (source) => {
+    setVideoSource(source);
     setIsModalOpen(true);
   };
 
-  const handleCloseModal = () => {
+  const closeModal = () => {
     setIsModalOpen(false);
-    setTokenStream(''); // Очищаем поток при закрытии модального окна
+    setError(null);
+    setIsPlaying(false);
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.src = '';
+    }
   };
 
+  useEffect(() => {
+    if (!videoSource) return;
+  
+    if (videoSource.type === 'ws') {
+      const timestamp = Math.floor(Date.now() / 1000);
+      const wsUrl = `wss://live-vdk4.camera.rt.ru/stream/004acf75-a06b-4731-8949-ef801caa3412/${timestamp}.mp4?mp4-fragment-length=0.5&mp4-use-speed=0&mp4-afiller=1&token=...`;
+  
+      const ws = new WebSocket(wsUrl);
+      ws.binaryType = 'arraybuffer';
+      wsRef.current = ws;
+  
+      ws.onopen = () => console.log('Подключено к WebSocket серверу');
+      ws.onclose = (event) => {
+        console.log('Соединение закрыто', event);
+        setError('Соединение закрыто: ' + event.reason);
+      };
+      ws.onerror = (event) => {
+        console.error('Ошибка WebSocket:', event);
+        setError('Ошибка WebSocket: ' + (event.message || 'Неизвестная ошибка'));
+      };
+  
+      const mediaSource = new MediaSource();
+      mediaSourceRef.current = mediaSource;
+  
+      // Проверяем, существует ли videoRef.current перед установкой src
+      if (videoRef.current) {
+        videoRef.current.src = URL.createObjectURL(mediaSource);
+      }
+  
+      mediaSource.addEventListener('sourceopen', () => {
+        try {
+          const sourceBuffer = mediaSource.addSourceBuffer('video/mp4; codecs="avc1.42E01E, mp4a.40.2"');
+          sourceBufferRef.current = sourceBuffer;
+  
+          sourceBuffer.addEventListener('updateend', () => {
+            isAppending.current = false;
+            if (dataQueue.current.length > 0) {
+              appendData(dataQueue.current.shift());
+            }
+          });
+  
+          ws.onmessage = (event) => {
+            const byteArray = new Uint8Array(event.data);
+            appendData(byteArray);
+          };
+  
+        } catch (e) {
+          console.error('Ошибка при добавлении SourceBuffer:', e);
+          setError('Ошибка при добавлении SourceBuffer: ' + (e.message || 'Неизвестная ошибка'));
+        }
+      });
+  
+      return () => {
+        ws.close();
+        if (mediaSourceRef.current && mediaSourceRef.current.readyState === 'open') {
+          mediaSourceRef.current.endOfStream();
+        }
+      };
+    } else if (videoSource.type === 'http') {
+      // Также добавьте проверку здесь
+      if (videoRef.current) {
+        videoRef.current.src = videoSource.url;
+      }
+    }
+  }, [videoSource]);
+  
+
+  const appendData = (data) => {
+    if (data.byteLength === 0) return;
+
+    if (isAppending.current) {
+      dataQueue.current.push(data);
+      return;
+    }
+
+    isAppending.current = true;
+
+    if (!sourceBufferRef.current || sourceBufferRef.current.updating || mediaSourceRef.current.readyState !== 'open') {
+      dataQueue.current.push(data);
+      isAppending.current = false;
+      return;
+    }
+
+    try {
+      sourceBufferRef.current.appendBuffer(data);
+    } catch (e) {
+      console.error('Ошибка при добавлении данных в SourceBuffer:', e);
+      setError('Ошибка при добавлении данных в SourceBuffer: ' + (e.message || 'Неизвестная ошибка'));
+    } finally {
+      isAppending.current = false;
+    }
+  };
+
+  const handlePlay = () => {
+    if (videoRef.current && mediaSourceRef.current.readyState === 'open') {
+      videoRef.current.play().then(() => {
+        setIsPlaying(true);
+      }).catch(err => {
+        console.error('Ошибка при воспроизведении видео:', err);
+        setError('Не удалось воспроизвести видео: ' + (err.message || 'Неизвестная ошибка'));
+      });
+    }
+  };
+
+  const alternativeVideoUrl = `https://live-vdk4.camera.rt.ru/stream/004acf75-a06b-4731-8949-ef801caa3412/${Math.floor(Date.now() / 1000)}.mp4?mp4-fragment-length=0.5&mp4-use-speed=0&mp4-afiller=1&token=...`;
+
   return (
-    <>
-    <h2>Домофон</h2>
-    <div className="doorphone-container">
-      <button className="button1" onClick={handleOpenModal}>Домофон</button>
-      {isModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
-          <div className="header-text">3 подъезд, Центральный вход</div>
-            <span className="close" onClick={handleCloseModal}>&times;</span>
-            <div className="doorphone-card">
-              {loading && <div>Загрузка...</div>} {/* Индикатор загрузки */}
-              {error && <div style={{ color: 'red' }}>{error}</div>} {/* Сообщение об ошибке */}
-              <video key={key} width="400" controls autoPlay>
-                <source src={tokenStream} type="video/mp4" />
-                Ваш браузер не поддерживает видеоплеер.
-              </video>
-              <div className="button-container">
-                <button className="button"  onClick={fetchVideo}>Обновить</button>
-                <button className="button"  onClick={handleOpenDoor}>Открыть дверь</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+    <div>
+      <h1>Выберите источник видеопотока</h1>
+      <button onClick={() => openModal({ type: 'http', url: alternativeVideoUrl })}>PC</button>
+      <button onClick={() => openModal({ type: 'ws' })}>iPad</button>
+
+      <Modal isOpen={isModalOpen} onRequestClose={closeModal} contentLabel="Video Stream">
+        <h2>Видеопоток</h2>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        <video ref={videoRef} controls style={{ width: '100%', height: 'auto' }} />
+        {!isPlaying && <button onClick={handlePlay}>Play Video</button>}
+        <button onClick={closeModal}>Закрыть</button>
+      </Modal>
     </div>
-    </>
-    
   );
 };
 
-export default DoorphoneWidget;
+export default VideoStream;

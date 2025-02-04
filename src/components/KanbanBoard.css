@@ -6,6 +6,15 @@
     max-width: 940px; /* Ширина доски */
     height: auto; /* Автоматическая высота для адаптивности */
 
+
+
+
+
+backdrop-filter: blur(60px);
+/* Note: backdrop-filter has minimal browser support */
+border-radius: 20px;
+
+
 }
 
 .columns {
@@ -28,11 +37,139 @@
     width: 108px;
     height: 27px;
   
-    color: #667085; /* Цвет текста */
+    color: #8e99a8; /* Цвет текста */
     font-size: 16px; /* Размер шрифта */
     margin: 0; /* Убираем отступы */
    
     
+}
+.task-name{
+    /* Chakra Soft UI Version */
+
+
+/* Gear up for Mt. Fuji! */
+
+/* {Description} */
+
+width: 363px;
+height: 19px;
+
+font-family: 'Source Sans Pro';
+font-style: normal;
+font-weight: 600;
+margin: 0; /* Убираем отступы */
+    font-size: 16px; /* Размер шрифта */
+line-height: 19px;
+/* identical to box height */
+
+/* gi-neutrals/neutral-900 */
+color: #000000;
+
+
+/* Inside auto layout */
+flex: none;
+order: 3;
+align-self: stretch;
+flex-grow: 0;
+
+
+
+
+
+}
+.task-actions {
+    margin-left: auto; /* Отодвигаем выпадающий список вправо */
+}
+
+.task-body {
+    padding: 10px; /* Отступы для тела задачи */
+}
+.task-user{
+    /* Sep 30, 2021 */
+
+
+
+/* {issue} */
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+align-items: flex-start;
+padding: 0px;
+gap: 4px;
+margin: 5px 0; /* Отступы между элементами */
+width: 75px;
+height: 14px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: flex-start;
+flex-grow: 0;
+
+    
+    
+
+
+}
+.task-header {
+    display: flex;
+    justify-content: space-between; /* Размещаем элементы по краям */
+    align-items: flex-start; /* Выравнивание по верхнему краю */
+    padding: 10px; /* Отступы */
+}
+.task-desc{
+    /* {Description} */
+
+width: 363px;
+height: 15px;
+
+font-family: 'Source Sans Pro';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 15px;
+/* identical to box height */
+
+/* gi-neutrals/neutral-900 */
+color: #000000;
+
+margin: 5px 0; /* Отступы между элементами */
+/* Inside auto layout */
+flex: none;
+order: 7;
+align-self: stretch;
+flex-grow: 0;
+
+}
+.task-open{
+    /* {status}
+
+Used in Jira previews
+v.0.0.1
+*/
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 2px 6px;
+gap: 10px;
+
+
+width: 44px;
+height: 17px;
+right: 0px;
+top: 4px;
+
+/* gi-neutrals/neutral-200
+
+lines
+*/
+background: #DFE2E8;
+border-radius: 3px;
+
 }
 
 
@@ -41,11 +178,37 @@
 
 /* Inside auto layout */
 .task-container {
-    flex: none; /* Отключение гибкости для контейнера задач */
-    order: 1; /* Порядок отображения */
-    flex-grow: 0; /* Не позволяет элементу расти */
-    margin: 5px; /* Отступы между задачами */
-    min-width: 200px; /* Минимальная ширина для задач */
+/* Issue Previews/Detailed Issue Preview
+
+Issue preview used for showing the links and the status about a specific task. You can customize the overrides as well
+v.0.1.4
+*/
+
+box-sizing: border-box;
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px 6px;
+
+width: 375px;
+height: 94px;
+
+/* gi-neutrals/neutral-000
+
+#FFFFFF
+*/
+background: #FFFFFF;
+/* gi-neutrals/10% */
+border: 1px solid rgba(0, 0, 0, 0.1);
+border-radius: 4px;
+
+/* Inside auto layout */
+flex: none;
+order: 2;
+flex-grow: 0;
+
 }
 
 /* Task styles */
@@ -60,15 +223,27 @@
     
 }
 .task {
-    padding: 10px;
-    background-color: #f0f0f0;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    overflow: visible; /* Убедимся, что текст не скрывается */
-    white-space: normal; /* Позволяем тексту переноситься */
-    word-wrap: break-word; /* Переносим длинные слова */
-    height: auto; /* Высота будет изменяться в зависимости от содержимого */
+/* Task */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 20px;
+gap: 30px;
+margin-top: 10px; /* Отступы между задачами */
+width: 330px;
+height: auto;
+
+background: #FFFFFF;
+box-shadow: 0px 3px 0px #B2B8C4;
+border-radius: 3px;
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
   }
 
 .task:hover {

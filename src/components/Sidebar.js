@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse, faHouseLaptop, faCartShopping, faLocationArrow, faBell, faNewspaper, faPlay, faArrowLeft, faArrowRight, faTimes, faTasks } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faHouseLaptop, faCartShopping, faLocationArrow, faBell, faNewspaper, faPlay, faArrowLeft, faArrowRight, faTimes, faTasks, faCog } from '@fortawesome/free-solid-svg-icons';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -13,7 +13,10 @@ const Sidebar = () => {
   const location = useLocation();
   const [showMusic, setShowMusic] = useState(false);
   const [isExpanded, setIsExpanded] = useState(true);
-  const [currentSection, setCurrentSection] = useState('Главная'); // Состояние для текущего раздела
+  const [currentSection, setCurrentSection] = useState('Главная'); 
+  const [selectedCity, setSelectedCity] = useState('Пермь');
+  const [temperature, setTemperature] = useState(null);
+  const [currentTime, setCurrentTime] = useState('');
 
   const toggleMusic = () => {
     setShowMusic(prevShowMusic => !prevShowMusic);
@@ -36,11 +39,38 @@ const Sidebar = () => {
     { text: 'Уведомления', icon: faBell, path: '/notifications' },
     { text: 'Новости УК', icon: faNewspaper, path: '/info' },
     { text: 'Музыка', icon: faPlay, action: toggleMusic },
+    { text: 'Настройки', icon: faCog, path: '/settings' }, // раздел "Настройки"
+    { text: 'Время', time: currentTime }, // раздел "Время"
+    { text: 'Погода', action: null } // раздел "Погода"
   ];
 
   const handleMenuItemClick = (text) => {
-    setCurrentSection(text); // Устанавливаем текущий раздел
+    setCurrentSection(text);
   };
+
+  // Функция для получения текущей температуры
+  const fetchTemperature = async (city) => {
+    const temperatures = {
+      'Пермь': '15°C',
+      'Дюртюли': '18°C'
+    };
+    setTemperature(temperatures[city]);
+  };
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const formattedTime = isExpanded 
+        ? now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) 
+        : now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      setCurrentTime(formattedTime);
+    };
+
+    const intervalId = setInterval(updateTime, 1000);
+    updateTime(); // обновляем время сразу при загрузке
+
+    return () => clearInterval(intervalId);
+  }, [isExpanded]);
 
   return (
     <>
@@ -51,7 +81,7 @@ const Sidebar = () => {
         height: '100vh',
         width: isExpanded ? '240px' : '60px',
         transition: 'width 0.3s',
-        backgroundColor: 'white',
+        backgroundColor: '#E0E0E0',
         boxShadow: '2px 0 5px rgba(0,0,0,0.1)',
         overflowY: 'auto'
       }}>
@@ -77,14 +107,14 @@ const Sidebar = () => {
             </ListItemButton>
           </ListItem>
 
-          {menuItems.map(({ text, icon, path, action }) => (
+          {menuItems.map(({ text, icon, path, action, time }) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
                 component={path ? Link : 'button'}
                 to={path}
                 onClick={() => {
-                  handleMenuItemClick(text); // Устанавливаем текущий раздел при клике
-                  if (action) action(); // Если есть действие, выполняем его
+                  handleMenuItemClick(text);
+                  if (action) action();
                 }}
                 sx={{
                   width: '100%',
@@ -99,8 +129,56 @@ const Sidebar = () => {
                 role={path ? 'link' : 'button'}
                 tabIndex={0}
               >
-                <FontAwesomeIcon icon={icon} style={{ marginRight: '8px' }} />
-                {isExpanded && <ListItemText primary={text} />}
+                {icon && <FontAwesomeIcon icon={icon} style={{ marginRight: '8px' }} />}
+                {text === 'Время' ? (
+                  <div style={{ textAlign: isExpanded ? 'left' : 'center', width: '10%', fontSize: '14px' }}>
+                    <b>{currentTime}</b>
+                  </div>
+                ) : text === 'Погода' ? (
+                  <div style={{ textAlign: isExpanded ? 'left' : 'center', width: '100%' }}>
+                    {isExpanded ? (
+                      <>
+                        <select 
+                          onChange={(e) => {
+                            setSelectedCity(e.target.value);
+                            fetchTemperature(e.target.value);
+                          }} 
+                          value={selectedCity} 
+                          style={{ 
+                            width: '100%', // Устанавливаем ширину в 100%
+                            margin: '0 auto', 
+                            display: 'block' 
+                          }}
+                        >
+                          <option value="Пермь">Пермь</option>
+                          <option value="Дюртюли">Дюртюли</option>
+                        </select>
+                        <span style={{ marginLeft: '8px' }}>{temperature}</span>
+                      </>
+                    ) : (
+                      <div>
+                        <select 
+                          onChange={(e) => {
+                            setSelectedCity(e.target.value);
+                            fetchTemperature(e.target.value);
+                          }} 
+                          value={selectedCity} 
+                          style={{ 
+                            width: '100%', // Устанавливаем ширину в 100%
+                            margin: '0 auto', 
+                            display: 'block' 
+                          }}
+                        >
+                          <option value="Пермь">Пермь</option>
+                          <option value="Дюртюли">Дюртюли</option>
+                        </select>
+                        <div>{temperature}</div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  isExpanded && <ListItemText primary={text} />
+                )}
               </ListItemButton>
             </ListItem>
           ))}
@@ -129,14 +207,12 @@ const Sidebar = () => {
         </div>
       </div>
 
-      {/* Основной контейнер для содержимого страницы */}
       <div style={{
-        marginLeft: isExpanded ? '240px' : '60px', // Отступ слева равный ширине сайдбара
+        marginLeft: isExpanded ? '240px' : '60px',
         transition: 'margin-left 0.3s',
-        padding: '20px', // Добавляем отступы для содержимого
+        padding: '20px',
       }}>
         {/* Содержимое разделов */}
-       
       </div>
     </>
   );

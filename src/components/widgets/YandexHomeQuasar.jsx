@@ -87,18 +87,23 @@ const Carousel = () => {
   
       newSocket.onmessage = (event) => {
           const data = JSON.parse(event.data);
-          if (data.status === 'ok' && data.households) {
-              const household = data.households[0];
-              setHouseholdData(household);
-              setRooms(household.rooms);
-              setLoading(false);
-  
-              if (household.rooms.length > 0 && selectedRoomId === null) {
-                  const firstRoom = household.rooms[0];
-                  setSelectedRoomId(firstRoom.id);
-              }
+          const enrichedData = {
+            type: "yandex",
+            ...data
+          };
+
+          if (enrichedData.status === 'ok' && enrichedData.households) {
+            const household = enrichedData.households[0];
+            setHouseholdData(household);
+            setRooms(household.rooms);
+            setLoading(false);
+      
+            if (household.rooms.length > 0 && selectedRoomId === null) {
+              const firstRoom = household.rooms[0];
+              setSelectedRoomId(firstRoom.id);
+            }
           }
-      };
+        };
   
       newSocket.onclose = () => {
           console.log('WebSocket disconnected');
@@ -251,8 +256,10 @@ const Carousel = () => {
     }
 
     return (
+        <>
+         
         <div className="carousel-container">
-            <h2>Карусель комнат</h2>
+           
             <div className="carousel">
                 <div className="carousel-image" style={{ backgroundImage: `url(${roomImages[currentRoom.name] || img5})` }}>
                     <div className="top-left-blocks">
@@ -289,6 +296,8 @@ const Carousel = () => {
                 </div>
             </div>
         </div>
+        </>
+        
     );
 };
 

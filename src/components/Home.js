@@ -16,7 +16,7 @@ const Home = () => {
     <div>
       <h1>Главная страница</h1>
       
-      <Domofon />
+      {/* <Domofon /> */}
       {/* Добавляем OrdersTracking и передаем onOrdersUpdate */}
       <OrdersTracking onOrdersUpdate={setHasOrders} />
       <CarouselWithDevices />
