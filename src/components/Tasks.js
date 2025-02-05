@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid'; // Импортируем uuid
+import { v4 as uuidv4 } from 'uuid';
 import ip from "./ip.json";
 import './KanbanBoard.css';
 
@@ -11,7 +11,7 @@ const initialTasks = {
     Done: []
 };
 
-const colors = ['#6A6DCD', '#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FFC300'];
+const colors = ['#FFFFFF'];
 
 const getRandomColor = () => {
     return colors[Math.floor(Math.random() * colors.length)];
@@ -27,6 +27,7 @@ const KanbanBoard = () => {
     const [assignee, setAssignee] = useState('');
     const [description, setDescription] = useState('');
     const [editingTask, setEditingTask] = useState(null);
+    const [selectedTask, setSelectedTask] = useState(null);
 
     const fetchTasks = async () => {
         try {
@@ -51,14 +52,18 @@ const KanbanBoard = () => {
             console.error('Error fetching tasks:', error);
         }
     };
-
-    const handleAddTask = async () => {
-        console.log("kanbanId:", kanbanId); // Проверка значения kanbanId
-        console.log("taskPriority:", taskPriority); // Проверка значения taskPriority
-        console.log("taskName:", taskName); // Проверка значения taskName
-        console.log("assignee:", assignee); // Проверка значения assignee
-        console.log("description:", description); // Проверка значения description
+    const handleTaskClick = (task) => {
+        setEditingTask(task);
+        setTaskName(task.name);
+        setAssignee(task.assignee);
+        settaskPriority(task.priority);
+        setkanbanId(task.kanban_id);
+        setDescription(task.description);
+        setEditModalOpen(true);
+        setSelectedTask(task);
+    };
     
+    const handleAddTask = async () => {
         if (!taskPriority || !kanbanId) {
             alert("Пожалуйста, выберите приоритет и канбан ID.");
             return;
@@ -134,6 +139,7 @@ const KanbanBoard = () => {
         setkanbanId('');
         setModalOpen(false);
         setEditModalOpen(false);
+        setSelectedTask(null);
     };
 
     const handleDrop = async (status, e) => {
@@ -231,22 +237,40 @@ const KanbanBoard = () => {
         setEditingTask(task);
         setTaskName(task.name);
         setAssignee(task.assignee);
-        settaskPriority(task.priority); // Используем task.priority
-        setkanbanId(task.kanban_id); // Используем task.kanban_id
+        settaskPriority(task.priority);
+        setkanbanId(task.kanban_id);
         setDescription(task.description);
         setEditModalOpen(true);
+        setSelectedTask(task);
     };
+    const scrollToTaskColumn = (status) => {
+    const columnIndex = Object.keys(tasks).indexOf(status);
+    const columnWidth = 673; // ширина одного столбца
+    const offset = columnIndex * columnWidth;
     
+    const kanbanBoard = document.querySelector('.kanban-board');
+    kanbanBoard.scrollTo({
+        left: offset,
+        behavior: 'smooth'
+    });
+};
 
+useEffect(() => {
+    if (editModalOpen && selectedTask) {
+        scrollToTaskColumn(selectedTask.status);
+    }
+}, [editModalOpen, selectedTask]);
+    
     useEffect(() => {
         fetchTasks();
         const interval = setInterval(fetchTasks, 120000);
         return () => clearInterval(interval);
     }, []);
+    
     return (
         <>
             <h1>Kanban Board</h1>
-            <div className="kanban-board">
+            <div className={`kanban-board ${modalOpen || editModalOpen ? 'shifted' : ''}`}>
                 <button onClick={() => setModalOpen(true)}>+</button>
                 <div className="columns">
                     {Object.keys(tasks).map(status => (
@@ -259,131 +283,177 @@ const KanbanBoard = () => {
                         >
                             <h2 className="column-header">{status}</h2>
                             {tasks[status].map(task => (
-                           <div key={task.task_id} className="task" style={{ backgroundColor: task.backgroundColor }} draggable onDragStart={e => handleDragStart(e, task.task_id)}>
-                          <div className="task-header">
-    <div className="task-name" onClick={() => handleEditTask(task)}><b>{task.name}</b></div>
-    <div className="task-actions">
-        <select className="task-select" onChange={(e) => handleActionSelect(e, task.task_id)} defaultValue="">
-            <option value="" disabled>...</option> {/* Заменили на placeholder */}
-            <option value="edit">Редактировать</option>
-            <option value="delete">Удалить</option>
-        </select>
-        
-    </div>
-</div>
-<div className="task-body">
-    <div className="task-user"><b>Приоритет:</b> {task.priority}</div> {/* Изменено на task.priority */}
-    <div className="task-user"><b>Доска:</b> {task.kanban_id}</div> {/* Изменено на task.kanban_id */}
-    <div className="task-user"><b>Исполнитель:</b> {task.assignee}</div>
-    <div className="task-desc"><b>Описание:</b></div>
-    <div className="task-desc"> {task.description}</div>
-</div>
-
-                       </div>
-                        ))}
-                    </div>
-                ))}
-            </div>
-            
-            {modalOpen && (
-                <div className="modal">
-                    <h2>Add Task</h2>
-                    <input
-                        type="text"
-                        value={taskName}
-                        onChange={e => setTaskName(e.target.value)}
-                        placeholder="Название задачи"
-                    />
-                    <input
-                        type="text"
-                        value={assignee}
-                        onChange={e => setAssignee(e.target.value)}
-                        placeholder="Исполнитель"
-                    />
-                     <select
-                        type="select"
-                        value={taskPriority}
-                        onChange={e => settaskPriority(e.target.value)}
-                        placeholder="Приоритет"
-                        
-                    >
-                        <option value="" disabled>-</option>
-                      <option value="low">Low</option>
-                      <option value="middle">Middle</option>  
-                    </select>
-                    <select
-                        type="select"
-                        value={kanbanId}
-                        onChange={e => setkanbanId(e.target.value)}
-                        placeholder="kanban Id"
-                    >
-                         <option value="" disabled>-</option>
-                      <option value="Panel">Panel</option>
-                      <option value="Work">Work</option>  
-                    </select>
-                  
-                    <textarea
-                        value={description}
-                        onChange={e => setDescription(e.target.value)}
-                        placeholder="Описание задачи"
-                    />
-                    <button onClick={handleAddTask}>Добавить задачу</button>
-                    <button onClick={() => setModalOpen(false)}>Закрыть</button>
+                                <div key={task.task_id} className="task" style={{ backgroundColor: task.backgroundColor }} draggable onDragStart={e => handleDragStart(e, task.task_id)}>
+                                    <div className="task-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <div className='task-user'>
+                                            <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path fillRule="evenodd" clipRule="evenodd" d="M11.3191 0.837689L19.772 9.47967C20.0753 9.79016 20.0753 10.2932 19.772 10.6037L16.9613 13.4772L16.8628 13.578L10.4998 20.0833L7.04081 16.547L1.22749 10.6037C0.924169 10.2932 0.924169 9.79016 1.22749 9.47967L4.13674 6.50534L10.4998 0L11.3191 0.837689ZM7.59573 10.0416L10.4998 13.0107L13.4039 10.0416L10.4998 7.07261L7.59573 10.0416Z" fill="#4085F7"/>
+                                                <path fillRule="evenodd" clipRule="evenodd" d="M10.501 7.07271C8.59961 5.12858 8.59035 1.97971 10.4802 0.0239258L4.125 6.51867L7.58395 10.055L10.501 7.07271Z" fill="url(#paint0_linear_1356_4310)"/>
+                                                <path fillRule="evenodd" clipRule="evenodd" d="M13.4118 10.0337L10.5 13.0107C11.4177 13.9484 11.9333 15.2205 11.9333 16.547C11.9333 17.8735 11.4177 19.1456 10.5 20.0833L16.8708 13.57L13.4118 10.0337Z" fill="url(#paint1_linear_1356_4310)"/>
+                                                <defs>
+                                                    <linearGradient id="paint0_linear_1356_4310" x1="8.66474" y1="0.879189" x2="3.73753" y2="2.91439" gradientUnits="userSpaceOnUse">
+                                                        <stop offset="0.18" stopColor="#0052CC"/>
+                                                        <stop offset="1" stopColor="#2684FF"/>
+                                                    </linearGradient>
+                                                    <linearGradient id="paint1_linear_1356_4310" x1="12.3665" y1="19.1721" x2="17.2841" y2="17.1516" gradientUnits="userSpaceOnUse">
+                                                        <stop offset="0.18" stopColor="#0052CC"/>
+                                                        <stop offset="1" stopColor="#2684FF"/>
+                                                    </linearGradient>
+                                                </defs>
+                                            </svg>
+                                        </div>
+                                        <div className="task-name" style={{ flexGrow: 1, textAlign: 'center', margin: '0 10px' }} onClick={() => handleTaskClick(task)}>
+                                            <b>{task.name}</b>
+                                        </div>
+                                    </div>
+                                    <div className="task-body">
+                                        <div className="priority">
+                                            <div className="kanban-icon">
+                                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <rect width="14" height="14" rx="2" fill="#63BA3B"/>
+                                                    <path fillRule="evenodd" clipRule="evenodd" d="M4 4C4 3.44772 4.44772 3 5 3H9C9.55228 3 10 3.44772 10 4V11L7 8L4 11V4Z" fill="white"/>
+                                                </svg>
+                                            </div>
+                                            <div className="task-kanbanid">{task.kanban_id}</div>
+                                        </div>
+                                        <div className="task-priority" style={{ display: 'flex', alignItems: 'center' }}>
+                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="10" height="10" rx="5" fill="#00A553"/>
+                                            </svg>
+                                            <span style={{ marginLeft: '5px' }}>{task.priority}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ))}
                 </div>
-            )}
-            {editModalOpen && (
-                <div className="modal">
-                    <h2>Edit Task</h2>
-                    <input
-                        type="text"
-                        value={taskName}
-                        onChange={e => setTaskName(e.target.value)}
-                        placeholder="Название задачи"
-                    />
-                    <input
-                        type="text"
-                        value={assignee}
-                        onChange={e => setAssignee(e.target.value)}
-                        placeholder="Исполнитель"
-                    />
-                      <select
-                        type="select"
-                        value={taskPriority}
-                        onChange={e => settaskPriority(e.target.value)}
-                        placeholder="Приоритет"
-                    >
-                      <option value="low">Low</option>
-                      <option value="middle">Middle</option>  
-                    </select>
-                    <select
-                        type="select"
-                        value={kanbanId}
-                        onChange={e => setkanbanId(e.target.value)}
-                        placeholder="kanban Id"
-                    >
-                      <option value="Panel">Panel</option>
-                      <option value="Work">Work</option>  
-                    </select>
-                    <textarea
-                        value={description}
-                        onChange={e => setDescription(e.target.value)}
-                        placeholder="Описание задачи"
-                    />
-                    <button onClick={handleApplyChanges}>Применить</button>
-                    <button onClick={() => {
-                        if (taskName !== editingTask.name || assignee !== editingTask.assignee || description !== editingTask.description) {
-                            if (window.confirm('Уверены что хотите закрыть без изменений?')) {
+                
+                {modalOpen && (
+                    <div className="modal" style={{
+                        position: 'fixed',
+                        top: '0',
+                        right: '0',
+                        height: '100vh',
+                        width: '700px',
+                        transition: 'transform 0.3s',
+                        backgroundColor: '#E0E0E0',
+                        boxShadow: '-2px 0 5px rgba(0,0,0,0.1)',
+                        overflowY: 'auto',
+                        transform: modalOpen ? 'translateX(0)' : 'translateX(100%)'
+                    }}>
+                        <h2>Add Task</h2>
+                        <input
+                            type="text"
+                            value={taskName}
+                            onChange={e => setTaskName(e.target.value)}
+                            placeholder="Название задачи"
+                        />
+                        <input
+                            type="text"
+                            value={assignee}
+                            onChange={e => setAssignee(e.target.value)}
+                            placeholder="Исполнитель"
+                        />
+                        <select
+                            type="select"
+                            value={taskPriority}
+                            onChange={e => settaskPriority(e.target.value)}
+                            placeholder="Приоритет"
+                        >
+                            <option value="" disabled>-</option>
+                            <option value="Low">Low</option>
+                            <option value="Middle">Middle</option>
+                            <option value="High">High</option>
+                            <option value="Critical">Critical</option>
+                            <option value="Blocked">Blocked</option>  
+                        </select>
+                        <select
+                            type="select"
+                            value={kanbanId}
+                            onChange={e => setkanbanId(e.target.value)}
+                            placeholder="kanban Id"
+                        >
+                            <option value="" disabled>-</option>
+                            <option value="Panel">Panel</option>
+                            <option value="Work">Work</option>  
+                        </select>
+                        <textarea
+                            value={description}
+                            onChange={e => setDescription(e.target.value)}
+                            placeholder="Описание задачи"
+                        />
+                        <button onClick={handleAddTask}>Добавить задачу</button>
+                        <button onClick={() => setModalOpen(false)}>Закрыть</button>
+                    </div>
+                )}
+                {editModalOpen && (
+                    <div className="modal" style={{
+                        position: 'fixed',
+                        top: '0',
+                        right: '0',
+                        height: '100vh',
+                        width: '50%',
+                        transition: 'transform 0.3s',
+                        backgroundColor: '#E0E0E0',
+                        boxShadow: '-2px 0 5px rgba(0,0,0,0.1)',
+                        overflowY: 'auto',
+                        transform: editModalOpen ? 'translateX(0)' : 'translateX(100%)'
+                    }}>
+                        <h2>Edit Task</h2>
+                        <input
+                            type="text"
+                            value={taskName}
+                            onChange={e => setTaskName(e.target.value)}
+                            placeholder="Название задачи"
+                        />
+                        <input
+                            type="text"
+                            value={assignee}
+                            onChange={e => setAssignee(e.target.value)}
+                            placeholder="Исполнитель"
+                        />
+                        <select
+                            type="select"
+                            value={taskPriority}
+                            onChange={e => settaskPriority(e.target.value)}
+                            placeholder="Приоритет"
+                        >
+                            <option value="Low">Low</option>
+                            <option value="Middle">Middle</option>
+                            <option value="High">High</option>
+                            <option value="Critical">Critical</option>
+                            <option value="Blocked">Blocked</option>     
+                        </select>
+                        <select
+                            type="select"
+                            value={kanbanId}
+                            onChange={e => setkanbanId(e.target.value)}
+                            placeholder="kanban Id"
+                        >
+                            <option value="Panel">Panel</option>
+                            <option value="Work">Work</option>  
+                        </select>
+                        <textarea
+                            value={description}
+                            onChange={e => setDescription(e.target.value)}
+                            placeholder="Описание задачи"
+                        />
+                        <button onClick={handleApplyChanges}>Применить</button>
+                        <button onClick={() => {
+                            if (taskName !== editingTask.name || assignee !== editingTask.assignee || description !== editingTask.description) {
+                                if (window.confirm('Уверены что хотите закрыть без изменений?')) {
+                                    resetTaskInputs();
+                                }
+                            } else {
                                 resetTaskInputs();
                             }
-                        } else {
-                            resetTaskInputs();
-                        }
-                    }}>Закрыть</button>
-                </div>
-            )}
-        </div>
-    </>
-);
+                        }}>Закрыть</button>
+                    </div>
+                )}
+            </div>
+        </>
+    );
 };
 
 export default KanbanBoard;

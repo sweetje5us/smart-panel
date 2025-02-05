@@ -10,6 +10,7 @@ import Notifications from './components/Notifications';
 import Info from './components/Info';
 import Tasks from './components/Tasks';
 
+
 const App = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true); // Состояние для управления боковой панелью
 

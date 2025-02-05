@@ -1,34 +1,45 @@
 .kanban-board {
-    display: flex;
-    flex-direction: row; /* Расположение элементов в строку */
-    align-items: flex-start; /* Выравнивание элементов по верхнему краю */
-    padding: 8px;
-    max-width: 940px; /* Ширина доски */
-    height: auto; /* Автоматическая высота для адаптивности */
-
-
-
-
-
-backdrop-filter: blur(60px);
-/* Note: backdrop-filter has minimal browser support */
-border-radius: 20px;
-
-
+    transition: margin-left 0.3s;
+    margin-left: 0;
+    height: 100vh;
+    overflow-x: auto; /* Обеспечиваем горизонтальный скролл */
+    overflow-y: hidden; /* Скрываем вертикальный скролл */
+    white-space: nowrap; /* Предотвращаем перенос элементов */
 }
+
+.kanban-board.shifted {
+    overflow-x: auto;
+    margin-left: 0;
+    width: 122em;
+    height: 100vh;
+    
+   
+}
+
 
 .columns {
     display: grid;
     justify-content: space-between;
     width: 100%;
-    flex-wrap: wrap; /* Позволяет колонкам переноситься на новую строку */
+    flex-wrap: wrap;
     width: 673px;
-    grid-template-columns: repeat(4, 1fr); /* Установим 4 столбца в строке */
-  gap: 10px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
     
 }
 
-
+.modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 600px; /* Ширина модального окна */
+    background-color: #E0E0E0;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+    overflow-y: auto;
+    z-index: 1000;
+    transition: 'width 0.3s',
+}
 .column h2 {
     display: flex;
     flex-direction: column;
@@ -36,52 +47,53 @@ border-radius: 20px;
     padding: 0;
     width: 108px;
     height: 27px;
-  
-    color: #8e99a8; /* Цвет текста */
-    font-size: 16px; /* Размер шрифта */
-    margin: 0; /* Убираем отступы */
+    color: #8e99a8;
+    font-size: 16px;
+    margin: 0;
    
     
 }
-.task-name{
-    /* Chakra Soft UI Version */
+.task-priority{
+    /* Must have */
 
 
-/* Gear up for Mt. Fuji! */
+width: 48px;
+height: 14px;
 
-/* {Description} */
-
-
+margin-top: 10px;
 
 font-family: 'Source Sans Pro';
 font-style: normal;
 font-weight: 600;
-margin: 0; /* Убираем отступы */
-    font-size: 16px; /* Размер шрифта */
-line-height: 19px;
+font-size: 17px;
+line-height: 14px;
 /* identical to box height */
 
 /* gi-neutrals/neutral-900 */
 color: #000000;
 
+mix-blend-mode: normal;
+opacity: 0.7;
 
-/* Inside auto layout */
-flex: none;
-
-align-self: stretch;
-flex-grow: 0;
-
-
-
-
+}
+.task-name{
+    font-family: 'Source Sans Pro', sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    margin: 0;
+    font-size: 16px;
+    line-height: 19px;
+    color: #000000;
+    overflow-wrap: break-word;
 
 }
 .task-actions {
      /* Отодвигаем выпадающий список вправо */
      /* Позволяет позиционировать элемент */
+     
     width: 20%;
-    top: 10px; /* Отступ от верхней части контейнера */
-    right: 10px; /* Отступ от правой части контейнера */
+    top: 20px; /* Отступ от верхней части контейнера */
+    left: 315px; /* Отступ от правой части контейнера */
 }
 .task-select {
     /* Отодвигаем выпадающий список вправо */
@@ -96,38 +108,73 @@ flex-grow: 0;
 }
 .task-user{
     /* Sep 30, 2021 */
+/* {userpic} */
 
 
-
-/* {issue} */
-
-/* Auto layout */
-display: flex;
-flex-direction: row;
-align-items: flex-start;
-padding: 0px;
-gap: 4px;
-margin: 5px 0; /* Отступы между элементами */
+width: 24px;
+height: 24px;
 
 
+/* background: url(.png); */
+/* gi-neutrals/neutral-000
 
-/* Inside auto layout */
-flex: none;
-order: 0;
-align-self: flex-start;
-flex-grow: 0;
+#FFFFFF
+*/
 
-    
-    
+
 
 
 }
 .task-header {
     display: flex;
-    flex-direction: column; /* Размещаем элементы по краям */
+    flex-direction: row; /* Размещаем элементы по краям */
     align-items: flex-start; /* Выравнивание по верхнему краю */
     padding: 10px; /* Отступы */
     position: relative; /* Добавлено для позиционирования */
+    overflow-wrap: break-word;
+}
+.task-actions{
+    /* {jiraKey} */
+
+margin-right: 10px;
+width: 25px;
+height: 24px;
+
+
+font-family: 'Source Sans Pro';
+font-style: normal;
+font-weight: 600;
+font-size: 15px;
+line-height: 24px;
+/* identical to box height, or 160% */
+
+/* gi-primary/primary-400 */
+color: #2088CE;
+
+
+}
+.task-kanbanid{
+    /* {issueType} */
+
+
+
+font-family: 'Source Sans Pro';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 15px;
+/* identical to box height */
+
+/* gi-neutrals/neutral-400 */
+color: #858E99;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+align-self: flex-end;
+flex-grow: 0;
+
 }
 .task-desc{
     /* {Description} */
@@ -203,6 +250,7 @@ padding: 0px 6px;
 
 
 
+
 /* gi-neutrals/neutral-000
 
 #FFFFFF
@@ -210,7 +258,7 @@ padding: 0px 6px;
 background: #FFFFFF;
 /* gi-neutrals/10% */
 border: 1px solid rgba(0, 0, 0, 0.1);
-border-radius: 4px;
+border-radius: 6px;
 
 /* Inside auto layout */
 flex: none;
@@ -230,32 +278,87 @@ flex-grow: 0;
     color: #1D2939;
     
 }
+.task-divider{
+    /* divider */
+
+width: 330px;
+height: 1px;
+
+/* gi-neutrals/neutral-200
+
+lines
+*/
+background: #DFE2E8;
+border-radius: 2px;
+
+/* Inside auto layout */
+flex: none;
+order: 6;
+align-self: stretch;
+flex-grow: 0;
+
+}
+.kanban-icon{
+    /* {issueIcon}
+
+Usage: 
+*/
+margin-right: 8px; /* Отступ между иконкой и текстом */
+width: 14px;
+height: 14px;
+padding-bottom: 19px;
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: center;
+flex-grow: 0;
+
+}
+.priority{
+    display: flex;
+    flex-direction: row;
+    white-space: nowrap;
+}
 .task {
 /* Task */
+
+/* Auto layout */
+/* Issue Previews/Initiative Preview
+
+Initiative preview. You can use it for the project goals as well
+v.0.1.1
+*/
 
 /* Auto layout */
 display: flex;
 flex-direction: column;
 align-items: flex-start;
-padding: 20px;
-gap: 10px;
-margin-top: 10px; /* Отступы между задачами */
-width: 250px;
-height: auto;
+padding: 12px;
+margin: 5px;
+width: 375px;
 
+
+/* gi-neutrals/neutral-000
+
+#FFFFFF
+*/
 background: #FFFFFF;
-box-shadow: 0px 3px 0px #B2B8C4;
-border-radius: 3px;
+/* gi-neutrals/10% */
+border: 0.5px solid rgba(0, 0, 0, 0.1);
+border-radius: 8px;
 
 /* Inside auto layout */
 flex: none;
-order: 1;
+order: 4;
 flex-grow: 0;
+
 
   }
 
 .task:hover {
-    transform: scale(1.02); /* Увеличение при наведении */
+    outline: 2px solid black;
+    transform: scale(1.1);
 }
 
 .task:active {
@@ -273,7 +376,7 @@ flex-grow: 0;
     border: 1px solid #888;
     width: 300px;
     height: auto; /* Автоматическая высота для адаптивности */
-    border-radius: 8px;
+    
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column; /* Вертикальное выравнивание элементов */
