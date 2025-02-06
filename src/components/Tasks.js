@@ -302,7 +302,7 @@ useEffect(() => {
                                                 </defs>
                                             </svg>
                                         </div>
-                                        <div className="task-name" style={{ flexGrow: 1, textAlign: 'center', margin: '0 10px' }} onClick={() => handleTaskClick(task)}>
+                                        <div className="task-name" style={{ flexGrow: 1, margin: '0 10px' }} onClick={() => handleTaskClick(task)}>
                                             <b>{task.name}</b>
                                         </div>
                                     </div>
