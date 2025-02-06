@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback  } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import ip from "./ip.json";
 import './KanbanBoard.css';
+
 
 const address = `http://${ip.ip}:${ip.port}`;
 const initialTasks = {
@@ -17,6 +18,7 @@ const getRandomColor = () => {
     return colors[Math.floor(Math.random() * colors.length)];
 };
 
+
 const KanbanBoard = () => {
     const [tasks, setTasks] = useState(initialTasks);
     const [modalOpen, setModalOpen] = useState(false);
@@ -28,6 +30,7 @@ const KanbanBoard = () => {
     const [description, setDescription] = useState('');
     const [editingTask, setEditingTask] = useState(null);
     const [selectedTask, setSelectedTask] = useState(null);
+    const [taskStatus, settaskStatus] = useState('');
 
     const fetchTasks = async () => {
         try {
@@ -59,6 +62,7 @@ const KanbanBoard = () => {
         settaskPriority(task.priority);
         setkanbanId(task.kanban_id);
         setDescription(task.description);
+        settaskStatus(task.status);
         setEditModalOpen(true);
         setSelectedTask(task);
     };
@@ -96,40 +100,53 @@ const KanbanBoard = () => {
     };
 
     const handleApplyChanges = async () => {
-        const updatedTask = {
-            ...editingTask,
-            name: taskName,
-            assignee: assignee,
-            priority: taskPriority,
-            kanban_id: kanbanId,
-            description: description
-        };
-
-        const response = await fetch(`${address}/api/tasks`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(updatedTask)
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('Error response:', errorText);
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        setTasks(prevTasks => {
-            const newTasks = { ...prevTasks };
-            const column = newTasks[editingTask.status];
-            const taskIndex = column.findIndex(t => t.task_id === editingTask.task_id);
-            if (taskIndex !== -1) {
-                column[taskIndex] = updatedTask;
+        try {
+            const updatedTask = {
+                ...editingTask,
+                name: taskName,
+                assignee: assignee,
+                priority: taskPriority,
+                kanban_id: kanbanId,
+                description: description,
+                status: taskStatus,
+            };
+    
+            const response = await fetch(`${address}/api/tasks`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedTask)
+            });
+    
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Error response:', errorText);
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-            return newTasks;
-        });
-        resetTaskInputs();
+    
+            // Обновляем локально
+            setTasks(prevTasks => {
+                const newTasks = { ...prevTasks };
+                const column = newTasks[editingTask.status];
+                const taskIndex = column.findIndex(t => t.task_id === editingTask.task_id);
+                if (taskIndex !== -1) {
+                    column[taskIndex] = updatedTask;
+                }
+                return newTasks;
+            });
+    
+            // Сбрасываем поля и закрываем модальное окно
+            resetTaskInputs();
+    
+            // Обновляем список задач
+            await fetchTasks();
+    
+        } catch (error) {
+            console.error('Error updating task:', error);
+        }
     };
+    
 
     const resetTaskInputs = () => {
         setTaskName('');
@@ -140,6 +157,7 @@ const KanbanBoard = () => {
         setModalOpen(false);
         setEditModalOpen(false);
         setSelectedTask(null);
+        
     };
 
     const handleDrop = async (status, e) => {
@@ -207,6 +225,7 @@ const KanbanBoard = () => {
                 }
                 return updatedTasks;
             });
+            resetTaskInputs();
         } catch (error) {
             console.error('Error deleting task:', error);
         }
@@ -240,6 +259,7 @@ const KanbanBoard = () => {
         settaskPriority(task.priority);
         setkanbanId(task.kanban_id);
         setDescription(task.description);
+        settaskStatus(task.status);
         setEditModalOpen(true);
         setSelectedTask(task);
     };
@@ -316,12 +336,19 @@ useEffect(() => {
                                             </div>
                                             <div className="task-kanbanid">{task.kanban_id}</div>
                                         </div>
-                                        <div className="task-priority" style={{ display: 'flex', alignItems: 'center' }}>
-                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <rect width="10" height="10" rx="5" fill="#00A553"/>
-                                            </svg>
-                                            <span style={{ marginLeft: '5px' }}>{task.priority}</span>
-                                        </div>
+                                        <div className="task-priority" style={{ display: 'flex', alignItems: 'flex-start' }}>
+    <svg style={{ marginRight: '5px' }} width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="10" height="10" rx="5" fill={
+            task.priority === 'Low' ? '#808080' : // Серый
+            task.priority === 'Medium' ? '#0000FF' : // Синий
+            task.priority === 'High' ? '#FFFF00' : // Желтый
+            task.priority === 'Critical' ? '#FFA500' : // Оранжевый
+            task.priority === 'Blocked' ? '#FF0000' : // Красный
+            '#00A553' // Зеленый по умолчанию
+        } />
+    </svg>
+    <span style={{ marginLeft: '5px' }}>{task.priority}</span>
+</div>
                                     </div>
                                 </div>
                             ))}
@@ -337,7 +364,7 @@ useEffect(() => {
                         height: '100vh',
                         width: '700px',
                         transition: 'transform 0.3s',
-                        backgroundColor: '#E0E0E0',
+                        backgroundColor: '#FFFFFF',
                         boxShadow: '-2px 0 5px rgba(0,0,0,0.1)',
                         overflowY: 'auto',
                         transform: modalOpen ? 'translateX(0)' : 'translateX(100%)'
@@ -363,7 +390,7 @@ useEffect(() => {
                         >
                             <option value="" disabled>-</option>
                             <option value="Low">Low</option>
-                            <option value="Middle">Middle</option>
+                            <option value="Medium">Medium</option>
                             <option value="High">High</option>
                             <option value="Critical">Critical</option>
                             <option value="Blocked">Blocked</option>  
@@ -395,52 +422,35 @@ useEffect(() => {
                         height: '100vh',
                         width: '50%',
                         transition: 'transform 0.3s',
-                        backgroundColor: '#E0E0E0',
+                        backgroundColor: '#FFFFFF',
                         boxShadow: '-2px 0 5px rgba(0,0,0,0.1)',
                         overflowY: 'auto',
                         transform: editModalOpen ? 'translateX(0)' : 'translateX(100%)'
                     }}>
-                        <h2>Edit Task</h2>
-                        <input
-                            type="text"
-                            value={taskName}
-                            onChange={e => setTaskName(e.target.value)}
-                            placeholder="Название задачи"
-                        />
+                        <div className='modal-header'>Edit Task</div>
                         <input
                             type="text"
                             value={assignee}
                             onChange={e => setAssignee(e.target.value)}
                             placeholder="Исполнитель"
+                            className='modal-user'
+                        />                        <input
+                            type="text"
+                            value={taskName}
+                            onChange={e => setTaskName(e.target.value)}
+                            placeholder="Название задачи"
+                            className='modal-name'
                         />
-                        <select
-                            type="select"
-                            value={taskPriority}
-                            onChange={e => settaskPriority(e.target.value)}
-                            placeholder="Приоритет"
-                        >
-                            <option value="Low">Low</option>
-                            <option value="Middle">Middle</option>
-                            <option value="High">High</option>
-                            <option value="Critical">Critical</option>
-                            <option value="Blocked">Blocked</option>     
-                        </select>
-                        <select
-                            type="select"
-                            value={kanbanId}
-                            onChange={e => setkanbanId(e.target.value)}
-                            placeholder="kanban Id"
-                        >
-                            <option value="Panel">Panel</option>
-                            <option value="Work">Work</option>  
-                        </select>
-                        <textarea
-                            value={description}
-                            onChange={e => setDescription(e.target.value)}
-                            placeholder="Описание задачи"
-                        />
-                        <button onClick={handleApplyChanges}>Применить</button>
-                        <button onClick={() => {
+                         
+                        <div className='modal-actions'>
+                        <button className='modal-save' onClick={handleApplyChanges}>Применить</button>
+                        <button className='modal-save'onClick={()=>{
+                            if (window.confirm('Уверены что хотите удалить задачу?')) {
+                                handleDeleteTask(editingTask.task_id)}}
+                            }
+                           
+                            >Удалить</button>
+                        <button className='modal-close' onClick={() => {
                             if (taskName !== editingTask.name || assignee !== editingTask.assignee || description !== editingTask.description) {
                                 if (window.confirm('Уверены что хотите закрыть без изменений?')) {
                                     resetTaskInputs();
@@ -449,6 +459,59 @@ useEffect(() => {
                                 resetTaskInputs();
                             }
                         }}>Закрыть</button>
+                        </div>
+                       
+                        <div className='modal-details'>
+                            <div className='modal-details-header'><b>Details</b></div>
+                            
+                        <select
+                            type="select"
+                            value={kanbanId}
+                            onChange={e => setkanbanId(e.target.value)}
+                            placeholder="kanban Id"
+                            className='modal-kanbanid'
+                        >
+                            <option value="Panel">Panel</option>
+                            <option value="Work">Work</option>  
+                        </select>
+                        <select
+                            type="select"
+                            value={taskStatus}
+                            onChange={e => settaskStatus(e.target.value)}
+                            placeholder="Статус"
+                            className='modal-priority'
+                        >
+                            <option value="Backlog">Backlog</option>
+                            <option value="To do">To do</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Done">Done</option>
+                                
+                        </select>
+                        
+                        <select
+                            type="select"
+                            value={taskPriority}
+                            onChange={e => settaskPriority(e.target.value)}
+                            placeholder="Приоритет"
+                            className='modal-priority'
+                        >
+                            
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                            <option value="Critical">Critical</option>
+                            <option value="Blocked">Blocked</option>     
+                        </select>
+                        </div>
+                        <div className='modal-description-header'><b>Description</b></div>
+                        <textarea
+                            value={description}
+                            onChange={e => setDescription(e.target.value)}
+                            placeholder="Описание задачи"
+                            className='modal-desc'
+                        />
+                      
+                        
                     </div>
                 )}
             </div>
