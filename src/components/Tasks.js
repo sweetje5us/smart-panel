@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useCallback  } from 'react';
+import React, { useState, useEffect, useCallback, useRef   } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { useParams, useNavigate   } from 'react-router-dom';
 import ip from "./ip.json";
+import {Link } from "react-router-dom";
 import './KanbanBoard.css';
 
 
@@ -20,6 +22,8 @@ const getRandomColor = () => {
 
 
 const KanbanBoard = () => {
+    const { task_id } = useParams();
+    const navigate = useNavigate ();
     const [tasks, setTasks] = useState(initialTasks);
     const [modalOpen, setModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
@@ -31,15 +35,16 @@ const KanbanBoard = () => {
     const [editingTask, setEditingTask] = useState(null);
     const [selectedTask, setSelectedTask] = useState(null);
     const [taskStatus, settaskStatus] = useState('');
+    const nameRef = useRef(null);
+    const descriptionRef = useRef(null);
 
-    const fetchTasks = async () => {
+    const fetchTasks = useCallback(async () => {
         try {
             const response = await fetch(`${address}/api/tasks`);
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-
             const formattedTasks = data.reduce((acc, task) => {
                 if (!acc[task.status]) {
                     acc[task.status] = [];
@@ -54,7 +59,65 @@ const KanbanBoard = () => {
         } catch (error) {
             console.error('Error fetching tasks:', error);
         }
+    }, []);
+    const adjustHeight = (textarea) => {
+        textarea.style.height = 'auto'; // Сбрасываем высоту
+        textarea.style.height = `${textarea.scrollHeight}px`; // Устанавливаем высоту в соответствии с содержимым
     };
+    
+    useEffect(() => {
+        if (nameRef.current) {
+            adjustHeight(nameRef.current);
+        }
+        if (descriptionRef.current) {
+            adjustHeight(descriptionRef.current);
+        }
+    }, [taskName, description]); 
+
+    useEffect(() => {
+        fetchTasks(); // Загружаем задачи при монтировании компонента
+        const interval = setInterval(fetchTasks, 120000);
+        return () => clearInterval(interval);
+    }, [fetchTasks]);
+
+    useEffect(() => {
+        if (task_id) {
+            const taskToEdit = Object.values(tasks).flat().find(task => task.task_id === task_id);
+            if (taskToEdit) {
+                openEditModal(taskToEdit);
+            }
+        }
+    }, [task_id, tasks]);
+
+    const openEditModal = (task) => {
+        setEditingTask(task);
+        setTaskName(task.name);
+        setAssignee(task.assignee);
+        settaskPriority(task.priority);
+        setkanbanId(task.kanban_id);
+        setDescription(task.description);
+        settaskStatus(task.status);
+        setEditModalOpen(true);
+        setSelectedTask(task);
+        navigate(`/tasks/${task.task_id}`, { replace: true });
+    };
+
+    // useEffect для открытия модального окна редактирования при загрузке компонента
+    useEffect(() => {
+        if (task_id) {
+            const taskToEdit = Object.values(tasks).flat().find(task => task.task_id === task_id);
+            if (taskToEdit) {
+                openEditModal(taskToEdit);
+            }
+        }
+    }, [task_id, tasks]);
+
+    useEffect(() => {
+        fetchTasks();
+        const interval = setInterval(fetchTasks, 120000);
+        return () => clearInterval(interval);
+    }, []);
+
     const handleTaskClick = (task) => {
         setEditingTask(task);
         setTaskName(task.name);
@@ -306,27 +369,17 @@ useEffect(() => {
                                 <div key={task.task_id} className="task" style={{ backgroundColor: task.backgroundColor }} draggable onDragStart={e => handleDragStart(e, task.task_id)}>
                                     <div className="task-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <div className='task-user'>
-                                            <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path fillRule="evenodd" clipRule="evenodd" d="M11.3191 0.837689L19.772 9.47967C20.0753 9.79016 20.0753 10.2932 19.772 10.6037L16.9613 13.4772L16.8628 13.578L10.4998 20.0833L7.04081 16.547L1.22749 10.6037C0.924169 10.2932 0.924169 9.79016 1.22749 9.47967L4.13674 6.50534L10.4998 0L11.3191 0.837689ZM7.59573 10.0416L10.4998 13.0107L13.4039 10.0416L10.4998 7.07261L7.59573 10.0416Z" fill="#4085F7"/>
-                                                <path fillRule="evenodd" clipRule="evenodd" d="M10.501 7.07271C8.59961 5.12858 8.59035 1.97971 10.4802 0.0239258L4.125 6.51867L7.58395 10.055L10.501 7.07271Z" fill="url(#paint0_linear_1356_4310)"/>
-                                                <path fillRule="evenodd" clipRule="evenodd" d="M13.4118 10.0337L10.5 13.0107C11.4177 13.9484 11.9333 15.2205 11.9333 16.547C11.9333 17.8735 11.4177 19.1456 10.5 20.0833L16.8708 13.57L13.4118 10.0337Z" fill="url(#paint1_linear_1356_4310)"/>
-                                                <defs>
-                                                    <linearGradient id="paint0_linear_1356_4310" x1="8.66474" y1="0.879189" x2="3.73753" y2="2.91439" gradientUnits="userSpaceOnUse">
-                                                        <stop offset="0.18" stopColor="#0052CC"/>
-                                                        <stop offset="1" stopColor="#2684FF"/>
-                                                    </linearGradient>
-                                                    <linearGradient id="paint1_linear_1356_4310" x1="12.3665" y1="19.1721" x2="17.2841" y2="17.1516" gradientUnits="userSpaceOnUse">
-                                                        <stop offset="0.18" stopColor="#0052CC"/>
-                                                        <stop offset="1" stopColor="#2684FF"/>
-                                                    </linearGradient>
-                                                </defs>
-                                            </svg>
+                                        <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Jira Software</title><path d="M12.004 0c-2.35 2.395-2.365 6.185.133 8.585l3.412 3.413-3.197 3.198a6.501 6.501 0 0 1 1.412 7.04l9.566-9.566a.95.95 0 0 0 0-1.344L12.004 0zm-1.748 1.74L.67 11.327a.95.95 0 0 0 0 1.344C4.45 16.44 8.22 20.244 12 24c2.295-2.298 2.395-6.096-.08-8.533l-3.47-3.469 3.2-3.2c-1.918-1.955-2.363-4.725-1.394-7.057z"/></svg>
                                         </div>
-                                        <div className="task-name" style={{ flexGrow: 1, margin: '0 10px' }} onClick={() => handleTaskClick(task)}>
-                                            <b>{task.name}</b>
+                                        <div className="task-name" style={{ flexGrow: 1, margin: '0 10px' }} >
+                                            {/* Убедитесь, что путь правильный */}
+                                            <Link to={`/tasks/${task.task_id}`} onClick={() => openEditModal(task)}>
+                                                <b>{task.name}</b>
+                                            </Link>
                                         </div>
                                     </div>
                                     <div className="task-body">
+                                    
                                         <div className="priority">
                                             <div className="kanban-icon">
                                                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -336,6 +389,7 @@ useEffect(() => {
                                             </div>
                                             <div className="task-kanbanid">{task.kanban_id}</div>
                                         </div>
+                                        
                                         <div className="task-priority" style={{ display: 'flex', alignItems: 'flex-start' }}>
     <svg style={{ marginRight: '5px' }} width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect width="10" height="10" rx="5" fill={
@@ -348,7 +402,12 @@ useEffect(() => {
         } />
     </svg>
     <span style={{ marginLeft: '5px' }}>{task.priority}</span>
+    
+   
 </div>
+
+
+
                                     </div>
                                 </div>
                             ))}
@@ -376,6 +435,7 @@ useEffect(() => {
                             onChange={e => setTaskName(e.target.value)}
                             placeholder="Название задачи"
                         />
+                       
                         <input
                             type="text"
                             value={assignee}
@@ -427,29 +487,29 @@ useEffect(() => {
                         overflowY: 'auto',
                         transform: editModalOpen ? 'translateX(0)' : 'translateX(100%)'
                     }}>
-                        <div className='modal-header'>Edit Task</div>
-                        <input
-                            type="text"
-                            value={assignee}
-                            onChange={e => setAssignee(e.target.value)}
-                            placeholder="Исполнитель"
-                            className='modal-user'
-                        />                        <input
-                            type="text"
+                        <div className='modal-header'>{task_id}</div>
+                                              
+                        <textarea
+                        ref={nameRef}
                             value={taskName}
                             onChange={e => setTaskName(e.target.value)}
-                            placeholder="Название задачи"
+                            placeholder="Описание задачи"
                             className='modal-name'
                         />
                          
                         <div className='modal-actions'>
+                        
                         <button className='modal-save' onClick={handleApplyChanges}>Применить</button>
+                        
+                        <Link to="/tasks">
                         <button className='modal-save'onClick={()=>{
                             if (window.confirm('Уверены что хотите удалить задачу?')) {
                                 handleDeleteTask(editingTask.task_id)}}
                             }
                            
                             >Удалить</button>
+                            </Link>
+                            <Link to="/tasks">
                         <button className='modal-close' onClick={() => {
                             if (taskName !== editingTask.name || assignee !== editingTask.assignee || description !== editingTask.description) {
                                 if (window.confirm('Уверены что хотите закрыть без изменений?')) {
@@ -459,6 +519,9 @@ useEffect(() => {
                                 resetTaskInputs();
                             }
                         }}>Закрыть</button>
+                        </Link>
+                        
+                      
                         </div>
                        
                         <div className='modal-details'>
@@ -503,8 +566,24 @@ useEffect(() => {
                             <option value="Blocked">Blocked</option>     
                         </select>
                         </div>
+                        <div className='modal-details'>
+                            <div className='modal-details-header'><b>People</b></div>
+                          <div><select
+                            type="select"
+                            value={assignee}
+                            onChange={e => setAssignee(e.target.value)}
+                            placeholder="Исполнитель"
+                            className='modal-kanbanid'
+                        >
+                            <option value="Евгений">Евгений</option>
+                            <option value="Александра">Александра</option>  
+                        </select></div> 
+                        
+                        
+                        </div>
                         <div className='modal-description-header'><b>Description</b></div>
                         <textarea
+                        ref={descriptionRef}
                             value={description}
                             onChange={e => setDescription(e.target.value)}
                             placeholder="Описание задачи"

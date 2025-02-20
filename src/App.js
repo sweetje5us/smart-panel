@@ -9,6 +9,7 @@ import Map from './components/Map';
 import Notifications from './components/Notifications';
 import Info from './components/Info';
 import Tasks from './components/Tasks';
+import Task from './components/Task';
 
 
 const App = () => {
@@ -28,6 +29,7 @@ const App = () => {
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/info" element={<Info />} />
             <Route path="/tasks" element={<Tasks />} />
+            <Route path="/tasks/:task_id" element={<Tasks />} /> {/* Добавляем маршрут для редактирования задачи */}
           </Routes>
         </div>
       </div>

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import token from '../token.json';
 import ip from '../ip.json';
+import JiraTicketDetails from './JiraTicket';
+import '../widgets/JiraTiket.css';
 
 const NewsComponent = ({ index }) => {
   const [userData, setUserData] = useState([]);
@@ -54,13 +56,19 @@ const NewsComponent = ({ index }) => {
 
   return <div></div>;
 };
-
+const ticket = {
+  key: 'SCRUM-23',
+  summary: 'As a user, I\'d like a historical story to show in reports',
+  status: 'DONE',
+  assignee: 'admin',
+};
 const NewsList = () => {
   return (
     <div>
-      {Array.from({ length: 6 }, (_, index) => (
+      {/* {Array.from({ length: 6 }, (_, index) => (
         <NewsComponent key={index} index={index} />
-      ))}
+      ))} */}
+      <JiraTicketDetails ticket={ticket} />
     </div>
   );
 };
