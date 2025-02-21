@@ -3,6 +3,20 @@ import { v4 as uuidv4 } from 'uuid';
 import { useParams, useNavigate   } from 'react-router-dom';
 import ip from "./ip.json";
 import {Link } from "react-router-dom";
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import { styled, alpha } from '@mui/material/styles';
+import Chip from '@mui/material/Chip';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import Stack from '@mui/material/Stack';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import FormGroup from '@mui/material/FormGroup';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import './KanbanBoard.css';
 
 
@@ -19,7 +33,59 @@ const colors = ['#FFFFFF'];
 const getRandomColor = () => {
     return colors[Math.floor(Math.random() * colors.length)];
 };
+const Sprint = [
+    { title: '1 Итерация', sprint_date: '24.02.2025-10.03.2025', id: 'unique_sprint_id' },
 
+  ];
+  const Board = [
+    { title: 'Panel', id: 'unique_sprint_id' },
+    { title: 'Work', id: 'unique_sprint_id' },
+
+  ];
+
+const StyledMenu = styled((props) => (
+    <Menu
+      elevation={0}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'right',
+      }}
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      {...props}
+    />
+  ))(({ theme }) => ({
+    '& .MuiPaper-root': {
+      borderRadius: 6,
+      marginTop: theme.spacing(1),
+      minWidth: 180,
+      height: 180,
+      color: 'rgb(55, 65, 81)',
+      boxShadow:
+        'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
+      '& .MuiMenu-list': {
+        padding: '4px 0',
+      },
+      '& .MuiMenuItem-root': {
+        '& .MuiSvgIcon-root': {
+          fontSize: 18,
+          color: theme.palette.text.secondary,
+          marginRight: theme.spacing(1.5),
+        },
+        '&:active': {
+          backgroundColor: alpha(
+            theme.palette.primary.main,
+            theme.palette.action.selectedOpacity,
+          ),
+        },
+      },
+      ...theme.applyStyles('dark', {
+        color: theme.palette.grey[300],
+      }),
+    },
+  }));
 
 const KanbanBoard = () => {
     const { task_id } = useParams();
@@ -37,7 +103,14 @@ const KanbanBoard = () => {
     const [taskStatus, settaskStatus] = useState('');
     const nameRef = useRef(null);
     const descriptionRef = useRef(null);
+    const [showBacklog, setShowBacklog] = useState(false);
+    const [uniqueKanbanIds, setUniqueKanbanIds] = useState([]);
+    const [filteredTasks, setFilteredTasks] = useState(initialTasks); // Состояние для хранения отфильтрованных задач
+    const [filters, setFilters] = useState(initialTasks); // Состояние для хранения отфильтрованных задач
 
+    const handleCheckboxChange = (event) => {
+        setShowBacklog(event.target.checked); // Обновляем состояние чекбокса
+    };
     const fetchTasks = useCallback(async () => {
         try {
             const response = await fetch(`${address}/api/tasks`);
@@ -54,12 +127,17 @@ const KanbanBoard = () => {
                 }
                 return acc;
             }, { ...initialTasks });
-
+    
             setTasks(formattedTasks);
+            const kanbanIds = [...new Set(data.map(task => task.kanban_id))];
+            setUniqueKanbanIds(kanbanIds.map(id => ({ title: id }))); // Форматируем для Autocomplete
+            // Применяем фильтры к новым данным
+            const updatedFilteredTasks = applyFilters(Object.values(formattedTasks).flat(), filters);
+            setFilteredTasks(updatedFilteredTasks);
         } catch (error) {
             console.error('Error fetching tasks:', error);
         }
-    }, []);
+    }, [filters]);
     const adjustHeight = (textarea) => {
         textarea.style.height = 'auto'; // Сбрасываем высоту
         textarea.style.height = `${textarea.scrollHeight}px`; // Устанавливаем высоту в соответствии с содержимым
@@ -73,7 +151,75 @@ const KanbanBoard = () => {
             adjustHeight(descriptionRef.current);
         }
     }, [taskName, description]); 
-
+    const handleKanbanIdChange = (event, value) => {
+        // Фильтруем задачи по выбранным kanbanId
+        if (value.length > 0) {
+            const selectedKanbanIds = value.map(item => item.title); // Получаем массив выбранных kanbanId
+            const filtered = Object.keys(tasks).reduce((acc, status) => {
+                acc[status] = tasks[status].filter(task => selectedKanbanIds.includes(task.kanban_id)); // Проверяем на соответствие любому из выбранных kanbanId
+                return acc;
+            }, { ...initialTasks });
+    
+            setFilteredTasks(filtered);
+        } else {
+            setFilteredTasks(tasks); // Если ничего не выбрано, показываем все задачи
+        }
+    };
+    const applyFilters = (tasks, filters) => {
+        const result = {}; // создаем новый объект для хранения отфильтрованных задач
+    
+        for (const status of Object.keys(initialTasks)) {
+            result[status] = tasks.filter(task => task.status === status && (filters.kanbanId ? task.kanban_id === filters.kanbanId : true));
+            // Убедитесь, что result[status] - это массив
+        }
+    
+        return result; // возвращаем объект с массивами
+    };
+    
+    
+const handleFilterChange = async (newFilters) => {
+    setFilters(newFilters);
+    await fetchTasks(); // Получаем новые задачи с сервера
+};
+    const onDragEnd = (result) => {
+        if (!result.destination) return;
+    
+        const { source, destination } = result;
+    
+        // Проверяем, что источник и назначение разные
+        if (source.droppableId === destination.droppableId && source.index === destination.index) {
+            return; // Ничего не меняем, если перемещение не произошло
+        }
+    
+        // Получаем актуальные колонки задач для перемещения
+        const sourceColumn = filteredTasks[source.droppableId] || tasks[source.droppableId];
+        const destColumn = filteredTasks[destination.droppableId] || tasks[destination.droppableId];
+    
+        // Извлекаем перемещаемую задачу
+        const [movedTask] = sourceColumn.splice(source.index, 1);
+        destColumn.splice(destination.index, 0, movedTask);
+    
+        // Обновляем состояние с учетом фильтров
+        setTasks(prevTasks => ({
+            ...prevTasks,
+            [source.droppableId]: [...sourceColumn],
+            [destination.droppableId]: [...destColumn],
+        }));
+        fetchTasks();
+    
+        // Обновляем задачу на сервере
+        const updatedTask = { ...movedTask, status: destination.droppableId };
+        fetch(`${address}/api/tasks`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedTask)
+        }).catch(error => console.error('Ошибка при обновлении задачи:', error));
+        const updatedFilteredTasks = applyFilters(filteredTasks, filters);
+setFilteredTasks(updatedFilteredTasks);
+    };
+   
     useEffect(() => {
         fetchTasks(); // Загружаем задачи при монтировании компонента
         const interval = setInterval(fetchTasks, 120000);
@@ -129,6 +275,16 @@ const KanbanBoard = () => {
         setEditModalOpen(true);
         setSelectedTask(task);
     };
+    const generateTaskId = (kanbanId, taskCount) => {
+        // Извлекаем согласные буквы из kanbanId
+        const consonants = kanbanId.match(/[бвгджзйклмнпрстфхцчшщqwrtpsdfghjklzxcvbnm]/gi);
+        const firstTwoConsonants = consonants ? consonants.slice(0, 2).join('').toUpperCase() : 'XX'; // Если нет согласных, используем 'XX'
+        
+        // Форматируем числовую часть
+        const numericPart = String(taskCount).padStart(6, '0'); // Обеспечиваем 6-значное число
+    
+        return `${firstTwoConsonants}-${numericPart}`;
+    };
     
     const handleAddTask = async () => {
         if (!taskPriority || !kanbanId) {
@@ -136,8 +292,16 @@ const KanbanBoard = () => {
             return;
         }
     
+        // Получаем текущее количество задач в статусе 'Backlog' для генерации номера
+        let taskCount = tasks.Backlog.length + 1; // +1 для нового задания
+        let newTaskId = generateTaskId(kanbanId, taskCount);
+        const existingTaskIds = tasks.Backlog.map(task => task.task_id);
+        while (existingTaskIds.includes(newTaskId)) {
+            taskCount += 1; // Увеличиваем счётчик
+            newTaskId = generateTaskId(kanbanId, taskCount); // Генерируем новый task_id
+        }
         const newTask = {
-            task_id: uuidv4(),
+            task_id: newTaskId,
             kanban_id: kanbanId,
             name: taskName,
             assignee: assignee,
@@ -203,7 +367,7 @@ const KanbanBoard = () => {
             resetTaskInputs();
     
             // Обновляем список задач
-            await fetchTasks();
+            await fetchTasks(); 
     
         } catch (error) {
             console.error('Error updating task:', error);
@@ -226,42 +390,45 @@ const KanbanBoard = () => {
     const handleDrop = async (status, e) => {
         e.preventDefault();
         const taskId = e.dataTransfer.getData("text/plain");
-
+    
         if (!taskId) {
             console.error("taskId не найден в dataTransfer");
             return;
         }
-
+    
         let taskToMove = null;
-
-        setTasks(prevTasks => {
+    
+        setFilteredTasks(prevTasks => {
             const newTasks = { ...prevTasks };
-
+    
+            // Ищем задачу в текущем состоянии задач
             for (const key of Object.keys(newTasks)) {
                 const taskIndex = newTasks[key].findIndex(task => String(task.task_id) === String(taskId));
-
+    
                 if (taskIndex !== -1) {
                     taskToMove = newTasks[key][taskIndex];
-                    newTasks[key].splice(taskIndex, 1);
+                    newTasks[key].splice(taskIndex, 1); // Удаляем задачу из старого столбца
                     break;
                 }
             }
-
+    
             if (taskToMove) {
-                const updatedTask = { ...taskToMove, status };
-                newTasks[status].push(updatedTask);
-
+                taskToMove.status = status; // Обновляем статус задачи
+                newTasks[status] = newTasks[status] || []; // Убедитесь, что массив существует
+                newTasks[status].push(taskToMove); // Добавляем задачу в новый столбец
+    
+                // Обновляем задачу на сервере
                 fetch(`${address}/api/tasks`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(updatedTask)
+                    body: JSON.stringify(taskToMove)
                 }).catch(error => console.error('Ошибка при обновлении задачи:', error));
             } else {
                 console.error("Задача не найдена для перемещения:", taskId);
             }
-
+    
             return newTasks;
         });
     };
@@ -337,7 +504,19 @@ const KanbanBoard = () => {
         behavior: 'smooth'
     });
 };
-
+const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseA = () => {
+    setAnchorEl(null);
+    setModalOpen(true);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+    
+  };
 useEffect(() => {
     if (editModalOpen && selectedTask) {
         scrollToTaskColumn(selectedTask.status);
@@ -354,18 +533,110 @@ useEffect(() => {
         <>
             <h1>Kanban Board</h1>
             <div className={`kanban-board ${modalOpen || editModalOpen ? 'shifted' : ''}`}>
-                <button onClick={() => setModalOpen(true)}>+</button>
+                
+               
+                        <div>
+                            <div className='kanban-controls'>
+                            <Button
+        id="demo-customized-button"
+        aria-controls={open ? 'demo-customized-menu' : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? 'true' : undefined}
+        variant="contained"
+        disableElevation
+        onClick={handleClick}
+        endIcon={<KeyboardArrowDownIcon />}
+        style={{ maxHeight: '40px', minWidth: '100px' }} 
+      >
+        Create
+      </Button>
+      <StyledMenu
+        id="demo-customized-menu"
+        MenuListProps={{
+          'aria-labelledby': 'demo-customized-button',
+        }}
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={handleCloseA} disableRipple>
+        
+          Create Task
+        </MenuItem>
+        <MenuItem onClick={handleClose} disableRipple>
+         
+          Create Board
+        </MenuItem>
+       
+        <MenuItem onClick={handleClose} disableRipple>
+        
+          Create Sprint
+        </MenuItem>
+      </StyledMenu>
+     
+      <FormControlLabel
+    control={<Checkbox checked={showBacklog} onChange={handleCheckboxChange} />}
+    label="Backlog"
+/>
+
+    
+  
+<Stack spacing={0} sx={{ minWidth: 350 }}>
+                            <Autocomplete
+                                multiple
+                                id="tags-outlined"
+                                options={uniqueKanbanIds}
+                                getOptionLabel={(option) => option.title}
+                                onChange={handleKanbanIdChange}
+                                renderInput={(params) => (
+                                    <TextField {...params} placeholder="Board" />
+                                )}
+                            />
+                        </Stack>
+
+    <Stack spacing={0} sx={{ minWidth: 350 }}>
+        
+     
+      <Autocomplete
+        multiple
+        id="tags-outlined"
+        options={Sprint}
+        getOptionLabel={(option) => option.title}
+        defaultValue={[Sprint[0]]}
+        filterSelectedOptions
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            
+            placeholder="Sprint"
+          />
+        )}
+      />
+  
+   
+    </Stack>
+    </div>
+                            </div>
+      
                 <div className="columns">
-                    {Object.keys(tasks).map(status => (
+                    {Object.keys(filteredTasks).map(status => {
+                        {
+                            // Условие для отображения столбца Backlog
+                            if (status === "Backlog" && !showBacklog) {
+                                return null; // Если showBacklog false, не рендерим столбец
+                            }
+                    }
+                    return(
                         <div
                             key={status}
                             className="column"
                             draggable
                             onDrop={e => handleDrop(status, e)}
                             onDragOver={e => e.preventDefault()}
+                            
                         >
                             <h2 className="column-header">{status}</h2>
-                            {tasks[status].map(task => (
+                            {filteredTasks[status].map(task => (
                                 <div key={task.task_id} className="task" style={{ backgroundColor: task.backgroundColor }} draggable onDragStart={e => handleDragStart(e, task.task_id)}>
                                     <div className="task-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <div className='task-user'>
@@ -412,7 +683,8 @@ useEffect(() => {
                                 </div>
                             ))}
                         </div>
-                    ))}
+                    );
+                })}
                 </div>
                 
                 {modalOpen && (

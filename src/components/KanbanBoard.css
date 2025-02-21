@@ -16,7 +16,12 @@
    
 }
 
+.kanban-controls{
+    display: flex;
+    flex-direction: stroke;
 
+    
+}
 .columns {
     display: grid;
     justify-content: space-between;
