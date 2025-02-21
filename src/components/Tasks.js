@@ -106,10 +106,29 @@ const KanbanBoard = () => {
     const [showBacklog, setShowBacklog] = useState(false);
     const [uniqueKanbanIds, setUniqueKanbanIds] = useState([]);
     const [filteredTasks, setFilteredTasks] = useState(initialTasks); // Состояние для хранения отфильтрованных задач
-    const [filters, setFilters] = useState(initialTasks); // Состояние для хранения отфильтрованных задач
+    const [filters, setFilters] = useState({
+        kanbanId: [],
+        showBacklog: false,
+        sprint: ''
+    });
 
     const handleCheckboxChange = (event) => {
-        setShowBacklog(event.target.checked); // Обновляем состояние чекбокса
+        const checked = event.target.checked;
+        setFilters(prev => ({ ...prev, showBacklog: checked })); // Убедитесь, что обновляете состояние правильно
+    };
+    const handleSprintChange = (event, value) => {
+        setFilters(prev => ({ ...prev, sprint: value }));
+    };
+    const loadFiltersFromLocalStorage = () => {
+        const storedFilters = JSON.parse(localStorage.getItem('kanbanFilters'));
+        if (storedFilters) {
+            setFilters(storedFilters);
+        }
+    };
+
+    // Функция для сохранения фильтров в localStorage
+    const saveFiltersToLocalStorage = (newFilters) => {
+        localStorage.setItem('kanbanFilters', JSON.stringify(newFilters));
     };
     const fetchTasks = useCallback(async () => {
         try {
@@ -118,6 +137,7 @@ const KanbanBoard = () => {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
+            
             const formattedTasks = data.reduce((acc, task) => {
                 if (!acc[task.status]) {
                     acc[task.status] = [];
@@ -127,7 +147,7 @@ const KanbanBoard = () => {
                 }
                 return acc;
             }, { ...initialTasks });
-    
+            
             setTasks(formattedTasks);
             const kanbanIds = [...new Set(data.map(task => task.kanban_id))];
             setUniqueKanbanIds(kanbanIds.map(id => ({ title: id }))); // Форматируем для Autocomplete
@@ -137,6 +157,13 @@ const KanbanBoard = () => {
         } catch (error) {
             console.error('Error fetching tasks:', error);
         }
+    }, [filters]);
+    useEffect(() => {
+        loadFiltersFromLocalStorage();
+        fetchTasks();
+    }, []);
+    useEffect(() => {
+        saveFiltersToLocalStorage(filters);
     }, [filters]);
     const adjustHeight = (textarea) => {
         textarea.style.height = 'auto'; // Сбрасываем высоту
@@ -152,28 +179,20 @@ const KanbanBoard = () => {
         }
     }, [taskName, description]); 
     const handleKanbanIdChange = (event, value) => {
-        // Фильтруем задачи по выбранным kanbanId
-        if (value.length > 0) {
-            const selectedKanbanIds = value.map(item => item.title); // Получаем массив выбранных kanbanId
-            const filtered = Object.keys(tasks).reduce((acc, status) => {
-                acc[status] = tasks[status].filter(task => selectedKanbanIds.includes(task.kanban_id)); // Проверяем на соответствие любому из выбранных kanbanId
-                return acc;
-            }, { ...initialTasks });
-    
-            setFilteredTasks(filtered);
-        } else {
-            setFilteredTasks(tasks); // Если ничего не выбрано, показываем все задачи
-        }
+        const selectedKanbanIds = value.map(item => item.title);
+        setFilters(prev => ({ ...prev, kanbanId: selectedKanbanIds }));
     };
+    
     const applyFilters = (tasks, filters) => {
-        const result = {}; // создаем новый объект для хранения отфильтрованных задач
-    
+        const result = {};
         for (const status of Object.keys(initialTasks)) {
-            result[status] = tasks.filter(task => task.status === status && (filters.kanbanId ? task.kanban_id === filters.kanbanId : true));
-            // Убедитесь, что result[status] - это массив
+            result[status] = tasks.filter(task => 
+                task.status === status &&
+                (filters.kanbanId.length > 0 ? filters.kanbanId.includes(task.kanban_id) : true) &&
+                (filters.sprint ? task.sprint === filters.sprint : true)
+            );
         }
-    
-        return result; // возвращаем объект с массивами
+        return result;
     };
     
     
@@ -456,6 +475,7 @@ setFilteredTasks(updatedFilteredTasks);
                 return updatedTasks;
             });
             resetTaskInputs();
+            await fetchTasks();
         } catch (error) {
             console.error('Error deleting task:', error);
         }
@@ -575,7 +595,7 @@ useEffect(() => {
       </StyledMenu>
      
       <FormControlLabel
-    control={<Checkbox checked={showBacklog} onChange={handleCheckboxChange} />}
+    control={<Checkbox checked={filters.showBacklog} onChange={handleCheckboxChange} />}
     label="Backlog"
 />
 
@@ -602,6 +622,7 @@ useEffect(() => {
         id="tags-outlined"
         options={Sprint}
         getOptionLabel={(option) => option.title}
+        onChange={handleSprintChange}
         defaultValue={[Sprint[0]]}
         filterSelectedOptions
         renderInput={(params) => (
@@ -619,13 +640,10 @@ useEffect(() => {
                             </div>
       
                 <div className="columns">
-                    {Object.keys(filteredTasks).map(status => {
-                        {
-                            // Условие для отображения столбца Backlog
-                            if (status === "Backlog" && !showBacklog) {
-                                return null; // Если showBacklog false, не рендерим столбец
-                            }
-                    }
+                {Object.keys(filteredTasks).map(status => {
+        if (status === "Backlog" && !filters.showBacklog) {
+            return null; // Если showBacklog false, не рендерим столбец
+        }
                     return(
                         <div
                             key={status}
@@ -688,64 +706,81 @@ useEffect(() => {
                 </div>
                 
                 {modalOpen && (
-                    <div className="modal" style={{
-                        position: 'fixed',
-                        top: '0',
-                        right: '0',
-                        height: '100vh',
-                        width: '700px',
-                        transition: 'transform 0.3s',
-                        backgroundColor: '#FFFFFF',
-                        boxShadow: '-2px 0 5px rgba(0,0,0,0.1)',
-                        overflowY: 'auto',
-                        transform: modalOpen ? 'translateX(0)' : 'translateX(100%)'
-                    }}>
-                        <h2>Add Task</h2>
-                        <input
-                            type="text"
-                            value={taskName}
-                            onChange={e => setTaskName(e.target.value)}
-                            placeholder="Название задачи"
-                        />
-                       
-                        <input
-                            type="text"
+    <div className="modal" style={{
+        position: 'fixed',
+        top: '0',
+        right: '0',
+        height: '100vh',
+        width: '50%',
+        transition: 'transform 0.3s',
+        backgroundColor: '#FFFFFF',
+        boxShadow: '-2px 0 5px rgba(0,0,0,0.1)',
+        overflowY: 'auto',
+        transform: modalOpen ? 'translateX(0)' : 'translateX(100%)'
+    }}>
+        <div className='modal-header'>Добавить задачу</div>
+        <textarea
+            ref={nameRef}
+            value={taskName}
+            onChange={e => setTaskName(e.target.value)}
+            placeholder="Название задачи"
+            className='modal-name'
+        />
+        <div className='modal-actions'>
+            <button className='modal-save' onClick={handleAddTask}>Добавить</button>
+            <button className='modal-close' onClick={() => setModalOpen(false)}>Закрыть</button>
+        </div>
+        <div className='modal-details'>
+            <div className='modal-details-header'><b>Details</b></div>
+            <select
+                type="select"
+                value={kanbanId}
+                onChange={e => setkanbanId(e.target.value)}
+                placeholder="kanban Id"
+                className='modal-kanbanid'
+            >
+                <option value="Panel">Panel</option>
+                <option value="Work">Work</option>  
+            </select>
+            <select
+                type="select"
+                value={taskPriority}
+                onChange={e => settaskPriority(e.target.value)}
+                placeholder="Приоритет"
+                className='modal-priority'
+            >
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                <option value="Critical">Critical</option>
+                <option value="Blocked">Blocked</option>     
+            </select>
+        </div>
+        <div className='modal-details'>
+                            <div className='modal-details-header'><b>People</b></div>
+                          <div><select
+                            type="select"
                             value={assignee}
                             onChange={e => setAssignee(e.target.value)}
                             placeholder="Исполнитель"
-                        />
-                        <select
-                            type="select"
-                            value={taskPriority}
-                            onChange={e => settaskPriority(e.target.value)}
-                            placeholder="Приоритет"
+                            className='modal-kanbanid'
                         >
-                            <option value="" disabled>-</option>
-                            <option value="Low">Low</option>
-                            <option value="Medium">Medium</option>
-                            <option value="High">High</option>
-                            <option value="Critical">Critical</option>
-                            <option value="Blocked">Blocked</option>  
-                        </select>
-                        <select
-                            type="select"
-                            value={kanbanId}
-                            onChange={e => setkanbanId(e.target.value)}
-                            placeholder="kanban Id"
-                        >
-                            <option value="" disabled>-</option>
-                            <option value="Panel">Panel</option>
-                            <option value="Work">Work</option>  
-                        </select>
-                        <textarea
-                            value={description}
-                            onChange={e => setDescription(e.target.value)}
-                            placeholder="Описание задачи"
-                        />
-                        <button onClick={handleAddTask}>Добавить задачу</button>
-                        <button onClick={() => setModalOpen(false)}>Закрыть</button>
-                    </div>
-                )}
+                            <option value="Евгений">Евгений</option>
+                            <option value="Александра">Александра</option>  
+                        </select></div> 
+                        
+                        
+                        </div>
+        <div className='modal-description-header'><b>Описание</b></div>
+        <textarea
+            ref={descriptionRef}
+            value={description}
+            onChange={e => setDescription(e.target.value)}
+            placeholder="Описание задачи"
+            className='modal-desc'
+        />
+    </div>
+)}
                 {editModalOpen && (
                     <div className="modal" style={{
                         position: 'fixed',
