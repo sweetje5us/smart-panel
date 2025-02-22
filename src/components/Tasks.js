@@ -111,6 +111,11 @@ const KanbanBoard = () => {
         showBacklog: false,
         sprint: ''
     });
+    const [boards, setBoards] = useState([]); // Начальные доски
+    const [newBoardTitle, setNewBoardTitle] = useState('');
+    const [error, setError] = useState('');
+    const [boardModalOpen, setBoardModalOpen] = useState(false);
+
 
     const handleCheckboxChange = (event) => {
         const checked = event.target.checked;
@@ -125,11 +130,67 @@ const KanbanBoard = () => {
             setFilters(storedFilters);
         }
     };
+    const handleAddBoard = async () => {
+       
+        if (!newBoardTitle) {
+            setError('Название доски не может быть пустым.');
+            return;
+        }
+        const isDuplicate = boards.some(board => board.title === newBoardTitle);
+        if (isDuplicate) {
+            setError('Доска с таким названием уже существует.');
+            console.error('Доска с таким названием уже существует.', error);
+            return;
+        }
+    
+        const newBoard = { title: newBoardTitle };
+        setBoards([...boards, newBoard]);
+        setNewBoardTitle('');
+        setError('');
+        try {
+            await fetch(`${address}/api/boards`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newBoard)
+            });
+        } catch (error) {
+            console.error('Ошибка при добавлении доски:', error);
+        }
+    
+        resetBoardInputs(); // Сбросить поля ввода
+        setBoardModalOpen(false)
+    };
+    
 
     // Функция для сохранения фильтров в localStorage
     const saveFiltersToLocalStorage = (newFilters) => {
         localStorage.setItem('kanbanFilters', JSON.stringify(newFilters));
     };
+    async function fetchBoards() {
+        try {
+            const response = await fetch(`${address}/api/boards`);
+            if (!response.ok) {
+                throw new Error('Ошибка при получении данных');
+            }
+            const data = await response.json();
+           
+
+            // Предполагаем, что каждая доска имеет поле title
+            const transformedBoards = data.map(board => ({
+                title: board.title,
+                kanban_id: board.title // Используем title как kanban_id
+            }));
+
+            setBoards(transformedBoards);
+        } catch (error) {
+            console.error('Ошибка при получении досок:', error);
+        }
+    }
+    useEffect(() => {
+        fetchBoards();
+    }, []);
     const fetchTasks = useCallback(async () => {
         try {
             const response = await fetch(`${address}/api/tasks`);
@@ -149,8 +210,8 @@ const KanbanBoard = () => {
             }, { ...initialTasks });
             
             setTasks(formattedTasks);
-            const kanbanIds = [...new Set(data.map(task => task.kanban_id))];
-            setUniqueKanbanIds(kanbanIds.map(id => ({ title: id }))); // Форматируем для Autocomplete
+        const kanbanIds = [...new Set([...data.map(task => task.kanban_id), ...boards.map(board => board.title)])]; // Обновить список kanbanId
+        setUniqueKanbanIds(kanbanIds.map(id => ({ title: id })));
             // Применяем фильтры к новым данным
             const updatedFilteredTasks = applyFilters(Object.values(formattedTasks).flat(), filters);
             setFilteredTasks(updatedFilteredTasks);
@@ -386,7 +447,7 @@ setFilteredTasks(updatedFilteredTasks);
             resetTaskInputs();
     
             // Обновляем список задач
-            await fetchTasks(); 
+            fetchTasks(); 
     
         } catch (error) {
             console.error('Error updating task:', error);
@@ -475,7 +536,8 @@ setFilteredTasks(updatedFilteredTasks);
                 return updatedTasks;
             });
             resetTaskInputs();
-            await fetchTasks();
+            fetchTasks();
+           
         } catch (error) {
             console.error('Error deleting task:', error);
         }
@@ -533,10 +595,17 @@ const [anchorEl, setAnchorEl] = React.useState(null);
     setAnchorEl(null);
     setModalOpen(true);
   };
+  const handleCloseB = () => {
+    setAnchorEl(null);
+    setBoardModalOpen(true); 
+  };
   const handleClose = () => {
     setAnchorEl(null);
     
   };
+  const resetBoardInputs = () => {
+    setkanbanId(''); // Сбросить значение поля ввода для названия доски
+};
 useEffect(() => {
     if (editModalOpen && selectedTask) {
         scrollToTaskColumn(selectedTask.status);
@@ -583,7 +652,7 @@ useEffect(() => {
         
           Create Task
         </MenuItem>
-        <MenuItem onClick={handleClose} disableRipple>
+        <MenuItem onClick={handleCloseB} disableRipple>
          
           Create Board
         </MenuItem>
@@ -598,7 +667,33 @@ useEffect(() => {
     control={<Checkbox checked={filters.showBacklog} onChange={handleCheckboxChange} />}
     label="Backlog"
 />
-
+{boardModalOpen && (
+    <div className="modal" style={{
+        position: 'fixed',
+        top: '0',
+        right: '0',
+        height: '100vh',
+        width: '50%',
+        transition: 'transform 0.3s',
+        backgroundColor: '#FFFFFF',
+        boxShadow: '-2px 0 5px rgba(0,0,0,0.1)',
+        overflowY: 'auto',
+        transform: boardModalOpen ? 'translateX(0)' : 'translateX(100%)'
+    }}>
+        <div className='modal-header'>Создать доску</div>
+        <input
+            type="text"
+            value={newBoardTitle}
+            onChange={e => setNewBoardTitle(e.target.value)}
+            placeholder="Название доски"
+            className='modal-kanbanid'
+        />
+        <div className='modal-actions'>
+            <button className='modal-save' onClick={handleAddBoard}>Создать</button>
+            <button className='modal-close' onClick={() => setBoardModalOpen(false)}>Закрыть</button>
+        </div>
+    </div>
+)}
     
   
 <Stack spacing={0} sx={{ minWidth: 350 }}>
@@ -733,15 +828,18 @@ useEffect(() => {
         <div className='modal-details'>
             <div className='modal-details-header'><b>Details</b></div>
             <select
-                type="select"
-                value={kanbanId}
-                onChange={e => setkanbanId(e.target.value)}
-                placeholder="kanban Id"
-                className='modal-kanbanid'
-            >
-                <option value="Panel">Panel</option>
-                <option value="Work">Work</option>  
-            </select>
+    type="select"
+    value={kanbanId}
+    onChange={e => setkanbanId(e.target.value)}
+    placeholder="kanban Id"
+    className='modal-kanbanid'
+>
+    {boards.map(board => (
+        <option key={board.kanban_id} value={board.kanban_id}>
+            {board.title}
+        </option>
+    ))}
+</select>
             <select
                 type="select"
                 value={taskPriority}
@@ -811,7 +909,10 @@ useEffect(() => {
                         <Link to="/tasks">
                         <button className='modal-save'onClick={()=>{
                             if (window.confirm('Уверены что хотите удалить задачу?')) {
-                                handleDeleteTask(editingTask.task_id)}}
+                                handleDeleteTask(editingTask.task_id)
+                                
+                            }}
+                                
                             }
                            
                             >Удалить</button>

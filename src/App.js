@@ -10,6 +10,8 @@ import Notifications from './components/Notifications';
 import Info from './components/Info';
 import Tasks from './components/Tasks';
 import Task from './components/Task';
+import User from './components/User';
+import Settings from './components/Settings';
 
 
 const App = () => {
@@ -28,6 +30,8 @@ const App = () => {
             <Route path="/map" element={<Map />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/info" element={<Info />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/user" element={<User />} />
             <Route path="/tasks" element={<Tasks />} />
             <Route path="/tasks/:task_id" element={<Tasks />} /> {/* Добавляем маршрут для редактирования задачи */}
           </Routes>

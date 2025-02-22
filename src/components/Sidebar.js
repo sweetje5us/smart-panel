@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse, faHouseLaptop, faCartShopping, faLocationArrow, faBell, faNewspaper, faPlay, faArrowLeft, faArrowRight, faTimes, faTasks, faCog } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faRadiation, faHouseLaptop, faCartShopping, faLocationArrow, faBell, faNewspaper, faPlay, faArrowLeft, faArrowRight, faTimes, faTasks, faCog } from '@fortawesome/free-solid-svg-icons';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -31,6 +31,7 @@ const Sidebar = () => {
   };
 
   const menuItems = [
+    
     { text: 'Главная', icon: faHouse, path: '/' },
     { text: 'Задачи', icon: faTasks, path: '/tasks' },
     { text: 'Умный дом', icon: faHouseLaptop, path: '/smart-home' },
@@ -40,6 +41,7 @@ const Sidebar = () => {
     { text: 'Новости УК', icon: faNewspaper, path: '/info' },
     { text: 'Музыка', icon: faPlay, action: toggleMusic },
     { text: 'Настройки', icon: faCog, path: '/settings' }, // раздел "Настройки"
+    { text: 'Пользователь', icon: faRadiation, path: '/user' },
     { text: 'Время', time: currentTime }, // раздел "Время"
     { text: 'Погода', action: null } // раздел "Погода"
   ];
