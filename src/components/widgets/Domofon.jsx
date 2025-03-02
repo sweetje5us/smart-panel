@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Modal from 'react-modal';
+import Button from '@mui/material/Button';
 
 // Установите элемент приложения для доступности
 Modal.setAppElement('#root'); // Предполагается, что корневой элемент имеет id="root"
@@ -142,16 +143,16 @@ const VideoStream = () => {
 
   return (
     <div>
-      <h1>Выберите источник видеопотока</h1>
-      <button onClick={() => openModal({ type: 'http', url: alternativeVideoUrl })}>PC</button>
-      <button onClick={() => openModal({ type: 'ws' })}>iPad</button>
+      <h2>Видеодомофон</h2>
+      <Button onClick={() => openModal({ type: 'http', url: alternativeVideoUrl })}>PC</Button>
+      <Button onClick={() => openModal({ type: 'ws' })}>iPad</Button>
 
       <Modal isOpen={isModalOpen} onRequestClose={closeModal} contentLabel="Video Stream">
         <h2>Видеопоток</h2>
         {error && <p style={{ color: 'red' }}>{error}</p>}
         <video ref={videoRef} controls style={{ width: '100%', height: 'auto' }} />
-        {!isPlaying && <button onClick={handlePlay}>Play Video</button>}
-        <button onClick={closeModal}>Закрыть</button>
+        {!isPlaying && <Button onClick={handlePlay}>Play Video</Button>}
+        <Button onClick={closeModal}>Закрыть</Button>
       </Modal>
     </div>
   );

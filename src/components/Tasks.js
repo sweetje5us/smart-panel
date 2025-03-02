@@ -94,8 +94,8 @@ const KanbanBoard = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [taskName, setTaskName] = useState('');
-    const [taskPriority, settaskPriority] = useState('');
-    const [kanbanId, setkanbanId] = useState('');
+    const [taskPriority, settaskPriority] = useState('Low');
+    const [kanbanId, setkanbanId] = useState('Panel');
     const [assignee, setAssignee] = useState('');
     const [description, setDescription] = useState('');
     const [editingTask, setEditingTask] = useState(null);
@@ -168,26 +168,24 @@ const KanbanBoard = () => {
     const saveFiltersToLocalStorage = (newFilters) => {
         localStorage.setItem('kanbanFilters', JSON.stringify(newFilters));
     };
-    async function fetchBoards() {
+    const fetchBoards = async () => {
         try {
             const response = await fetch(`${address}/api/boards`);
             if (!response.ok) {
                 throw new Error('Ошибка при получении данных');
             }
             const data = await response.json();
-           
-
-            // Предполагаем, что каждая доска имеет поле title
             const transformedBoards = data.map(board => ({
                 title: board.title,
                 kanban_id: board.title // Используем title как kanban_id
             }));
 
             setBoards(transformedBoards);
+            setUniqueKanbanIds(transformedBoards); // Устанавливаем все доски сразу
         } catch (error) {
             console.error('Ошибка при получении досок:', error);
         }
-    }
+    };
     useEffect(() => {
         fetchBoards();
     }, []);
@@ -210,17 +208,26 @@ const KanbanBoard = () => {
             }, { ...initialTasks });
             
             setTasks(formattedTasks);
-        const kanbanIds = [...new Set([...data.map(task => task.kanban_id), ...boards.map(board => board.title)])]; // Обновить список kanbanId
-        setUniqueKanbanIds(kanbanIds.map(id => ({ title: id })));
+
+            // Обновляем уникальные kanbanId, включая все доски
+            const kanbanIds = [
+                ...new Set([
+                    ...data.map(task => task.kanban_id), // Уникальные kanban_id из задач
+                    ...boards.map(board => board.title)  // Уникальные названия созданных досок
+                ])
+            ].map(id => ({ title: id })); // Преобразуем в нужный формат
+            setUniqueKanbanIds(kanbanIds);
+
             // Применяем фильтры к новым данным
             const updatedFilteredTasks = applyFilters(Object.values(formattedTasks).flat(), filters);
             setFilteredTasks(updatedFilteredTasks);
         } catch (error) {
             console.error('Error fetching tasks:', error);
         }
-    }, [filters]);
+    }, [filters, boards]);
     useEffect(() => {
         loadFiltersFromLocalStorage();
+        fetchBoards();
         fetchTasks();
     }, []);
     useEffect(() => {

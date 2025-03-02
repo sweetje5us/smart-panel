@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Domofon from './widgets/Domofon.jsx';
+import Doorvideo from './widgets/Doorvideo.jsx';
 import OrdersTracking from './widgets/DCOrders.jsx'; // Импортируем OrdersTracking
 import CarouselWithDevices from './widgets/YandexHomeQuasar.jsx';
 import './widgets/Home.css'; // Импортируйте стили
@@ -16,7 +16,7 @@ const Home = () => {
     <div>
       <h1>Главная страница</h1>
       
-      {/* <Domofon /> */}
+      <Doorvideo />
       {/* Добавляем OrdersTracking и передаем onOrdersUpdate */}
       <OrdersTracking onOrdersUpdate={setHasOrders} />
       <CarouselWithDevices />

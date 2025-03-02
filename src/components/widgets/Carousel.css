@@ -5,7 +5,7 @@
   box-sizing: border-box; /* Учитывать отступы и границы в общей ширине */
   padding: 0 15px; /* Добавление внутреннего отступа для удобства */
   position: relative;
-  z-index: 1;
+  z-index: 0;
 }
 
 
@@ -14,6 +14,7 @@
   border-radius: 30px; /* Скругление углов */
   overflow: hidden; /* Скрыть переполнение */
   position: relative; /* Позиционирование для внутренних элементов */
+  
   
 }
 
@@ -88,6 +89,7 @@
   font-size: 20px; 
   color: #333; 
   text-align: center; 
+  
 }
 
 .top-right-blocks {
@@ -107,12 +109,14 @@
   z-index: 10; /* Убедитесь, что текст выше изображения */
   color: white; /* Цвет текста для лучшей читаемости */
   font-size: 24px; /* Размер шрифта */
+  
 }
 
 .devices-list {
   margin-top: 20px; /* Отступ сверху для списка устройств */
   padding: 10px; /* Отступы для контейнера списка устройств */
   border-radius: 5px; /* Скругление углов для списка устройств */
+ 
 }
 
 .devices-list h3 {
@@ -148,6 +152,7 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s; /* Плавный эффект при наведении */
   position: relative; /* Для абсолютного позиционирования внутренних элементов */
+  
   
 }
 
