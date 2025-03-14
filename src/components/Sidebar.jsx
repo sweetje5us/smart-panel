@@ -104,7 +104,7 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
           )}
           {isMobile && (
             <button className="mobile-close-btn" onClick={toggleSidebar}>
-              <span className="material-icons">close</span>
+              <span className="material-icons">Close</span>
             </button>
           )}
         </div>
