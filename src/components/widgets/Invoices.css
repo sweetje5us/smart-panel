@@ -1,0 +1,100 @@
+.invoices-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+
+.invoice-card {
+    background: var(--background-secondary);
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+}
+
+.invoice-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.invoice-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.invoice-info h3 {
+    font-size: 16px;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.invoice-amount {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.invoice-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.invoice-pay-button,
+.invoice-qr-button {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.invoice-pay-button {
+    background: var(--primary-color);
+    color: white;
+}
+
+.invoice-qr-button {
+    background: var(--background-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.invoice-pay-button:hover {
+    background: var(--primary-color-dark);
+}
+
+.invoice-qr-button:hover {
+    background: var(--background-hover);
+}
+
+.invoices-loading,
+.invoices-error {
+    text-align: center;
+    padding: 10px;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.invoices-error {
+    color: var(--error-color);
+}
+
+@media (max-width: 768px) {
+    .invoice-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .invoice-actions {
+        width: 100%;
+    }
+
+    .invoice-pay-button,
+    .invoice-qr-button {
+        flex: 1;
+    }
+} 

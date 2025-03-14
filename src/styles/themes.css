@@ -1,0 +1,497 @@
+/* Общие переменные */
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #6c757d;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --info-color: #17a2b8;
+}
+
+/* Светлая тема (по умолчанию) */
+[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #e9ecef;
+  
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --text-tertiary: #495057;
+  
+  --border-color: #dee2e6;
+  --border-color-hover: #adb5bd;
+  
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --shadow-color-hover: rgba(0, 0, 0, 0.15);
+  
+  --input-bg: #ffffff;
+  --input-border: #ced4da;
+  --input-text: #495057;
+  --input-placeholder: #6c757d;
+  
+  --card-bg: #ffffff;
+  --card-border: #dee2e6;
+  
+  --sidebar-bg: #f8f9fa;
+  --sidebar-text: #212529;
+  --sidebar-hover: #e9ecef;
+  --sidebar-active: #007bff;
+  --sidebar-active-text: #ffffff;
+  
+  --header-bg: #ffffff;
+  --header-text: #212529;
+  
+  --notification-bg: #ffffff;
+  --notification-text: #212529;
+  --notification-border: #dee2e6;
+  
+  --calendar-bg: #ffffff;
+  --calendar-text: #212529;
+  --calendar-border: #dee2e6;
+  --calendar-today: #007bff1a;
+  --calendar-selected: #007bff33;
+  
+  --task-bg: #ffffff;
+  --task-text: #212529;
+  --task-border: #dee2e6;
+  --task-hover: #f8f9fa;
+  
+  --error-bg: #f8d7da;
+  --error-text: #721c24;
+  --success-bg: #d4edda;
+  --success-text: #155724;
+}
+
+/* Темная тема */
+[data-theme="dark"] {
+  --bg-primary: #212529;
+  --bg-secondary: #343a40;
+  --bg-tertiary: #495057;
+  
+  --text-primary: #f8f9fa;
+  --text-secondary: #e9ecef;
+  --text-tertiary: #dee2e6;
+  
+  --border-color: #495057;
+  --border-color-hover: #6c757d;
+  
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --shadow-color-hover: rgba(0, 0, 0, 0.4);
+  
+  --input-bg: #343a40;
+  --input-border: #495057;
+  --input-text: #f8f9fa;
+  --input-placeholder: #adb5bd;
+  
+  --card-bg: #343a40;
+  --card-border: #495057;
+  
+  --sidebar-bg: #343a40;
+  --sidebar-text: #f8f9fa;
+  --sidebar-hover: #495057;
+  --sidebar-active: #0d6efd;
+  --sidebar-active-text: #ffffff;
+  
+  --header-bg: #212529;
+  --header-text: #f8f9fa;
+  
+  --notification-bg: #343a40;
+  --notification-text: #f8f9fa;
+  --notification-border: #495057;
+  
+  --calendar-bg: #343a40;
+  --calendar-text: #f8f9fa;
+  --calendar-border: #495057;
+  --calendar-today: #0d6efd1a;
+  --calendar-selected: #0d6efd33;
+  
+  --task-bg: #343a40;
+  --task-text: #f8f9fa;
+  --task-border: #495057;
+  --task-hover: #495057;
+  
+  --error-bg: #dc3545;
+  --error-text: #ffffff;
+  --success-bg: #28a745;
+  --success-text: #ffffff;
+}
+
+/* Анимация переключения тем */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Стили для контейнеров виджетов */
+.widget-container {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.widget-card {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px var(--shadow-color);
+  height: 100%;
+}
+
+.dc-widget {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px var(--shadow-color);
+  height: 100%;
+}
+
+[data-theme="loft-dark"] {
+  /* Основные цвета фона */
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --bg-tertiary: #404040;
+  
+  /* Акцентные цвета */
+  --accent-emerald: #00916e;
+  --accent-emerald-light: #00b386;
+  --accent-green: #435e52;
+  --accent-gray: #707070;
+  
+  /* Текстовые цвета */
+  --text-primary: #e0e0e0;
+  --text-secondary: #b0b0b0;
+  --text-tertiary: #808080;
+  
+  /* Цвета границ и теней */
+  --border-color: #404040;
+  --shadow-color: rgba(0, 0, 0, 0.4);
+  
+  /* Статусные цвета */
+  --primary-color: #00916e;
+  --success-color: #2d5a4c;
+  --warning-color: #b38f00;
+  --error-color: #a63d2f;
+  --info-color: #537a6c;
+  
+  /* Дополнительные цвета для компонентов */
+  --card-bg: #2d2d2d;
+  --card-hover: #353535;
+  --button-bg: #00916e;
+  --button-hover: #00b386;
+  --input-bg: #404040;
+  --input-border: #505050;
+  --scrollbar-thumb: #505050;
+  --scrollbar-track: #2d2d2d;
+}
+
+/* Общие стили для скроллбара */
+[data-theme="loft-dark"] *::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+[data-theme="loft-dark"] *::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+[data-theme="loft-dark"] *::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 4px;
+}
+
+[data-theme="loft-dark"] *::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-emerald);
+}
+
+/* Лофт светлый */
+[data-theme="loft-light"] {
+  /* Основные цвета фона */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --bg-tertiary: #e8e8e8;
+  
+  /* Акцентные цвета */
+  --accent-emerald: #00916e;
+  --accent-emerald-light: #00b386;
+  --accent-green: #4a7c6a;
+  --accent-gray: #808080;
+  
+  /* Текстовые цвета */
+  --text-primary: #2c2c2c;
+  --text-secondary: #606060;
+  --text-tertiary: #909090;
+  
+  /* Цвета границ и теней */
+  --border-color: #e0e0e0;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  
+  /* Статусные цвета */
+  --primary-color: #00916e;
+  --success-color: #4a7c6a;
+  --warning-color: #d4a72c;
+  --error-color: #d64045;
+  --info-color: #5b8a7c;
+  
+  /* Дополнительные цвета */
+  --card-bg: #ffffff;
+  --card-hover: #f8f8f8;
+  --button-bg: #00916e;
+  --button-hover: #00b386;
+  --input-bg: #ffffff;
+  --input-border: #e0e0e0;
+}
+
+/* Хэллоуин */
+[data-theme="halloween"] {
+  /* Основные цвета фона */
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --bg-tertiary: #363636;
+  
+  /* Акцентные цвета */
+  --accent-primary: #ff6b00;
+  --accent-secondary: #c95200;
+  --accent-tertiary: #4a3000;
+  
+  /* Текстовые цвета */
+  --text-primary: #ffffff;
+  --text-secondary: #d4d4d4;
+  --text-tertiary: #a0a0a0;
+  
+  /* Цвета границ и теней */
+  --border-color: #3d3d3d;
+  --shadow-color: rgba(255, 107, 0, 0.2);
+  
+  /* Статусные цвета */
+  --primary-color: #ff6b00;
+  --success-color: #ff8534;
+  --warning-color: #ffa066;
+  --error-color: #ff4545;
+  --info-color: #c95200;
+  
+  /* Дополнительные цвета */
+  --card-bg: #2d2d2d;
+  --card-hover: #363636;
+  --button-bg: #ff6b00;
+  --button-hover: #ff8534;
+  --input-bg: #363636;
+  --input-border: #4a4a4a;
+}
+
+/* Новый год */
+[data-theme="new-year"] {
+  /* Основные цвета фона */
+  --bg-primary: #0a1929;
+  --bg-secondary: #132f4c;
+  --bg-tertiary: #173a5e;
+  
+  /* Акцентные цвета */
+  --accent-primary: #4fc3f7;
+  --accent-secondary: #2196f3;
+  --accent-tertiary: #ffffff;
+  
+  /* Текстовые цвета */
+  --text-primary: #ffffff;
+  --text-secondary: #b6e3ff;
+  --text-tertiary: #82b1ff;
+  
+  /* Цвета границ и теней */
+  --border-color: #1d4ed8;
+  --shadow-color: rgba(79, 195, 247, 0.2);
+  
+  /* Статусные цвета */
+  --primary-color: #4fc3f7;
+  --success-color: #81d4fa;
+  --warning-color: #fff176;
+  --error-color: #ff8a80;
+  --info-color: #2196f3;
+  
+  /* Дополнительные цвета */
+  --card-bg: #132f4c;
+  --card-hover: #173a5e;
+  --button-bg: #4fc3f7;
+  --button-hover: #81d4fa;
+  --input-bg: #173a5e;
+  --input-border: #1d4ed8;
+  
+  /* Эффекты */
+  --snow-sparkle: #ffffff;
+  --ice-highlight: rgba(255, 255, 255, 0.1);
+}
+
+/* Стили для основного контента в теме Новый год */
+[data-theme="new-year"] .app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+[data-theme="new-year"] .content-container {
+  flex: 1;
+  padding: 24px;
+  margin-left: 64px;
+  position: relative;
+  z-index: 1;
+}
+
+[data-theme="new-year"] .sidebar.expanded + .content-container {
+  margin-left: 260px;
+}
+
+@media (max-width: 768px) {
+  [data-theme="new-year"] .content-container {
+    margin-left: 0;
+    padding: 16px;
+    padding-top: 64px;
+  }
+  
+  [data-theme="new-year"] .sidebar.expanded + .content-container {
+    margin-left: 0;
+  }
+}
+
+/* Скандинавская тема */
+[data-theme="scandinavian"] {
+  /* Основные цвета фона */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f7f7f7;
+  --bg-tertiary: #f0f0f0;
+  
+  /* Акцентные цвета */
+  --accent-primary: #d4c5b5;
+  --accent-secondary: #e6d5c5;
+  --accent-tertiary: #f2e5d5;
+  
+  /* Текстовые цвета */
+  --text-primary: #2c3338;
+  --text-secondary: #6f7c82;
+  --text-tertiary: #a6b5b5;
+  
+  /* Цвета границ и теней */
+  --border-color: #e6e9ea;
+  --shadow-color: rgba(212, 197, 181, 0.15);
+  
+  /* Статусные цвета */
+  --primary-color: #d4c5b5;
+  --success-color: #9bab9b;
+  --warning-color: #d4c5a1;
+  --error-color: #c1a7a7;
+  --info-color: #a7b8c1;
+  
+  /* Дополнительные цвета */
+  --card-bg: #faf7f4;
+  --card-hover: #f2e5d5;
+  --button-bg: #d4c5b5;
+  --button-hover: #e6d5c5;
+  --input-bg: #ffffff;
+  --input-border: #e6d5c5;
+  
+  /* Цвета для виджетов */
+  --widget-bg: #faf7f4;
+  --widget-border: #e6d5c5;
+  --widget-shadow: rgba(212, 197, 181, 0.2);
+  
+  /* Цвета для активного состояния */
+  --active-bg: #f2e5d5;
+  --active-text: #2c3338;
+  --active-border: #d4c5b5;
+}
+
+/* Киберпанк тема */
+[data-theme="cyberpunk"] {
+  /* Основные цвета фона */
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #1a1a24;
+  --bg-tertiary: #252532;
+  
+  /* Акцентные цвета и свечение */
+  --accent-neon-pink: #ff2e97;
+  --accent-neon-blue: #2de2e6;
+  --accent-neon-purple: #713eff;
+  --glow-pink: rgba(255, 46, 151, 0.5);
+  --glow-blue: rgba(45, 226, 230, 0.5);
+  --glow-purple: rgba(113, 62, 255, 0.5);
+  --text-glow-pink: 0 0 10px #ff2e97;
+  --text-glow-blue: 0 0 10px #2de2e6;
+  --text-glow-purple: 0 0 10px #713eff;
+  
+  /* Текстовые цвета */
+  --text-primary: #ffffff;
+  --text-secondary: #8f8f8f;
+  --text-tertiary: #6c6c6c;
+  
+  /* Цвета границ и теней */
+  --border-color: #2a2a3a;
+  --shadow-color: rgba(255, 46, 151, 0.3);
+  
+  /* Статусные цвета */
+  --primary-color: #ff2e97;
+  --success-color: #2de2e6;
+  --warning-color: #f7f754;
+  --error-color: #ff3366;
+  --info-color: #713eff;
+  
+  /* Дополнительные цвета */
+  --card-bg: rgba(26, 26, 36, 0.8);
+  --card-hover: rgba(37, 37, 50, 0.9);
+  --button-bg: #ff2e97;
+  --button-hover: #ff1a8a;
+  --input-bg: rgba(37, 37, 50, 0.8);
+  --input-border: #2a2a3a;
+  
+  /* Цвета для виджетов */
+  --widget-border-glow: 0 0 15px var(--glow-pink),
+                       0 0 30px var(--glow-blue);
+  --widget-text-shadow: var(--text-glow-pink);
+  
+  /* Цвета для активного состояния */
+  --active-bg: rgba(255, 46, 151, 0.2);
+  --active-border: #ff2e97;
+  --active-glow: 0 0 20px var(--glow-pink),
+                0 0 40px var(--glow-blue);
+}
+
+/* Дополнительные стили для Киберпанк темы */
+[data-theme="cyberpunk"] .widget-container,
+[data-theme="cyberpunk"] .widget-card,
+[data-theme="cyberpunk"] .dc-widget {
+  border: 1px solid var(--accent-neon-pink);
+  box-shadow: var(--widget-border-glow);
+  background: var(--card-bg);
+  backdrop-filter: blur(5px);
+}
+
+[data-theme="cyberpunk"] .widget-container h2,
+[data-theme="cyberpunk"] .widget-card h2,
+[data-theme="cyberpunk"] .dc-widget h2 {
+  color: var(--accent-neon-pink);
+  text-shadow: var(--text-glow-pink);
+}
+
+[data-theme="cyberpunk"] .widget-container h3,
+[data-theme="cyberpunk"] .widget-card h3,
+[data-theme="cyberpunk"] .dc-widget h3 {
+  color: var(--accent-neon-blue);
+  text-shadow: var(--text-glow-blue);
+}
+
+[data-theme="cyberpunk"] .widget-container p,
+[data-theme="cyberpunk"] .widget-card p,
+[data-theme="cyberpunk"] .dc-widget p {
+  color: var(--text-primary);
+  text-shadow: var(--text-glow-purple);
+}
+
+/* Дополнительные стили для Скандинавской темы */
+[data-theme="scandinavian"] .widget-container,
+[data-theme="scandinavian"] .widget-card,
+[data-theme="scandinavian"] .dc-widget {
+  background: var(--widget-bg);
+  border: 1px solid var(--widget-border);
+  box-shadow: 0 4px 12px var(--widget-shadow);
+}
+
+[data-theme="scandinavian"] .sidebar-nav .nav-item.active {
+  background: var(--active-bg);
+  color: var(--active-text);
+  border-left: 4px solid var(--active-border);
+} 

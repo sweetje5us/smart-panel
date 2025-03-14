@@ -1,0 +1,1591 @@
+/* Переопределение внешних стилей */
+.home-widget.theme-dark {
+  min-height: min-content !important;
+  height: auto !important;
+}
+
+/* Основные стили для виджета */
+.home-widget {
+  padding: 16px;
+  background: var(--bg-primary);
+  border-radius: 12px;
+  width: 100%;
+  height: auto;
+  min-height: min-content;
+  display: flex;
+  flex-direction: column;
+}
+
+.theme-dark.home-widget {
+  height: auto;
+  min-height: min-content;
+}
+
+.widget-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Сетка комнат */
+.rooms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+/* Медиа-запросы для разных размеров экрана */
+@media (max-width: 1200px) {
+  .rooms-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+}
+
+@media (max-width: 992px) {
+  .rooms-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .home-widget {
+    padding: 12px;
+    min-height: auto;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .widget-content {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .rooms-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .room-card {
+    width: 100%;
+    height: 130px;
+  }
+
+  .room-content {
+    padding: 10px;
+  }
+
+  .room-header h3 {
+    font-size: 0.9rem;
+    padding: 4px 6px;
+  }
+
+  .climate-item {
+    padding: 3px 6px;
+  }
+
+  .climate-item span {
+    font-size: 12px;
+  }
+
+  .light-control {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-widget {
+    padding: 8px;
+  }
+
+  .rooms-grid {
+    gap: 8px;
+  }
+
+  .room-card {
+    height: 120px;
+  }
+}
+
+@media (max-width: 375px) {
+  .room-card {
+    height: 110px;
+  }
+
+  .room-content {
+    padding: 8px;
+  }
+
+  .room-header h3 {
+    font-size: 0.85rem;
+    padding: 3px 6px;
+  }
+
+  .room-climate {
+    gap: 4px;
+  }
+
+  .climate-item {
+    padding: 2px 4px;
+  }
+
+  .climate-item span {
+    font-size: 11px;
+  }
+
+  .light-control {
+    width: 28px;
+    height: 28px;
+  }
+
+  .room-lights {
+    gap: 6px;
+  }
+}
+
+/* Карточка комнаты */
+.room-card {
+  position: relative;
+  width: 100%;
+  height: 140px;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  background: var(--bg-secondary);
+}
+
+.room-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Фоновое изображение комнаты */
+.room-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Затемнение поверх изображения */
+.room-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.7));
+}
+
+/* Контент комнаты */
+.room-content {
+  position: relative;
+  z-index: 1;
+  padding: 12px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Заголовок комнаты */
+.room-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+
+.room-header h3 {
+  color: #ffffff;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  background: rgba(0,0,0,0.5);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* Климатические данные */
+.room-climate {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.climate-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(0,0,0,0.5);
+  padding: 4px 8px;
+  border-radius: 4px;
+  backdrop-filter: blur(4px);
+}
+
+.climate-item span {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Управление освещением */
+.room-lights {
+  margin-top: auto;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.light-control {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.light-control:hover {
+  background: rgba(0,0,0,0.7);
+  transform: scale(1.1);
+}
+
+.light-control.active {
+  background: rgba(255,215,0,0.3);
+}
+
+/* Кастомное модальное окно */
+.custom-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.theme-dark .custom-modal {
+  background: rgba(0,0,0,0.7);
+}
+
+.custom-modal.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.custom-modal-content {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.theme-dark .custom-modal-content {
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.custom-modal.open .custom-modal-content {
+  transform: translateY(0);
+}
+
+.theme-dark .custom-modal .custom-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.theme-dark .custom-modal .custom-modal-header h3 {
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.theme-dark .custom-modal .custom-modal-header .close-button {
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.theme-dark .custom-modal .custom-modal-header .close-button:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  transform: rotate(90deg);
+}
+
+.theme-dark .modal-devices {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.theme-dark .modal-device-item {
+  background: #2d2d2d;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.theme-dark .modal-device-item:hover {
+  background: #363636;
+  transform: translateY(-2px);
+}
+
+.theme-dark .device-name {
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.theme-dark .device-type {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.875rem;
+}
+
+/* Кастомный скроллбар для модального окна в темной теме */
+.theme-dark .custom-modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.theme-dark .custom-modal-content::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 4px;
+}
+
+.theme-dark .custom-modal-content::-webkit-scrollbar-thumb {
+  background: #363636;
+  border-radius: 4px;
+  border: 2px solid #1a1a1a;
+}
+
+.theme-dark .custom-modal-content::-webkit-scrollbar-thumb:hover {
+  background: #404040;
+}
+
+/* Анимация для элементов модального окна */
+.theme-dark .modal-device-item {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Базовые стили для светлой темы */
+.custom-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.custom-modal-header h3 {
+  color: var(--text-primary);
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.custom-modal-header .close-button {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.custom-modal-header .close-button:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.modal-devices {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.modal-device-item {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+}
+
+.modal-device-item:hover {
+  background: var(--bg-tertiary);
+}
+
+/* Кастомный переключатель */
+.custom-switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 24px;
+}
+
+.custom-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--bg-tertiary);
+  transition: .4s;
+  border-radius: 24px;
+}
+
+.switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 4px;
+  background-color: var(--text-primary);
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .switch-slider {
+  background-color: var(--primary-color);
+}
+
+input:checked + .switch-slider:before {
+  transform: translateX(16px);
+}
+
+/* Индикатор загрузки */
+.loading-indicator {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+}
+
+.loading-indicator.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Основные стили для виджета */
+.smart-home-widget {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  background: #F5F5F5;
+  border-radius: 16px;
+  overflow: hidden;
+  padding: 20px;
+}
+
+/* Стили для заголовка */
+.widget-header {
+  margin-bottom: 24px;
+}
+
+.widget-title {
+  font-size: 24px;
+  font-weight: 500;
+  color: #333;
+  margin: 0;
+}
+
+/* Контейнер изображения */
+.room-image-container {
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.room-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Сенсоры на изображении */
+.room-sensors {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 1;
+}
+
+.sensor-value {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sensor-value svg {
+  color: #FFFFFF;
+}
+
+/* Интерактивные иконки освещения */
+.light-icons {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  transform: none;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 0;
+}
+
+.light-icon-button {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  padding: 4px;
+  border: none;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(2px);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.light-icon-button svg {
+  width: 24px;
+  height: 24px;
+  transition: all 0.2s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.light-icon-button.active {
+  background: rgba(255, 215, 0, 0.2);
+}
+
+.light-icon-button.active svg {
+  color: #FFD700;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+}
+
+.light-icon-button:hover {
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.light-icon-button.active:hover {
+  background: rgba(255, 215, 0, 0.3);
+}
+
+/* Заголовок комнаты */
+.room-title {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.room-title:hover {
+  background: rgba(0, 0, 0, 0.95);
+}
+
+.home-room-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #FFFFFF;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  text-align: center;
+}
+
+.room-title .expand-icon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.6;
+  transition: transform 0.2s ease;
+}
+
+.room-title:hover .expand-icon {
+  opacity: 1;
+  transform: translateY(2px);
+}
+
+/* Основной контент */
+.room-content {
+  padding: 0 12px 12px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Список источников света */
+.lights-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.light-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.light-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.light-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.light-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.light-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: #333;
+  margin: 0;
+}
+
+.no-lights {
+  padding: 8px;
+  color: #666;
+  font-size: 12px;
+  text-align: center;
+  font-style: italic;
+}
+
+/* Кнопка "Все устройства" */
+.show-devices-button {
+  margin-top: auto;
+  padding: 8px;
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.show-devices-button:hover {
+  color: #333;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+}
+
+/* Модальное окно */
+.room-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.room-modal.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+}
+
+.room-modal.visible .modal-content {
+  transform: translateY(0);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #666;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.close-button:hover {
+  background-color: #f0f0f0;
+}
+
+/* Группы устройств в модальном окне */
+.modal-device-group {
+  margin-bottom: 24px;
+}
+
+.modal-device-group:last-child {
+  margin-bottom: 0;
+}
+
+.modal-device-group-title {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+.modal-device-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-device-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: #F8F9FA;
+  border-radius: 8px;
+}
+
+.device-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.device-name {
+  font-size: 1rem;
+  color: #333;
+}
+
+.device-type {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.device-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.temperature-control {
+  font-size: 1.125rem;
+  color: #333;
+  font-weight: 500;
+}
+
+/* Кастомный скроллбар для модального окна */
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Стили для слайдера температуры в модальном окне */
+.modal-device-item .temperature-slider {
+  width: 120px;
+  height: 4px;
+  border-radius: 2px;
+  background: #e0e0e0;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.modal-device-item .temperature-slider::-webkit-slider-thumb {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #333;
+  background: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-device-item .temperature-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+.modal-device-item .temperature-slider::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: #333;
+}
+
+/* Анимация появления элементов */
+.modal-device-item {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Стили для состояния загрузки */
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #666;
+  font-size: 16px;
+}
+
+/* Стили для состояния ошибки */
+.error-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #ff4d4f;
+  font-size: 16px;
+  text-align: center;
+}
+
+/* Кастомный скроллбар для групп устройств */
+.device-groups::-webkit-scrollbar {
+  width: 4px;
+}
+
+.device-groups::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.device-groups::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+/* Адаптивные стили */
+@media (max-width: 600px) {
+  .rooms-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-content {
+    width: 95%;
+    padding: 16px;
+  }
+}
+
+/* Анимации */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.room-card {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Стили для переключателя */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+  transform: translateX(16px);
+}
+
+.slider.round {
+  border-radius: 24px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/* Стили для температурного слайдера */
+.temperature-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: #e0e0e0;
+  outline: none;
+}
+
+.temperature-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #333;
+  cursor: pointer;
+}
+
+.temperature-slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #333;
+  cursor: pointer;
+}
+
+.temperature-slider::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: #333;
+}
+
+.temperature-slider::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: #333;
+}
+
+/* Стили для домофона */
+.door-video-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.door-video-content video {
+  width: 100%;
+  border-radius: 12px;
+  background: #000;
+}
+
+.door-open-button {
+  padding: 12px 24px;
+  background: #000000;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.door-open-button:hover {
+  background: #333333;
+  transform: translateY(-2px);
+}
+
+.door-open-button:active {
+  transform: translateY(0);
+}
+
+.widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.widget-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.refresh-status {
+  font-size: 0.875rem;
+  color: #4CAF50;
+}
+
+.error-message {
+  background-color: #FFF3F3;
+  color: #D32F2F;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.retry-button {
+  background-color: #D32F2F;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.retry-button:hover {
+  background-color: #B71C1C;
+}
+
+.room-header {
+  margin-bottom: 20px;
+}
+
+.room-section {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.room-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.room-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.room-name {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.device-count {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.expand-icon {
+  transition: transform 0.3s;
+}
+
+.expand-icon.expanded {
+  transform: rotate(180deg);
+}
+
+.room-devices {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.device-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.device-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.device-name {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.device-type {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.device-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.no-devices {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
+}
+
+.no-devices .material-icons {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Добавляем стили для состояния загрузки */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Модальное окно */
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-devices {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.modal-device-item {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+}
+
+.modal-device-item:hover {
+  background: var(--bg-tertiary);
+}
+
+@media (max-width: 768px) {
+  .home-widget {
+    padding: 16px;
+    min-height: calc(100vh - 32px);
+  }
+
+  .rooms-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .room-card {
+    min-height: 180px;
+    padding: 16px;
+  }
+
+  .modal-content {
+    padding: 20px;
+    width: 95%;
+  }
+
+  .modal-devices {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Обновляем стили для родительского элемента */
+.widget-card {
+  height: auto !important;
+  min-height: fit-content !important;
+  overflow: visible !important;
+}
+
+/* Обновляем стили для MUI Card */
+.MuiCard-root {
+  height: auto !important;
+  min-height: fit-content !important;
+  overflow: visible !important;
+}
+
+.MuiPaper-root {
+  height: auto !important;
+  min-height: fit-content !important;
+  overflow: visible !important;
+}
+
+/* Обеспечиваем правильное поведение прокрутки */
+body {
+  overflow-y: auto;
+}
+
+.home-widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.home-widget-header h3 {
+  color: var(--text-primary);
+  margin: 0;
+  font-size: 18px;
+}
+
+.home-widget-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.stat-card {
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+  background: var(--bg-tertiary);
+  transform: translateY(-2px);
+}
+
+.stat-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.stat-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: var(--bg-primary);
+}
+
+.stat-icon.orders {
+  background: var(--primary-color);
+}
+
+.stat-icon.revenue {
+  background: var(--success-color);
+}
+
+.stat-icon.customers {
+  background: var(--info-color);
+}
+
+.stat-icon.products {
+  background: var(--warning-color);
+}
+
+.stat-title {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin: 0;
+}
+
+.stat-value {
+  color: var(--text-primary);
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+}
+
+.stat-change {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.stat-change.positive {
+  color: var(--success-text);
+}
+
+.stat-change.negative {
+  color: var(--error-text);
+}
+
+.quick-actions {
+  margin-top: 24px;
+}
+
+.quick-actions-title {
+  color: var(--text-primary);
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.quick-action-btn {
+  padding: 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.quick-action-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.quick-action-btn i {
+  font-size: 20px;
+}
+
+.home-widget-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: var(--text-secondary);
+}
+
+/* Адаптивные стили */
+@media (max-width: 768px) {
+  .theme-dark .rooms-grid {
+    display: flex;
+    flex-direction: column;
+  }
+}

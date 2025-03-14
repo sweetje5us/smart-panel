@@ -1,0 +1,226 @@
+.carousel-container {
+  width: 100%; /* Ширина карусели на 100% */
+  max-width: auto; /* Максимальная ширина карусели */
+ 
+  box-sizing: border-box; /* Учитывать отступы и границы в общей ширине */
+  padding: 0 15px; /* Добавление внутреннего отступа для удобства */
+  position: relative;
+  z-index: 0;
+}
+
+
+.carousel {
+  height: 421px; /* Высота карусели */
+  border-radius: 30px; /* Скругление углов */
+  overflow: hidden; /* Скрыть переполнение */
+  position: relative; /* Позиционирование для внутренних элементов */
+  
+  
+}
+
+.carousel-image {
+  height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+  transition: opacity 0.5s ease-in-out; /* Плавный переход для изменения непрозрачности */
+  opacity: 1; /* Начальная непрозрачность */
+}
+
+.carousel-image.fade-out {
+  opacity: 0; /* Непрозрачность при уходе */
+}
+
+.carousel-image.fade-in {
+  opacity: 1; /* Непрозрачность при появлении */
+}
+
+.carousel-controls {
+  display: flex; /* Flexbox для выравнивания кнопок */
+  justify-content: center; /* Центрирование кнопок */
+  position: absolute; /* Абсолютное позиционирование */
+  bottom: 20px; /* Отступ снизу */
+  left: 50%; /* Центрирование по горизонтали */
+  transform: translateX(-50%); /* Центрирование кнопок */
+  z-index: 10; /* Убедитесь, что кнопки выше изображения */
+}
+
+.carousel-controls button {
+  padding: 10px 20px;
+  margin: 0 5px;
+  border: none;
+  border-radius: 5px;
+  background-color: #c4c5c7;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.carousel-controls button:hover {
+  background: #EBE4D3; 
+}
+
+.top-left-blocks {
+  margin-top: 10px;
+  position: absolute;
+  left: 10px; /* Отступ от левого края */
+  display: flex;
+  flex-direction: column; /* Вертикальное выравнивание блоков */
+}
+
+.block {
+  width: 100px;
+  height: 37px;
+  background: #EBE4D3;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  color: #333;
+  
+  /* Устанавливаем отступ между блоками */
+  margin: 5px 0; /* Установите значение по вашему усмотрению */
+}
+
+.room-name {
+  margin: 0; 
+  font-size: 20px; 
+  color: #333; 
+  text-align: center; 
+  
+}
+
+.top-right-blocks {
+  position: absolute;
+  right: 10px; /* Отступ от правого края */
+  display: flex;
+  flex-direction: column; /* Вертикальное выравнивание блоков */
+}
+
+.room-name {
+  text-align: center; /* Центрирование названия комнаты */
+  margin: 0; /* Убираем отступы */
+  position: absolute; /* Абсолютное позиционирование */
+  bottom: 70px; /* Отступ снизу от кнопок */
+  left: 50%; /* Центрирование по горизонтали */
+  transform: translateX(-50%); /* Центрирование текста */
+  z-index: 10; /* Убедитесь, что текст выше изображения */
+  color: white; /* Цвет текста для лучшей читаемости */
+  font-size: 24px; /* Размер шрифта */
+  
+}
+
+.devices-list {
+  margin-top: 20px; /* Отступ сверху для списка устройств */
+  padding: 10px; /* Отступы для контейнера списка устройств */
+  border-radius: 5px; /* Скругление углов для списка устройств */
+ 
+}
+
+.devices-list h3 {
+  text-align: center; /* Центрирование заголовка списка устройств */
+  
+}
+
+.devices-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 20px;
+  
+  
+}
+
+.space {
+  margin-left: 5px; /* Задайте нужный отступ */
+}
+
+.device-card {
+  font-family: 'Verdana';
+  font-size: 15px;
+  background: #e7e7e7;
+  width: 160px; /* Ширина карточки */
+  min-height: 100px;
+  /* Увеличенная высота карточки для размещения всех элементов */
+  border-radius: 30px;
+  padding: 20px; /* Отступы для содержимого */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Центрируем содержимое по горизонтали */
+  margin: 5px; /* Отступ между карточками */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s; /* Плавный эффект при наведении */
+  position: relative; /* Для абсолютного позиционирования внутренних элементов */
+  
+  
+}
+
+.device-image {
+  max-width: 100%; /* Ограничиваем ширину изображения */
+  height: auto; /* Автоматическая высота для сохранения пропорций */
+  margin-bottom: 10px; /* Отступ снизу для отделения от текста */
+}
+
+.on_off_block {
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  width: 100%; /* Занимает всю ширину карточки */
+}
+
+.device-card:hover {
+  transform: scale(1.05); /* Увеличение карточки при наведении */
+}
+
+.device-card p {
+  margin: 0; /* Убираем отступы у параграфов */
+}
+
+.nav-button {
+  background: transparent; /* Прозрачный фон */
+  border: none; /* Убираем рамку */
+  cursor: pointer; /* Указатель при наведении */
+  transition: filter 0.2s; /* Плавный переход для эффекта наведения */
+}
+
+.nav-button:hover {
+  filter: brightness(1.2); /* Увеличиваем яркость при наведении */
+}
+
+.room-select {
+  width: 100px; /* Ширина выпадающего списка */
+  height: 37px; /* Высота выпадающего списка */
+  font-weight: bold;
+  background: #EBE4D3; /* Цвет фона */
+  border-radius: 20px; /* Закругление углов */
+  display: flex; /* Используем flexbox для центрирования */
+  align-items: center; /* Вертикальное центрирование */
+  justify-content: center; /* Горизонтальное центрирование */
+  font-size: 15px; /* Размер шрифта */
+  color: #333; /* Цвет текста */
+  border: none; /* Убираем рамку */
+  cursor: pointer; /* Курсор при наведении */
+  margin: 5px 0; /* Отступ между блоками */
+  transition: background-color 0.3s; /* Плавный переход для изменения цвета фона */
+  text-align: center; /* Центрирование текста */
+}
+
+.room-select:hover {
+  border-color: #4A90E2; /* Цвет рамки при наведении */
+}
+
+.room-select:focus {
+  outline: none; /* Убираем обводку при фокусе */
+  border-color: #4A90E2; /* Цвет рамки при фокусе */
+}
+
+/* Стиль для стрелки, если вы хотите добавить кастомную стрелку */
+.room-select::after {
+  content: '▼'; /* Стрелка вниз */
+  position: absolute; /* Позиционируем стрелку */
+  right: 15px; /* Отступ от правого края */
+  top: 50%; /* Выравниваем по вертикали */
+  transform: translateY(-50%); /* Центрируем стрелку */
+  pointer-events: none; /* Игнорируем события на стрелке */
+}

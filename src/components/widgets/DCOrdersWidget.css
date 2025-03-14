@@ -1,0 +1,140 @@
+.dc-orders-widget {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.dc-orders-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.dc-orders-header h3 {
+  color: var(--text-primary);
+  margin: 0;
+  font-size: 18px;
+}
+
+.dc-orders-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.dc-orders-action-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dc-orders-action-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.dc-orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dc-order-item {
+  padding: 12px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+}
+
+.dc-order-item:hover {
+  background: var(--bg-tertiary);
+}
+
+.dc-order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.dc-order-id {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.dc-order-date {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.dc-order-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.dc-order-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dc-order-detail-label {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.dc-order-detail-value {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.dc-order-status {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.dc-order-status.pending {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.dc-order-status.processing {
+  background: var(--info-bg);
+  color: var(--info-text);
+}
+
+.dc-order-status.completed {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.dc-order-status.cancelled {
+  background: var(--error-bg);
+  color: var(--error-text);
+}
+
+.no-orders {
+  text-align: center;
+  padding: 32px;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  border-radius: 8px;
+}
+
+.dc-orders-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: var(--text-secondary);
+} 

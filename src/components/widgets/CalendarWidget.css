@@ -1,0 +1,700 @@
+.calendar-widget {
+    background: var(--bg-primary);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px var(--shadow-color);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.calendar-widget-header {
+    padding: 16px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.today-date {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.calendar-widget-content {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.calendar-widget-content.loading,
+.calendar-widget-content.error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+}
+
+.calendar-widget-content.error {
+    color: var(--error-text);
+}
+
+.calendar-widget-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+.calendar-widget-content::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 2px;
+}
+
+.calendar-widget-content::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 2px;
+}
+
+.events-list {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.event-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.event-item:hover {
+    background: var(--bg-tertiary);
+}
+
+.event-time {
+    color: var(--text-secondary);
+    font-size: 12px;
+    margin-right: 12px;
+    min-width: 60px;
+}
+
+.event-title {
+    color: var(--text-primary);
+    font-size: 14px;
+    flex: 1;
+}
+
+.repeat-indicator {
+    font-size: 12px;
+    color: #6c757d;
+    cursor: help;
+}
+
+.no-events {
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 20px;
+    font-size: 14px;
+}
+
+/* Стили для формы события */
+.repeat-days {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+.day-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.day-checkbox:hover {
+    background: #e9ecef;
+}
+
+.notification-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.notification-time {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.notification-time input {
+    width: 60px;
+    padding: 4px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+/* Анимация для уведомлений */
+@keyframes notification-pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.event-item.notification-active .event-time {
+    color: #dc3545;
+    animation: notification-pulse 2s infinite;
+}
+
+/* Типы событий */
+.event-item.meeting {
+    border-left: 4px solid #36B37E;
+}
+
+.event-item.task {
+    border-left: 4px solid #FF5630;
+}
+
+.event-item.reminder {
+    border-left: 4px solid #FFC400;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .calendar-widget {
+        padding: 16px;
+    }
+
+    .today-date {
+        font-size: 14px;
+    }
+}
+
+.notification-permission-message {
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    border-radius: 4px;
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 14px;
+}
+
+.notification-permission-message p {
+    margin: 0 0 10px 0;
+    color: #856404;
+}
+
+.notification-permission-message ol {
+    margin: 0 0 10px 20px;
+    color: #856404;
+}
+
+.notification-permission-message li {
+    margin: 5px 0;
+}
+
+.notification-permission-message button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.notification-permission-message button:hover {
+    background-color: #0056b3;
+}
+
+/* Стили для всплывающих уведомлений */
+.custom-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 16px;
+    width: 300px;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+}
+
+.custom-notification.notification-visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.custom-notification.notification-hiding {
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+.notification-content {
+    flex: 1;
+    margin-right: 12px;
+}
+
+.notification-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #2C3E50;
+}
+
+.notification-body {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: #6c757d;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+.notification-close:hover {
+    color: #343a40;
+}
+
+/* Стили для событий */
+.event-item {
+    opacity: 1;
+    transition: all 0.2s ease;
+}
+
+.event-item.past-event {
+    opacity: 0.5;
+    background: #f8f9fa;
+}
+
+.event-item.current-event {
+    background: #e3f2fd;
+    border-left: 4px solid #2196f3;
+}
+
+.event-item.past-event .event-time,
+.event-item.past-event .event-title {
+    color: #6c757d;
+}
+
+.event-item.current-event .event-time {
+    color: #2196f3;
+    font-weight: 600;
+}
+
+/* Анимация для текущего события */
+@keyframes current-event-pulse {
+    0% { background: #e3f2fd; }
+    50% { background: #bbdefb; }
+    100% { background: #e3f2fd; }
+}
+
+.event-item.current-event {
+    animation: current-event-pulse 2s infinite;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.add-calendar-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: #007bff;
+    color: white;
+    border-radius: 50%;
+    text-decoration: none;
+    font-size: 20px;
+    line-height: 1;
+    transition: all 0.2s ease;
+}
+
+.add-calendar-link:hover {
+    background: #0056b3;
+    transform: scale(1.1);
+}
+
+/* Удаляем неиспользуемые стили уведомлений */
+.notification-permission-message,
+.notification-permission-message p,
+.notification-permission-message ol,
+.notification-permission-message li,
+.notification-permission-message button {
+    display: none;
+}
+
+.enhanced-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    min-width: 300px;
+    max-width: 400px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 16px;
+    z-index: 9999;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+}
+
+.enhanced-notification.notification-visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.enhanced-notification.notification-hiding {
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+.enhanced-notification .notification-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.enhanced-notification .notification-icon {
+    font-size: 24px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.enhanced-notification .notification-text {
+    flex-grow: 1;
+}
+
+.enhanced-notification .notification-title {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 4px;
+    color: #1a1a1a;
+}
+
+.enhanced-notification .notification-body {
+    font-size: 14px;
+    color: #666;
+}
+
+.enhanced-notification .notification-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #999;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.enhanced-notification .notification-close:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #666;
+}
+
+.enhanced-notification.pre-notification {
+    background: #fff3e0;
+    border-left: 4px solid #ff9800;
+}
+
+.enhanced-notification:not(.pre-notification) {
+    background: #e3f2fd;
+    border-left: 4px solid #2196f3;
+}
+
+/* Стили для множественных уведомлений */
+.enhanced-notification + .enhanced-notification {
+    margin-top: 10px;
+}
+
+/* Анимация для иконки в предварительном уведомлении */
+.pre-notification .notification-icon {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.calendar-header h2 {
+    color: var(--text-primary);
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.calendar-navigation {
+    display: flex;
+    gap: 10px;
+}
+
+.calendar-nav-btn {
+    background: var(--bg-secondary);
+    border: none;
+    color: var(--text-primary);
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.calendar-nav-btn:hover {
+    background: var(--bg-tertiary);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    text-align: center;
+}
+
+.calendar-weekday {
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    padding: 8px;
+    width: 100%;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--text-primary);
+    font-size: 14px;
+    position: relative;
+    background: var(--bg-secondary);
+    transition: all 0.2s ease;
+}
+
+.calendar-day:hover {
+    background: var(--bg-tertiary);
+}
+
+.calendar-day.today {
+    background: var(--calendar-today);
+    font-weight: 600;
+}
+
+.calendar-day.selected {
+    background: var(--calendar-selected);
+    color: var(--sidebar-active-text);
+}
+
+.calendar-day.has-events::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--primary-color);
+}
+
+.calendar-day.other-month {
+    color: var(--text-tertiary);
+    background: var(--bg-primary);
+}
+
+.location-indicator {
+    margin-left: 4px;
+    color: var(--text-secondary);
+    cursor: help;
+}
+
+.event-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999999 !important;
+    backdrop-filter: blur(4px);
+}
+
+.event-modal {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 24px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    animation: modalAppear 0.3s ease;
+    position: relative;
+    z-index: 10000000 !important;
+}
+
+.event-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.event-modal-header h3 {
+    margin: 0;
+    font-size: 20px;
+    color: var(--text-primary);
+}
+
+.modal-close-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.modal-close-btn:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.event-modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.event-modal-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+.event-modal-content::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 2px;
+}
+
+.event-modal-content::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 2px;
+}
+
+.modal-info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-info-row:last-child {
+    border-bottom: none;
+}
+
+.modal-label {
+    color: var(--text-secondary);
+    font-size: 14px;
+    min-width: 100px;
+    font-weight: 500;
+}
+
+.modal-value {
+    color: var(--text-primary);
+    font-size: 14px;
+    flex: 1;
+    word-break: break-word;
+    display: flex;
+    align-items: center;
+}
+
+.modal-value a {
+    color: var(--primary-color);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    background: var(--bg-tertiary);
+}
+
+.modal-value a:hover {
+    background: var(--bg-hover);
+    color: var(--primary-color);
+}
+
+.modal-value svg {
+    flex-shrink: 0;
+    vertical-align: middle;
+}
+
+.modal-value span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+@keyframes modalAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+} 

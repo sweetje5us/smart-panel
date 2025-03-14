@@ -1,0 +1,284 @@
+.kanban-container {
+    padding: 24px;
+    background-color: #F4F5F7;
+    min-height: 100vh;
+}
+
+.kanban-header {
+    margin-bottom: 24px;
+}
+
+.kanban-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.kanban-title h1 {
+    font-size: 24px;
+    font-weight: 500;
+    color: #172B4D;
+    margin: 0;
+}
+
+.kanban-filters {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 4px;
+    padding: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.filter-group .MuiAutocomplete-root {
+    min-width: 250px;
+}
+
+.filter-group .MuiFormControlLabel-root {
+    margin: 0;
+    padding: 8px 16px;
+}
+
+.filter-group .MuiCheckbox-root {
+    color: #0052CC;
+}
+
+.filter-group .MuiCheckbox-root.Mui-checked {
+    color: #0052CC;
+}
+
+.filter-group .MuiOutlinedInput-root {
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.filter-group .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #0052CC;
+}
+
+.filter-group .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #0052CC;
+}
+
+.filter-group .MuiChip-root {
+    background-color: #E3FCEF;
+    color: #006644;
+    margin: 2px;
+}
+
+.filter-group .MuiChip-deleteIcon {
+    color: #006644;
+}
+
+.filter-group .MuiChip-deleteIcon:hover {
+    color: #004D40;
+}
+
+.kanban-board {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 16px;
+}
+
+.kanban-column {
+    flex: 1;
+    min-width: 280px;
+    background-color: #F4F5F7;
+    border-radius: 4px;
+    padding: 8px;
+}
+
+.column-header {
+display: flex;
+    justify-content: space-between;
+align-items: center;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+}
+
+.column-header h3 {
+    font-size: 14px;
+    font-weight: 500;
+    color: #5A6A84;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.task-count {
+    background-color: #E3E5EA;
+    color: #5A6A84;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+.task-list {
+    min-height: 100px;
+}
+
+.task-card {
+    background-color: #FFFFFF;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.task-card:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.task-header {
+display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.task-type {
+    font-size: 12px;
+    color: #5A6A84;
+    background-color: #E3E5EA;
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+.task-title {
+    font-size: 14px;
+    color: #172B4D;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.task-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.task-priority {
+display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.task-assignee {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #5A6A84;
+}
+
+/* Стили для drag and drop */
+.task-list {
+    min-height: 100px;
+    padding: 4px;
+}
+
+.task-list.dragging {
+    background-color: #F4F5F7;
+}
+
+.task-card.dragging {
+    background-color: #FFFFFF;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Стили для модальных окон */
+.modal {
+    background-color: #FFFFFF;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid #E3E5EA;
+    font-size: 16px;
+    font-weight: 500;
+    color: #172B4D;
+}
+
+.modal-content {
+    padding: 24px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 16px 24px;
+    border-top: 1px solid #E3E5EA;
+}
+
+/* Стили для форм */
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: #5A6A84;
+    margin-bottom: 4px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #E3E5EA;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #172B4D;
+    transition: border-color 0.2s ease;
+}
+
+.form-input:focus {
+    border-color: #0052CC;
+    outline: none;
+}
+
+/* Стили для кнопок */
+.btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: #0052CC;
+    color: #FFFFFF;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0747A6;
+}
+
+.btn-secondary {
+    background-color: #F4F5F7;
+    color: #5A6A84;
+    border: 1px solid #E3E5EA;
+}
+
+.btn-secondary:hover {
+    background-color: #E3E5EA;
+}

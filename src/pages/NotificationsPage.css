@@ -1,0 +1,241 @@
+.notifications-container {
+    padding: 24px;
+    background: var(--bg-primary);
+}
+
+.notifications-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.notifications-header h1 {
+    color: var(--text-primary);
+    font-size: 24px;
+    margin: 0;
+}
+
+.notifications-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.mark-all-read {
+    padding: 8px 16px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.mark-all-read:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.notifications-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.notification-item {
+    padding: 16px;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+
+.notification-item:hover {
+    background: var(--bg-tertiary);
+}
+
+.notification-item.unread {
+    background: var(--bg-primary);
+    border-left: 4px solid var(--primary-color);
+}
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.notification-title {
+    color: var(--text-primary);
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.notification-time {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+.notification-content {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+}
+
+.notification-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.notification-action-btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.notification-action-btn.primary {
+    background: var(--primary-color);
+    color: var(--bg-primary);
+    border: none;
+}
+
+.notification-action-btn.primary:hover {
+    opacity: 0.9;
+}
+
+.notification-action-btn.secondary {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.notification-action-btn.secondary:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.no-notifications {
+    text-align: center;
+    padding: 48px;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    border-radius: 8px;
+}
+
+.notifications-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: var(--text-secondary);
+}
+
+.unread-count {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.clear-all {
+    background: none;
+    border: 1px solid #dee2e6;
+    color: #6c757d;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.clear-all:hover {
+    background: #f8f9fa;
+    border-color: #ced4da;
+    color: #495057;
+}
+
+.notification-source {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.notification-link {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    transition: background-color 0.2s;
+}
+
+.notification-link:hover {
+    background: #e9ecef;
+    text-decoration: none;
+}
+
+.no-notifications .material-icons {
+    font-size: 48px;
+    margin-bottom: 16px;
+    color: #dee2e6;
+}
+
+.no-notifications p {
+    margin: 0;
+    font-size: 16px;
+}
+
+.loading, .error {
+    padding: 24px;
+    text-align: center;
+    color: #6c757d;
+    font-size: 16px;
+}
+
+.error {
+    color: #dc3545;
+}
+
+.delete-notification {
+    background: none;
+    border: none;
+    color: #dc3545;
+    font-size: 20px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.2s;
+    opacity: 0;
+}
+
+.notification-item:hover .delete-notification {
+    opacity: 1;
+}
+
+.delete-notification:hover {
+    background: rgba(220, 53, 69, 0.1);
+}
+
+/* Анимация для новых уведомлений */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.notification-item {
+    animation: slideIn 0.3s ease-out forwards;
+} 

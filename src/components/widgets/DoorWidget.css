@@ -1,0 +1,257 @@
+.door-widget {
+    background: var(--widget-background);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    transition: all 0.3s ease;
+}
+
+.door-widget-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: var(--widget-background);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.door-widget-image {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--background-secondary);
+}
+
+.door-widget-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.2s ease;
+}
+
+.door-widget-image:hover .door-widget-thumbnail {
+    transform: scale(1.05);
+}
+
+.door-widget-status {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.door-widget-info {
+    padding: 15px;
+}
+
+.door-widget-info h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.door-widget-info p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.door-widget-loading,
+.door-widget-error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    background: var(--background-secondary);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.door-widget-error {
+    color: var(--error-color);
+}
+
+/* Стили для модального окна */
+.door-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.door-modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    width: 800px;
+    max-width: 90%;
+    max-height: 90vh;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.theme-dark .door-modal-content {
+    background: #1a1a1a;
+}
+
+.theme-loft-dark .door-modal-content {
+    background: #1a1a1a;
+}
+
+.door-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-primary);
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+    z-index: 1;
+}
+
+.door-modal-close:hover {
+    background: var(--background-secondary);
+}
+
+.door-modal-content h2 {
+    margin: 0 0 20px 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    padding-right: 40px;
+}
+
+.door-video-container {
+    width: 100%;
+    height: 450px;
+    background: #000000;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 15px 0;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.door-video-stream {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: var(--background-secondary);
+}
+
+.door-video-loading,
+.door-video-error {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+    background: var(--background-secondary);
+    border-radius: 8px;
+}
+
+.door-video-error {
+    color: var(--error-color);
+}
+
+.door-modal-content .door-widget-info {
+    padding: 15px;
+    background: var(--background-secondary);
+    border-radius: 8px;
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.door-modal-content .door-widget-info p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.door-modal-content .door-widget-info strong {
+    color: var(--text-primary);
+    font-weight: 500;
+    min-width: 80px;
+}
+
+.door-modal-content .door-widget-info button {
+    margin-top: 10px;
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    text-transform: none;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.door-modal-content {
+    animation: fadeIn 0.2s ease-out;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .door-modal-content {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .door-video-container {
+        height: 300px;
+    }
+
+    .door-modal-content h2 {
+        font-size: 18px;
+    }
+} 

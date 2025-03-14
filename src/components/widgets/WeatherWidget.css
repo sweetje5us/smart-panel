@@ -1,0 +1,229 @@
+.weather-widget {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  border-radius: 16px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.weather-widget::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.2),
+    rgba(0, 0, 0, 0.5)
+  );
+  z-index: 1;
+}
+
+.weather-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4));
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.weather-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.weather-header h2 {
+  color: var(--text-primary);
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.weather-location {
+  color: var(--text-secondary);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.weather-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.temperature {
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.weather-icon {
+  width: 64px;
+  height: 64px;
+  filter: var(--weather-icon-filter);
+}
+
+.weather-description {
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.city-name {
+  font-size: 24px;
+  font-weight: 500;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.weather-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 16px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.weather-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.weather-detail-item:hover {
+  background: var(--bg-tertiary);
+}
+
+.detail-label {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.detail-value {
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.weather-forecast {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.forecast-item {
+  flex: 1;
+  min-width: 80px;
+  padding: 12px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.forecast-item:hover {
+  background: var(--bg-tertiary);
+}
+
+.forecast-day {
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.forecast-temp {
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.weather-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: var(--text-secondary);
+}
+
+.weather-error {
+  color: var(--error-text);
+  background: var(--error-bg);
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.weather-widget.loading {
+  background: var(--bg-secondary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--bg-primary);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.weather-widget.error {
+  background: var(--bg-secondary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--error-color);
+  text-shadow: none;
+}
+
+.error-message {
+  font-size: 16px;
+  text-align: center;
+  padding: 16px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .temperature {
+    font-size: 3rem;
+  }
+  
+  .weather-description {
+    font-size: 1.2rem;
+  }
+  
+  .city-name {
+    font-size: 1.3rem;
+  }
+} 

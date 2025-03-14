@@ -1,0 +1,49 @@
+.settings-container {
+  padding: 2rem;
+}
+
+.settings-container h1 {
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.settings-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.settings-section {
+  margin-bottom: 2rem;
+}
+
+.settings-section h2 {
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.settings-group {
+  margin-bottom: 1rem;
+}
+
+.settings-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #666;
+}
+
+.settings-group select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: white;
+}
+
+.settings-group select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+} 

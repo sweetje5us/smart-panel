@@ -1,0 +1,424 @@
+.tasks-container {
+  padding: 24px;
+  background: var(--bg-primary);
+}
+
+.tasks-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.tasks-header h1 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 24px;
+}
+
+.reset-filters-btn {
+  padding: 8px 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reset-filters-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.filters-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-group label {
+  color: var(--text-secondary);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.filter-group select,
+.filter-group input {
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  background: var(--input-bg);
+  font-size: 14px;
+  min-width: 120px;
+}
+
+.filter-group input {
+  width: 200px;
+}
+
+.filter-group select:focus,
+.filter-group input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-color-alpha);
+}
+
+.sort-order-btn {
+  padding: 8px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sort-order-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.tasks-list {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px var(--shadow-color);
+  min-height: 200px;
+  padding: 16px;
+}
+
+@media (max-width: 768px) {
+  .tasks-container {
+    padding: 16px;
+  }
+
+  .filters-section {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .filter-group select,
+  .filter-group input {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  color: var(--text-secondary);
+  font-size: 16px;
+}
+
+.no-tasks {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  color: var(--text-secondary);
+  font-size: 16px;
+  font-style: italic;
+}
+
+.task-item {
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  background: var(--bg-primary);
+  transition: all 0.2s ease;
+}
+
+.task-item:hover {
+  box-shadow: 0 2px 8px var(--shadow-color);
+  transform: translateY(-2px);
+}
+
+.task-item h3 {
+  margin: 0 0 8px 0;
+  color: var(--text-primary);
+  font-size: 16px;
+}
+
+.task-item p {
+  margin: 0 0 12px 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.task-meta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.task-meta span {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.status {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+
+.status.active {
+  background: var(--info-color);
+  color: var(--bg-primary);
+}
+
+.status.completed {
+  background: var(--success-color);
+  color: var(--bg-primary);
+}
+
+.status.cancelled {
+  background: var(--danger-color);
+  color: var(--bg-primary);
+}
+
+.priority {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+
+.priority.high {
+  background: var(--danger-color);
+  color: var(--bg-primary);
+}
+
+.priority.medium {
+  background: var(--warning-color);
+  color: var(--bg-primary);
+}
+
+.priority.low {
+  background: var(--success-color);
+  color: var(--bg-primary);
+}
+
+.date {
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+}
+
+/* Основные стили */
+.kanban-container {
+  padding: 24px;
+  background: var(--bg-primary);
+  min-height: 100vh;
+}
+
+/* Темная тема */
+.theme-dark .kanban-container {
+  background: var(--bg-primary-dark);
+}
+
+.theme-dark .kanban-header {
+  background: var(--bg-secondary-dark);
+}
+
+.theme-dark .jira-logo {
+  color: var(--text-primary-dark);
+}
+
+.theme-dark .create-button {
+  background: var(--primary-color);
+  color: var(--text-primary-dark);
+}
+
+.theme-dark .create-menu {
+  background: var(--bg-secondary-dark);
+  border-color: var(--border-color-dark);
+  box-shadow: 0 4px 12px var(--shadow-color-dark);
+}
+
+.theme-dark .create-menu-item {
+  color: var(--text-primary-dark);
+}
+
+.theme-dark .create-menu-item:hover {
+  background: var(--bg-tertiary-dark);
+}
+
+.theme-dark .filter-button {
+  background: var(--bg-secondary-dark);
+  border-color: var(--border-color-dark);
+  color: var(--text-secondary-dark);
+}
+
+.theme-dark .filter-button.active {
+  background: var(--primary-color);
+  color: var(--text-primary-dark);
+}
+
+.theme-dark .filter-dropdown {
+  background: var(--bg-secondary-dark);
+  border-color: var(--border-color-dark);
+  box-shadow: 0 4px 12px var(--shadow-color-dark);
+}
+
+.theme-dark .filter-dropdown-item {
+  color: var(--text-primary-dark);
+}
+
+.theme-dark .filter-dropdown-item:hover {
+  background: var(--bg-tertiary-dark);
+}
+
+.theme-dark .filter-dropdown-item.selected {
+  background: var(--primary-color-alpha);
+}
+
+.theme-dark .column {
+  background: var(--bg-secondary-dark);
+  border-color: var(--border-color-dark);
+}
+
+.theme-dark .column-header {
+  border-bottom-color: var(--border-color-dark);
+}
+
+.theme-dark .column-header h3 {
+  color: var(--text-primary-dark);
+}
+
+.theme-dark .task-count {
+  background: var(--bg-tertiary-dark);
+  color: var(--text-secondary-dark);
+}
+
+.theme-dark .task-card {
+  background: var(--bg-primary-dark);
+  border-color: var(--border-color-dark);
+}
+
+.theme-dark .task-card:hover {
+  box-shadow: 0 4px 12px var(--shadow-color-dark);
+}
+
+.theme-dark .task-title {
+  color: var(--text-primary-dark);
+}
+
+.theme-dark .task-menu-button {
+  color: var(--text-secondary-dark);
+}
+
+.theme-dark .task-menu {
+  background: var(--bg-secondary-dark);
+  border-color: var(--border-color-dark);
+  box-shadow: 0 4px 12px var(--shadow-color-dark);
+}
+
+.theme-dark .task-menu-item {
+  color: var(--text-primary-dark);
+}
+
+.theme-dark .task-menu-item:hover {
+  background: var(--bg-tertiary-dark);
+}
+
+.theme-dark .task-menu-item.delete {
+  color: var(--danger-color);
+}
+
+.theme-dark .task-menu-item.delete:hover {
+  background: var(--danger-color-alpha);
+}
+
+.theme-dark .modal-overlay {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.theme-dark .modal {
+  background: var(--bg-primary-dark);
+  border-color: var(--border-color-dark);
+  box-shadow: 0 4px 24px var(--shadow-color-dark);
+}
+
+.theme-dark .modal-header {
+  border-bottom-color: var(--border-color-dark);
+}
+
+.theme-dark .modal-header h2 {
+  color: var(--text-primary-dark);
+}
+
+.theme-dark .close-button {
+  color: var(--text-secondary-dark);
+}
+
+.theme-dark .modal-field label {
+  color: var(--text-secondary-dark);
+}
+
+.theme-dark .modal-field input,
+.theme-dark .modal-field select,
+.theme-dark .modal-field textarea {
+  background: var(--bg-secondary-dark);
+  border-color: var(--border-color-dark);
+  color: var(--text-primary-dark);
+}
+
+.theme-dark .modal-field input:focus,
+.theme-dark .modal-field select:focus,
+.theme-dark .modal-field textarea:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-color-alpha);
+}
+
+.theme-dark .modal-section-title {
+  color: var(--text-primary-dark);
+}
+
+.theme-dark .modal-button {
+  background: var(--bg-secondary-dark);
+  border-color: var(--border-color-dark);
+  color: var(--text-primary-dark);
+}
+
+.theme-dark .modal-button-primary {
+  background: var(--primary-color);
+  color: var(--text-primary-dark);
+}
+
+.theme-dark .modal-button-secondary:hover {
+  background: var(--bg-tertiary-dark);
+}
+
+.theme-dark .notification {
+  background: var(--bg-secondary-dark);
+  border-color: var(--border-color-dark);
+  color: var(--text-primary-dark);
+}
+
+.theme-dark .notification-success {
+  background: var(--success-color-dark);
+  color: var(--text-primary-dark);
+}
+
+.theme-dark .notification-error {
+  background: var(--danger-color-dark);
+  color: var(--text-primary-dark);
+} 
